@@ -1,0 +1,43 @@
+{% extends "../layouts/base.html" %}
+
+{% block content %}
+<ul class="breadcrumb">
+    <li><a href="/seasons">当季主题</a></li>
+    <li class="divider">/</li>
+    <li>主题列表</li>
+    <li class="pull-right">
+        <i class="icon-pencil"></i>
+        <a href="#">新建主题</a>
+    </li>
+</ul>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>主题标题</th>
+            <th>主题图片缩略图</th>
+            <th>创建日期</th>
+            <th>状态</th>
+            <th>已关联发型包</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for season in seasons %}
+        <tr>
+            <td>{{ season.id }}</td>
+            <td>{{ season.period_name }}</td>
+            <td>{{ season.theme_pic_url }}</td>
+            <td>{{ season.createtime }}</td>
+            <td>{{ season.actived }}</td>
+            <td>{{ season.package_id }}</td>
+            <td>
+                <a href="#">编辑</a>
+                <a href="#">设为无效</a>
+            </td>
+        </tr>
+        {% end %}
+    </tbody>
+</table>
+{% end %}

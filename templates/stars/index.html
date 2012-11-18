@@ -1,0 +1,49 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="#">星光巨匠</a></li>
+  <li class="divider">/</li>
+  <li>用户列表</li>
+</ul>
+{% end %}
+
+{% block content %}
+{{ modules.UserQueryModule() }}
+
+<!-- 用户列表 -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>昵称</th>
+            <th>邮箱</th>
+            <th>用户类型</th>
+            <th>注册时间</th>
+            <th>最后登录时间</th>
+            <th>状态</th>
+            <th>发图数/表情数</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.id }}</td>
+            <td><a href="/users/show/{{ entry.id }}">{{ entry.username }}</a></td>
+            <td>{{ entry.email }}</td>
+            <td>{{ config["member_type"].get(entry.member_type, "") }}</td>
+            <td>{{ entry.regtime_str }}</td>
+            <td>{{ entry.lastlogintime_str }}</td>
+            <td>{{ config["actived"].get(entry.actived, "") }}</td>
+            <td>{{ entry.twitter_num }} / {{ entry.emotion_num }}</td>
+            <td>
+                <a href="#">取消推荐</a>
+                <a href="#">图片推荐</a>
+            </td>
+        </tr>
+        {% end %}
+    </tbody>
+</table>
+
+{% end %}

@@ -1,0 +1,18 @@
+{% extends "../layouts/base.html" %}
+
+{% block content %}
+<ul class="breadcrumb">
+    <li><a href="/users">用户管理</a></li>
+    <li class="divider">/</li>
+    <li>用户详细信息</li>
+</ul>
+
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#tabs').tabs();
+    });
+</script>
+{% end %}

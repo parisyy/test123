@@ -1,0 +1,85 @@
+<div class="control-group">
+  <label class="control-label">用户ID</label>
+  <div class="controls">
+    <input type="text" value="{{ user.id }}" disabled="disabled" />
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">用户名称</label>
+  <div class="controls">
+    <input type="text" value="{{ user.username }}" disabled="disabled" />
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">用户类型</label>
+  <div class="controls">
+    <select id="member_type" name="member_type" class="">
+      <option></option>
+      {% for k, v in config["member_type"].items() %}
+      <option value="{{ k }}">{{ v }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">用户状态</label>
+  <div class="controls">
+    <select id="actived" name="actived" class="">
+      <option></option>
+      {% for k, v in config["actived"].items() %}
+      <option value="{{ k }}">{{ v }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">邮箱</label>
+  <div class="controls">
+    <input type="text" name="email" value="{{ user.email }}" />
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">性别</label>
+  <div class="controls">
+    <select id="gender" name="gender" class="">
+      <option></option>
+      {% for k, v in config["gender"].items() %}
+      <option value="{{ k }}">{{ v }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">所在省份</label>
+  <div class="controls">
+    <select id="province_id" name="province_id" class="chzn-select">
+      <option></option>
+      {% for province in provinces %}
+      <option value="{{ province.id }}">{{ province.region_name }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">所在城市</label>
+  <div class="controls">
+    <select id="city_id" name="city_id" class="chzn-select">
+      <option></option>
+      {% for city in cities %}
+      <option value="{{ city.id }}">{{ city.region_name }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">个人描述</label>
+  <div class="controls">
+    <textarea id="sign_text" name="sign_text">{{ user.sign_text }}</textarea>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">用户头像ID</label>
+  <div class="controls">
+    <textarea id="avatar_id" name="avatar_id">{{ user.avatar_id }}</textarea>
+  </div>
+</div>

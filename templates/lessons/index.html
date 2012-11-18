@@ -1,0 +1,50 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+    <li><a href="/lessons">DIY课堂</a></li>
+    <li class="divider">/</li>
+    <li>期刊列表</li>
+    <li class="pull-right"><a href="/lessons/new"><i class="icon icon-pencil"></i>新增期刊</a></li>
+</ul>
+{% end %}
+
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>期刊标题</th>
+            <th>发型师</th>
+            <th>创建日期</th>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ lesson.id }}</td>
+            <td>{{ lesson.subject_name }}</td>
+
+            {% if lesson.username is None %}
+            <td></td>
+            {% else %}
+            <td>{{ lesson.username }}</td>
+            {% end %}
+
+            <td>{{ lesson.createtime }}</td>
+            <td>{{ lesson.start_time }}</td>
+            <td>{{ lesson.end_time }}</td>
+            <td>{{ lesson.actived }}</td>
+            <td>
+                <a href="/lessons/edit/{{ lesson.id }}">明细</a>
+                <a href="#">设为过期</a>
+            </td>
+        </tr>
+        {% end %}
+    </tbody>
+</table>
+{% end %}

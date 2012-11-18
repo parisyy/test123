@@ -1,0 +1,128 @@
+{% extends "../layouts/base.html" %}
+
+{% block content %}
+<ul class="breadcrumb">
+    <li><a href="/users">用户管理</a></li>
+    <li class="divider">/</li>
+    <li>编辑用户</li>
+</ul>
+
+<form method="post" class="form-horizontal query well">
+  <!-- 普通用户和发型师共用的基本资料 -->
+  {{ modules.UserEditBasicModule(user) }}
+
+  {% if user.member_type == 0 %}
+    <div class="control-group">
+      <label class="control-label">脸型</label>
+      <div class="controls">
+        <input type="text" id="hair_face" name="hair_face" value="{{ user.hair_face }}" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">发质</label>
+      <div class="controls">
+        <input type="text" id="hair_quality" name="hair_quality" value="{{ user.hair_quality }}" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">发量</label>
+      <div class="controls">
+        <input type="text" id="hair_volume" name="hair_volume" value="{{ user.hair_volume }}" />
+      </div>
+    </div><br />
+  {% elif user.member_type == 1 %}
+    <div class="control-group">
+      <label class="control-label">是否推荐发型师</label>
+      <div class="controls">
+        <select id="recommend" name="recommend">
+          <option></option>
+          {% for k, v in config["recommend"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">所属发廊</label>
+      <div class="controls">
+        <input type="text" id="salon_id" name="salon_id" value="{{ user.salon_id }}" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">手机号码</label>
+      <div class="controls">
+        <input type="text" id="mobile" name="mobile" value="{{ user.mobile }}" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">洗剪吹价格</label>
+      <div class="controls">
+        <select id="price_haircut" name="price_haircut">
+          <option></option>
+          {% for k, v in config["price"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">烫发价格</label>
+      <div class="controls">
+        <select id="price_perm" name="price_perm">
+          <option></option>
+          {% for k, v in config["price"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">染发价格</label>
+      <div class="controls">
+        <select id="price_dye" name="price_dye">
+          <option></option>
+          {% for k, v in config["price"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">护理价格</label>
+      <div class="controls">
+        <select id="price_care" name="price_care">
+          <option></option>
+          {% for k, v in config["price"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div><br />
+  {% end %}
+  <p>
+  <input type="submit" value="确定" class="btn btn-success span2">
+  </p>
+  {{ xsrf_form_html() }}
+</form>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#member_type').val('{{ user.member_type }}');
+    $('#gender').val('{{ user.gender }}');
+    $('#actived').val('{{ user.actived }}');
+    $('#province_id').val('{{ user.province_id }}');
+    $('#city_id').val('{{ user.city_id }}');
+    $('#price_haircut').val('{{ user.price_haircut }}');
+    $('#price_perm').val('{{ user.price_perm }}');
+    $('#price_dye').val('{{ user.price_dye }}');
+    $('#price_care').val('{{ user.price_care }}');
+    $('#recommend').val('{{ user.recommend }}');
+
+    $('.chzn-select').chosen();
+
+    $('body').focus();
+  });
+</script>
+{% end %}

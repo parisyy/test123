@@ -1,0 +1,50 @@
+body,
+label,
+input,
+button,
+select,
+textarea {
+    font-size: 12px;
+    font-family: Verdana, "微软雅黑";
+}
+
+.main-body {
+    margin-left: 5px;
+}
+
+.breadcrumb i {
+    margin-top: 1px;
+    margin-right: 2px;
+}
+
+.breadcrumb a {
+    margin-right: 5px;
+}
+
+.breadcrumb .pull-right {
+    //font-size: 0.9em;
+}
+
+.query .span2,
+.query .span7 {
+    margin-top: 5px;
+    margin-left: 0;
+}
+
+.query .control-group {
+    display: inline-block;
+    margin-right: 100px;
+}
+
+.table-align-left td {
+    text-align: left;
+}
+
+.table-noborder {
+    border: 0;
+}
+
+.table-noborder th,
+.table-noborder td {
+    border: 0;
+}
