@@ -148,7 +148,7 @@ class BaseHandler(tornado.web.RequestHandler):
         '''创建图片'''
         # 数据库记录
         pic_id = self.db.execute("insert into md_theme_picture "
-                "(img_path, img_type, width, height) values('', '', 0, 0)")
+                "(pic_url, img_path, img_type, width, height) values('', '', '', 0, 0)")
 
         # 文件名称
         postfix = fd.filename.split(".").pop()
