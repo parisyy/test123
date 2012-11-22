@@ -43,3 +43,11 @@
     </tbody>
 </table>
 {% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#nav-seasons').addClass('active');
+  });
+</script>
+{% end %}

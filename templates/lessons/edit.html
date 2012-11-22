@@ -83,7 +83,10 @@
 <script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
 <script type="text/javascript" src="{{ static_url("js/uploader_utils.js") }}"></script>
 <script type="text/javascript">
-  $('#member_id').val({{ lesson.member_id }});
+  $(document).ready(function() {
+    $('#nav-lessons').addClass('active');
+    $('#member_id').val({{ lesson.member_id }});
+  });
 </script>
 {% end %}
 

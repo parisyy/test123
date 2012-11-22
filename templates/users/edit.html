@@ -109,6 +109,8 @@
 {% block javascript %}
 <script type="text/javascript">
   $(document).ready(function() {
+    $('#nav-users').addClass('active');
+
     $('#member_type').val('{{ user.member_type }}');
     $('#gender').val('{{ user.gender }}');
     $('#actived').val('{{ user.actived }}');
@@ -121,8 +123,6 @@
     $('#recommend').val('{{ user.recommend }}');
 
     $('.chzn-select').chosen();
-
-    $('body').focus();
   });
 </script>
 {% end %}

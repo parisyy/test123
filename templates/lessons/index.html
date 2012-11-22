@@ -48,3 +48,11 @@
     </tbody>
 </table>
 {% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#nav-lessons').addClass('active');
+  });
+</script>
+{% end %}
