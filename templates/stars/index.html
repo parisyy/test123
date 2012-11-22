@@ -40,13 +40,19 @@
             <td>{{ entry.twitter_num }} / {{ entry.emotion_num }}</td>
             <td>
                 <a onclick="unrecommend({{ entry.id }})" href="javascript: void(0)">取消推荐</a>
+                {#
                 <a href="/stars/recommend_pics/{{ entry.id }}">图片推荐</a>
+                #}
+                <a href="#">图片推荐</a>
             </td>
         </tr>
         {% end %}
     </tbody>
 </table>
 
+<div id="dialog-confirm" title="警告" style="display: none">
+    你确定要取消推荐吗？
+</div>
 {% end %}
 
 {% block javascript %}
@@ -57,19 +63,33 @@
   }
 
   function unrecommend(id) {
-    $.ajax({
-      url: '/stars/delete/' + id + '?_xsrf=' + getCookie('_xsrf'),
-      type: 'DELETE',
-      success: function(data) {
-        response = JSON.parse(data);
-        console.log(data);
-        if (response['code'] == 0) {
-          window.location.href = '/stars';
-        } else {
-          alert(response['error']);
-        }
-      }
+    $('#dialog-confirm').dialog({
+      autoopen: false,
+      model: true,
+      buttons: {
+        '确定': function() {
+          $.ajax({
+            url: '/stars/delete/' + id + '?_xsrf=' + getCookie('_xsrf'),
+            type: 'DELETE',
+            success: function(data) {
+              response = JSON.parse(data);
+              console.log(data);
+              if (response['code'] == 0) {
+                window.location.href = '/stars';
+              } else {
+                alert(response['error']);
+              }
+            }
+          });
+
+          $(this).dialog('close');
+        },
+        '取消': function() {
+          $(this).dialog('close');
+        },
+      },
     });
+
   }
 
   $(document).ready(function() {
@@ -77,6 +97,11 @@
 
     set_query_form_values();
     $('.chzn-select').chosen();
+
+    $('#link-disabled').click(function() {
+
+    });
+
   });
 </script>
 {% end %}
