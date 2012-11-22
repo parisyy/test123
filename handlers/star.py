@@ -113,7 +113,7 @@ class StarHandler(StarBaseHandler):
 
 class StarRecommendHandler(BaseHandler):
     def get(self, id):
-        pics = self.db.query("select * from md_talent m, md_talent_picture t, md_theme_picture p "
-                "where t.tid = p.id and m.id = t.talent_id")
-        print pics
+        pics = self.db.query("select t.id, t.member_id, t.actived, p.tid, tp.* "
+                "from md_talent t, md_talent_picture p, md_theme_picture tp "
+                "where t.id = p.talent_id and p.tid = tp.id and t.member_id = %s", id)
         self.render("stars/recommend.html", pics=pics)
