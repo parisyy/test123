@@ -61,19 +61,18 @@
 
 {% block javascript %}
 <script type="text/javascript">
-function set_query_form_values() {
-  $('.chzn-select').chosen();
-
-  $('#regtime_from').datepicker({ dateFormat: 'yy-mm-dd', inline: true });
-  $('#regtime_to').datepicker({ dateFormat: 'yy-mm-dd' });
-  $('#lastlogintime_from').datepicker({ dateFormat: 'yy-mm-dd' });
-  $('#lastlogintime_to').datepicker({ dateFormat: 'yy-mm-dd' });
-}
-
 $(document).ready(function() {
     $('#nav-users').addClass('active');
 
     set_query_form_values();
+
+    $('.chzn-select').chosen();
+
+    $('#regtime_from').datepicker({ dateFormat: 'yy-mm-dd', inline: true });
+    $('#regtime_to').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#lastlogintime_from').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#lastlogintime_to').datepicker({ dateFormat: 'yy-mm-dd' });
+
 
     /*
     $('#link-disabled').click(function() {
