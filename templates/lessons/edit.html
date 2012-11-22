@@ -47,15 +47,13 @@
   <div class="control-group">
     <div class="controls">
       <ul id="thumbnails" class="thumbnails">
-        {% for pic_url in pic_urls %}
-        <li class="span3">
-            <div class="thumbnail">
-              <img src="/{{ pic_url }}" width="85%" height="100" />
-            </div>
-        </li>
-        {% end %}
+        {{ modules.PictureListModule(pics) }}
       </ul>
     </div>
+  </div>
+  <div class="control-group">
+      <div class="controls" id="pic_ids">
+      </div>
   </div>
   <input type="submit" value="修改" class="btn btn-success span2">
   <input type="button" value="上传图片" id="upload-btn" class="btn btn-warning span2" />
@@ -81,21 +79,14 @@
 {% end %}
 
 {% block javascript %}
-<script type="text/javascript" src="{{ static_url("js/chosen.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/json2.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader_utils.js") }}"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#start_date').datepicker({
-            dateFormat: 'yy-mm-dd',
-        });
-        $('#end_date').datepicker({
-            dateFormat: 'yy-mm-dd',
-        });
-        $('#member_id').val({{ lesson.member_id }});
-        $('.chzn-select').chosen();
-    });
+  $('#member_id').val({{ lesson.member_id }});
 </script>
 {% end %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ static_url("css/chosen.css") }}" type="text/css" media="screen" charset="utf-8">
+<link rel="stylesheet" href="{{ static_url("css/enhanced.css") }}" type="text/css" media="screen" charset="utf-8">
 {% end %}

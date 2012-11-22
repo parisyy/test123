@@ -17,7 +17,30 @@ function getCookie(name) {
     return r ? r[1] : undefined;
 }
 
-$(document).ready(function() {
+function upload_file(element, callback) {
+    new AjaxUpload(element, {
+        action: '/uploader',
+        data: {
+            _xsrf: getCookie('_xsrf'),
+        },
+        onComplete: function(file, response) {
+            response = JSON.parse(response);
+            if (response["code"] == 0) {
+                callback(file, response);
+            } else {
+                alert(response["error"] + '\n\n上传图片失败！');
+            }
+        },
+    });
+}
+
+function upload_callback(file, response) {
+    create_thumbnail('http://' + location.host + '/' + response["url"]);
+    $('#pic_ids').append('<input type="hidden" name="pics" value="'
+        + response["id"] + '|' + response["name"] + '">');
+}
+
+function set_default_values() {
     $('#start_date').datepicker({
         dateFormat: 'yy-mm-dd',
     });
@@ -27,21 +50,9 @@ $(document).ready(function() {
     });
 
     $('.chzn-select').chosen();
+}
 
-    new AjaxUpload('upload-btn', {
-        action: '/uploader',
-        data: {
-            _xsrf: getCookie('_xsrf'),
-        },
-        onComplete: function(file, response) {
-            response = JSON.parse(response);
-            console.log(response["id"]);
-            create_thumbnail('http://' + location.host + '/' + response["url"]);
-            //$('#pic_ids').append('<input type="hidden" name="pic_ids" value="' + response["id"] + '">');
-            //$('#pic_ids').append('<input type="hidden" name="pic_urls" value="' + response["url"] + '">');
-
-            $('#pic_ids').append('<input type="hidden" name="pics" value="'
-                + response["id"] + '|' + response["name"] + '">');
-        },
-    });
+$(document).ready(function() {
+    set_default_values();
+    upload_file('upload-btn', upload_callback);
 });

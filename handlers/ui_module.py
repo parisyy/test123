@@ -1,0 +1,35 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import tornado.web
+
+
+class UserQueryModule(tornado.web.UIModule):
+    def render(self):
+        query_params = dict(
+            member_type=self.handler.get_argument("member_type", None),
+            actived=self.handler.get_argument("actived", None),
+            province_id=self.handler.get_argument("province_id", None),
+            city_id=self.handler.get_argument("city_id", None),
+            username=self.handler.get_argument("username", ""),
+            email=self.handler.get_argument("email", ""),
+            regtime_from=self.handler.get_argument("regtime_from", ""),
+            regtime_to=self.handler.get_argument("regtime_to", ""),
+            lastlogintime_from=self.handler.get_argument("lastlogintime_from", ""),
+            lastlogintime_to=self.handler.get_argument("lastlogintime_to", ""),
+        )
+        params = dict(
+            provinces=self.handler.fetch_provinces(),
+            cities=self.handler.fetch_cities(),
+            query_params=query_params,
+        )
+        return self.render_string("modules/user_query/_query.html", **params)
+
+
+class PictureListModule(tornado.web.UIModule):
+    def render(self, pics):
+        pics = [pic for pic in pics if pic.img_path is not None and pic.pic_url is not None]
+        params = dict(
+            pics=pics,
+        )
+        return self.render_string("modules/pic_list/_list.html", **params)

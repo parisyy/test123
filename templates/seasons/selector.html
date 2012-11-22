@@ -1,0 +1,99 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/seasons">当季主题</a></li>
+  <li class="divider">/</li>
+  <li>图片选择</li>
+</ul>
+{% end %}
+
+{% block content %}
+<form method="post" class="well" id="query">
+  <div class="control-group">
+    <label class="control-label">图片ID</label>
+    <div class="controls">
+      <input type="text" name="pic_id" id="pic_id" class="input-xxlarge" />
+    </div>
+  </div>
+  {#
+  <div class="control-group">
+    <label class="control-label">用户标识</label>
+    <div class="controls">
+      <select name="member_id" id="member_id" class="chzn-select input-xxlarge">
+        <option value="">&nbsp;</option>
+        {% for member in members %}
+        <option value="{{ member.id }}">{{ member.id }} {{ member.username}} {{ member.email}}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  #}
+  <p><input type="button" id="btn-query" value="确定" class="btn btn-success span2"></p>
+</form>
+
+<div class="well">
+  图片预览<hr />
+  <ul id="preview" class="thumbnails">
+  </ul>
+  <p><input type="submit" id="submit" value="提交" class="btn btn-success span2"></p>
+
+  <div id="thumbnail-snippet" style="display:none">
+    <li class="span3">
+      <div class="thumbnail">
+        <a href="" target="_blank">
+          <img src="" width="100%" height="120" />
+        </a>
+      </div>
+    </li>
+  </div>
+</div>
+
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+  }
+
+  var pic_ids = [];
+
+  $(document).ready(function() {
+    $('.chzn-select').chosen();
+    window.opener.$('#pic_ids').attr('value', '1');
+
+    $('#btn-query').click(function(e) {
+      var formData = {
+        _xsrf: getCookie('_xsrf'),
+        pic_id: $('#pic_id').val(),
+      };
+
+      $.ajax({
+        url: '/selector',
+        type: 'POST',
+        data: formData,
+        success: function(resp) {
+          response = JSON.parse(resp);
+          if (response['code'] == 0) {
+            var url = '/' + response['pics']['img_path'] + '/' + response['pics']['pic_url'];
+            $('#thumbnail-snippet a').attr('href', url);
+            $('#thumbnail-snippet img').attr('src', url);
+            $('#preview').append($('#thumbnail-snippet').html());
+            pic_ids.push(response['pics']['id']);
+          } else {
+            alert('该图片文件不存在！');
+          }
+        }
+      });
+    });
+
+    $('#submit').click(function(e) {
+        window.opener.$('#pic_ids').attr('value', pic_ids.join(','));
+        window.opener.$('#others-preview').append($('#preview').html());
+        window.close();
+    });
+  });
+</script>
+{% end %}

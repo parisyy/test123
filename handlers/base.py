@@ -130,6 +130,10 @@ class BaseHandler(tornado.web.RequestHandler):
         '''读取发型师信息'''
         return self.db.query("select id, username, email from md_member where member_type = 2")
 
+    def fetch_packages(self):
+        '''读取当前有效的发型包列表'''
+        return self.db.query("select id, package_name from md_hairpackage where actived = 1")
+
     def convert_to_timestamp(self, str):
         '''将datetime格式字符串转换为timestamp'''
         date_time = datetime.datetime.strptime(str, "%Y-%m-%d %H:%M:%S")
@@ -181,11 +185,10 @@ class BaseHandler(tornado.web.RequestHandler):
         img_width, img_height = img.size
 
         # 设置数据库
+        dstdir = dstdir.replace('assets', 'static')
         self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
                 "img_type = %s, width = %s, height = %s where id = %s",
                 dstname, dstdir, postfix, img_width, img_height, pic_id)
-
-        dstdir = dstdir.replace('assets', 'static')
         return pic_id, dstname, dstdir + "/" + dstname
 
 

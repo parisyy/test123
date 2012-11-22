@@ -54,9 +54,6 @@ class LessonNewHandler(LessonBaseHandler):
 
         pics = self.get_arguments("pics")
 
-        print self.request
-        print pics
-
         # 创建主题
         # md_diy_subject
         try:
@@ -68,7 +65,6 @@ class LessonNewHandler(LessonBaseHandler):
                     name, member_id, content, 'N', createtime, start_date, end_date)
             for pic in pics:
                 pic_id, pic_url = pic.split("|")
-                print pic_id, pic_url
                 self.db.execute("insert into md_diy_subject_content(subject_id, theme_pic_id, "
                         "thme_pic_url, sort, actived) values(%s, %s, %s, %s, %s)",
                         subject_id, pic_id, pic_url, 0, 'N')
@@ -94,16 +90,17 @@ class LessonNewHandler(LessonBaseHandler):
 class LessonEditHandler(LessonBaseHandler):
     def get(self, id):
         lesson = self.fetch_lesson(id)
-        pics = self.fetch_all_pics(id)
         if lesson is None:
             raise tornado.web.HTTPError(404)
 
-        pic_urls = [(e.img_path + "/" + e.pic_url).replace("assets", "static") for e in pics]
+        pics = self.fetch_all_pics(id)
+        #pic_urls = [(e.img_path + "/" + e.pic_url).replace("assets", "static") for e in pics]
 
         params = dict(
             lesson=lesson,
             stylists=self.fetch_stylists(),
-            pic_urls=pic_urls,
+            #pic_urls=pic_urls,
+            pics=pics,
         )
         self.render("lessons/edit.html", **params)
 
@@ -114,6 +111,9 @@ class LessonEditHandler(LessonBaseHandler):
         start_date = self.get_argument("start_date", "")
         end_date = self.get_argument("end_date", "")
 
+        pics = self.get_arguments("pics")
+
+        lesson = self.fetch_lesson(id)
         stylists = self.fetch_stylists()
 
         try:
@@ -122,12 +122,24 @@ class LessonEditHandler(LessonBaseHandler):
             self.db.execute("update md_diy_subject set subject_name = %s, member_id = %s, content = %s, "
                     "start_time = %s, end_time = %s where id = %s",
                     name, member_id, content, new_start_date, new_end_date, id)
+            for pic in pics:
+                pic_id, pic_url = pic.split("|")
+                self.db.execute("insert into md_diy_subject_content(subject_id, theme_pic_id, "
+                        "thme_pic_url, sort, actived) values(%s, %s, %s, %s, %s)",
+                        lesson.id, pic_id, pic_url, 0, 'N')
             self.redirect("/lessons")
         except Exception, e:
-            lesson = self.fetch_lesson(id)
             lesson.subject_name = name
             lesson.member_id = member_id
             lesson.content = content
             lesson.start_time = start_date
             lesson.end_date = end_date
-            self.render("lessons/edit.html", informer=Informer("error", str(e)), lesson=lesson, stylists=stylists)
+            pics = self.fetch_all_pics(id)
+            #pic_urls = [(e.img_path + "/" + e.pic_url).replace("assets", "static") for e in pics]
+            params = dict(
+                lesson=lesson,
+                informer=Informer("error", str(e)),
+                stylists=stylists,
+                pics=pics,
+            )
+            self.render("lessons/edit.html", **params)

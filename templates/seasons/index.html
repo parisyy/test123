@@ -1,16 +1,18 @@
 {% extends "../layouts/base.html" %}
 
-{% block content %}
+{% block breadcrumb %}
 <ul class="breadcrumb">
     <li><a href="/seasons">当季主题</a></li>
     <li class="divider">/</li>
     <li>主题列表</li>
     <li class="pull-right">
         <i class="icon-pencil"></i>
-        <a href="#">新建主题</a>
+        <a href="/seasons/new">新建主题</a>
     </li>
 </ul>
+{% end %}
 
+{% block content %}
 <table class="table">
     <thead>
         <tr>
@@ -29,11 +31,11 @@
             <td>{{ season.id }}</td>
             <td>{{ season.period_name }}</td>
             <td>{{ season.theme_pic_url }}</td>
-            <td>{{ season.createtime }}</td>
+            <td>{{ season.createtime_str }}</td>
             <td>{{ season.actived }}</td>
             <td>{{ season.package_id }}</td>
             <td>
-                <a href="#">编辑</a>
+              <a href="/seasons/edit/{{ season.id }}">编辑</a>
                 <a href="#">设为无效</a>
             </td>
         </tr>

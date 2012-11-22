@@ -204,12 +204,3 @@ class UserEditBasicModule(tornado.web.UIModule):
             cities=self.handler.fetch_cities(),
         )
         return self.render_string("users/_basic.html", **params)
-
-
-class UserQueryModule(tornado.web.UIModule):
-    def render(self):
-        params = dict(
-            provinces=self.handler.fetch_provinces(),
-            cities=self.handler.fetch_cities(),
-        )
-        return self.render_string("users/_query.html", **params)

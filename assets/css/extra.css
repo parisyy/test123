@@ -3,7 +3,8 @@ label,
 input,
 button,
 select,
-textarea {
+textarea,
+.btn {
     font-size: 12px;
     font-family: Verdana, "微软雅黑";
 }

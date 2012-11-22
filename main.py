@@ -15,12 +15,13 @@ define('port', default=8000, help='run on the given port', type=int)
 define('environment', default='development', help='run on the specific environment')
 
 from handlers.base import BaseApplication
+from handlers.ui_module import UserQueryModule, PictureListModule
 from handlers.home import HomeHandler
-from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule, UserQueryModule
+from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler
-from handlers.season import SeasonHandler
-from handlers.star import StarHandler
+from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
+from handlers.star import StarHandler, StarRecommendHandler
 
 
 class Application(BaseApplication):
@@ -35,6 +36,8 @@ class Application(BaseApplication):
 
             # 星光巨匠
             (r'/stars[\/]*', StarHandler),
+            (r'/stars/delete/([0-9]+)', StarHandler),
+            (r'/stars/recommend_pics/([0-9]+)', StarRecommendHandler),
 
             # DIY课堂
             (r'/lessons[\/]*', LessonHandler),
@@ -44,8 +47,13 @@ class Application(BaseApplication):
             # 图片上传
             (r'/uploader', ImageUploaderHandler),
 
+            # 图片选择
+            (r'/selector', PictureSelectorHandler),
+
             # 当季主题
             (r'/seasons[\/]*', SeasonHandler),
+            (r'/seasons/new', SeasonNewHandler),
+            (r'/seasons/edit/([0-9]+)', SeasonEditHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
@@ -53,6 +61,7 @@ class Application(BaseApplication):
             ui_modules={
                 'UserEditBasicModule': UserEditBasicModule,
                 'UserQueryModule': UserQueryModule,
+                'PictureListModule': PictureListModule,
             },
             autoescape=None,
             cookie_secret='74f51c2f337676d9d6491aaa013624cb3c2226c0',

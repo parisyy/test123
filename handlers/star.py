@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import json
 from handlers.base import BaseHandler
 from ext.informer import BootstrapInformer
 
@@ -94,7 +95,25 @@ class StarHandler(StarBaseHandler):
             entries=entries,
             query_params=query_params,
             config=self.config,
-            informer=BootstrapInformer("success", "共%s条记录" % len(entries), "查询结果：")
+            informer=BootstrapInformer("success", "共 %s 条记录" % len(entries), "查询结果：")
         )
 
         self.render("stars/index.html", **params)
+
+    def delete(self, id):
+        try:
+            self.db.execute("update md_member set recommend = 0 where id = %s", id)
+            self.write(json.dumps({'code': 0}))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': str(e),
+            }))
+
+
+class StarRecommendHandler(BaseHandler):
+    def get(self, id):
+        pics = self.db.query("select * from md_talent m, md_talent_picture t, md_theme_picture p "
+                "where t.tid = p.id and m.id = t.talent_id")
+        print pics
+        self.render("stars/recommend.html", pics=pics)

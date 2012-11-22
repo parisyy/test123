@@ -31,7 +31,7 @@
         {% for entry in entries %}
         <tr>
             <td>{{ entry.id }}</td>
-            <td><a href="/users/show/{{ entry.id }}">{{ entry.username }}</a></td>
+            <td>{{ entry.username }}</td>
             <td>{{ entry.email }}</td>
             <td>{{ config["member_type"].get(entry.member_type, "") }}</td>
             <td>{{ entry.regtime_str }}</td>
@@ -61,28 +61,6 @@
 
 {% block javascript %}
 <script type="text/javascript">
-<!-- 设置查询模块的默认值 -->
-function set_query_form_values() {
-    $('#member_type').val('{{ query_params.get("member_type") }}');
-    $('#actived').val('{{ query_params.get("actived") }}');
-    $('#province_id').val('{{ query_params.get("province_id") }}');
-    $('#city_id').val('{{ query_params.get("city_id") }}');
-    $('#username').val('{{ query_params.get("username") }}');
-    $('#email').val('{{ query_params.get("email") }}');
-    $('#regtime_from').val('{{ query_params.get("regtime_from") }}');
-    $('#regtime_to').val('{{ query_params.get("regtime_to") }}');
-    $('#lastlogintime_from').val('{{ query_params.get("lastlogintime_from") }}');
-    $('#lastlogintime_to').val('{{ query_params.get("lastlogintime_to") }}');
-
-    {% if query_params.get('include_invalid_users') == 'on' %}
-    $('#include_invalid_users').attr('checked', 'checked');
-    {% end %}
-
-    {% if query_params.get('only_inactive_hairstylist') == 'on' %}
-    $('#only_inactive_hairstylist').attr('checked', 'checked');
-    {% end %}
-}
-
 $(document).ready(function() {
     set_query_form_values();
 

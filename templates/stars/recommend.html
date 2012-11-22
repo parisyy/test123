@@ -1,0 +1,56 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/stars">星光巨匠</a></li>
+  <li class="divider">/</li>
+  <li>推荐图片列表</li>
+</ul>
+{% end %}
+
+{% block content %}
+<!-- 我要秀图片列表（最多10张） -->
+<div class="thumbnails">
+  {% set i = 0 %}
+  {% for pic in pics %}
+    {% if pic.img_path is None %}
+      {% set pic["img_path"] = "" %}
+    {% end %}
+    {% if pic.pic_url is None %}
+      {% set pic["pic_url"] = "" %}
+    {% end %}
+    {% if i < 10 %}
+    <li class="span3">
+      <div class="thumbnail">
+        <a href="/{{ pic.img_path + '/' + pic.pic_url }}" target="_blank">
+          <img src="/{{ pic.img_path + '/' + pic.pic_url }}" width="100%" height="120" />
+        </a>
+      </div>
+      <input type="checkbox" onclick="append({{ pic.tid }})">
+    </li>
+    {% end %}
+    {% set i += 1 %}
+  {% end %}
+</div>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  var counter = 0;
+  var pic_ids = [];
+
+  function append(pic_id) {
+    if (counter >= 10) {
+      alert("最多只能选择10张推荐图片");
+      return ;
+    }
+
+    pic_ids[counter] = pic_id;
+    counter += 1;
+  }
+
+  $(document).ready(function() {
+  });
+</script>
+{% end %}
+

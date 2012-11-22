@@ -1,0 +1,133 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/seasons">当季主题</a></li>
+  <li class="divider">/</li>
+  <li>创建主题</li>
+</ul>
+{% end %}
+
+{% block content %}
+<form method="post" class="well">
+  <div class="control-group">
+    <label class="control-label">标题</label>
+    <div class="controls">
+      <input type="text" name="period_name" class="input-xxlarge" maxlength="32" />
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">内容</label>
+    <div class="controls">
+      <textarea name="content" class="input-xxlarge" rows="10" maxlength="140"></textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">开始时间</label>
+    <div class="controls">
+      <input type="text" id="start_time" name="start_time" value="" class="input-large" />
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">结束时间</label>
+    <div class="controls">
+      <input type="text" id="end_time" name="end_time" value="" class="input-large" />
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">关联的发型包</label>
+    <div class="controls">
+      <select name="package_id" class="input-xxlarge chzn-select">
+        <option value="0">&nbsp;</option>
+        {% for package in packages %}
+        <option value="{{ package.id }}">{{ package.package_name }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+
+  <!-- 主题图片预览模块 -->
+  <div class="control-group" id="preview" style="display:none">
+    <label class="control-label">主题图片</label>
+    <div class="controls">
+      <ul class="thumbnails">
+        <li class="span10">
+        <a href=""><img src="" width="" height="" alt="主题图片"></img></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 其它图片预览模块 -->
+  <div class="control-group">
+    <label class="control-label">其它图片</label>
+    <div class="controls">
+      <ul class="thumbnails" id="others-preview">
+        {% for pic in pics %}
+        <li class="span3">
+            <div class="thumbnail">
+              <a href="/{{ pic.img_path + '/' + pic.pic_url }}" target="_blank">
+                <img src="/{{ pic.img_path + '/' + pic.pic_url }}" width="100%" height="120" />
+              </a>
+            </div>
+        </li>
+        {% end %}
+      </ul>
+    </div>
+  </div>
+
+  <input type="hidden" id="theme_pic_id" name="theme_pic_id" value="" />
+  <input type="hidden" id="theme_pic_url" name="theme_pic_url" value="" />
+  <input type="hidden" id="pic_ids" name="pic_ids" value="" />
+
+  <p>
+    <input type="button" id="upload-period-pic" value="上传主题图片" class="btn btn-danger span2" />
+    <input type="button" id="select-pics" value="图片选择" class="btn btn-warning span2" />
+    <input type="submit" value="创建主题" class="btn btn-success span2" />
+  </p>
+
+  {{ xsrf_form_html() }}
+</form>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript" src="{{ static_url("js/json2.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
+<script type="text/javascript">
+  function set_default_values() {
+    $('#start_time').datepicker({
+      dateFormat: 'yy-mm-dd',
+    });
+    $('#end_time').datepicker({
+      dateFormat: 'yy-mm-dd',
+    });
+    $('.chzn-select').chosen();
+  }
+
+  function uploader_callback(file, response) {
+    // 清空原有的预览图
+    // 设置并显示预览模块
+    $('#preview a').attr('href', '/' + response['url']);
+    $('#preview img').attr('src', '/' + response['url']);
+    $('#preview').show();
+
+    // 设置需要提交的表单
+    $('#theme_pic_id').attr('value', response['id']);
+    $('#theme_pic_url').attr('value', response['name']);
+  }
+
+  $(document).ready(function() {
+    set_default_values();
+    upload_file('upload-period-pic', uploader_callback);
+
+    $('#select-pics').click(function() {
+        window.open('/selector');
+    });
+  });
+</script>
+{% end %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ static_url("css/enhanced.css") }}" type="text/css" media="screen" charset="utf-8">
+{% end %}
