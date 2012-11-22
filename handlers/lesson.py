@@ -12,7 +12,8 @@ class LessonBaseHandler(BaseHandler):
     def all_lessons(self):
         return self.db.query("select d.id, subject_name, username, from_unixtime(createtime) as createtime, "
                 "date(from_unixtime(start_time)) as start_time, date(from_unixtime(end_time)) as end_time, "
-                "d.actived from md_diy_subject d left join md_member m on d.member_id = m.id")
+                "d.actived from md_diy_subject d left join md_member m on d.member_id = m.id "
+                "order by createtime desc")
 
     def fetch_lesson(self, id):
         return self.db.get("select d.id, subject_name, username, content, member_id, "
