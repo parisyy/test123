@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import datetime
 import tornado.web
-from base import BaseHandler, none_to_empty_str, Validator
+from base import BaseHandler, none_to_empty_str
 from ext.informer import BootstrapInformer
 
 
@@ -73,8 +74,8 @@ class UserBaseHandler(BaseHandler):
             params.append(args["city_id"])
 
         if args["username"]:
-            query.append("username = %s")
-            params.append(args["username"])
+            query.append("username like %s")
+            params.append('%' + args["username"] + '%')
 
         if args["email"]:
             query.append("email = %s")
@@ -106,12 +107,6 @@ class UserBaseHandler(BaseHandler):
 
         return self.db.query(sql, *params)
 
-    def validate_user(self, **args):
-        val = Validator()
-        errors = []
-        if not val.test_email(args.get("email")):
-            errors.append("邮件地址：非法的邮件格式")
-
 
 class UserHandler(UserBaseHandler):
     def get(self):
@@ -123,15 +118,17 @@ class UserHandler(UserBaseHandler):
             username=self.get_argument("username", ""),
             email=self.get_argument("email", ""),
             regtime_from=self.get_argument("regtime_from", ""),
-            regtime_to=self.get_argument("regtime_to", ""),
+            regtime_to=self.get_argument("regtime_to", str(datetime.date.today())),
             lastlogintime_from=self.get_argument("lastlogintime_from", ""),
-            lastlogintime_to=self.get_argument("lastlogintime_to", ""),
+            lastlogintime_to=self.get_argument("lastlogintime_to", str(datetime.date.today())),
         )
 
         try:
             entries = self.query_users(**query_params)
-        except:
+        except Exception, e:
+            print e
             self.redirect("/users")
+            return
 
         params = dict(
             provinces=self.fetch_provinces(),
@@ -160,7 +157,7 @@ class UserEditHandler(UserBaseHandler):
     def post(self, id):
         args = dict(
             # basic info
-            member_type=self.get_argument("member_type", None),
+            username=self.get_argument("username", None),
             actived=self.get_argument("actived", None),
             email=self.get_argument("email", None),
             gender=self.get_argument("gender", None),
@@ -186,7 +183,6 @@ class UserEditHandler(UserBaseHandler):
 
         user = self.fetch_user(id)
         try:
-            #self.validate_user(**args)
             self.update_user(id, **args)
         except Exception, e:
             informer = BootstrapInformer('error', e)

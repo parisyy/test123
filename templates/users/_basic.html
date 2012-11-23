@@ -7,24 +7,19 @@
 <div class="control-group">
   <label class="control-label">用户名称</label>
   <div class="controls">
-    <input type="text" value="{{ user.username }}" disabled="disabled" />
+    <input type="text" name="username" value="{{ user.username }}" />
   </div>
 </div>
 <div class="control-group">
   <label class="control-label">用户类型</label>
   <div class="controls">
-    <select id="member_type" name="member_type" class="">
-      <option></option>
-      {% for k, v in config["member_type"].items() %}
-      <option value="{{ k }}">{{ v }}</option>
-      {% end %}
-    </select>
+    <input type="text" value="{{ config["member_type"].get(user.member_type) }}" disabled="disabled" />
   </div>
 </div>
 <div class="control-group">
   <label class="control-label">用户状态</label>
   <div class="controls">
-    <select id="actived" name="actived" class="">
+    <select id="actived" name="actived">
       <option></option>
       {% for k, v in config["actived"].items() %}
       <option value="{{ k }}">{{ v }}</option>
