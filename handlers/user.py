@@ -8,17 +8,6 @@ from ext.informer import BootstrapInformer
 
 
 class UserBaseHandler(BaseHandler):
-    # 分页（Pagination）需要考虑的几个问题：
-    # <limit m, n>方式的分页在大数据集上的表现不好，基本可以排除；
-    # 推荐采用的方式为<where id > 0 limit 10>，即按步长递增ID，通过传入不同的ID实现分页
-    # 这个方法仍然存在问题：
-    #   ID可能并不是有序的（比如，频繁删除并新增数据的表，可能出现后面的数据使用较小ID的情况）
-    #   数据需要按照其它字段排序，然后按照这个排序结果分页，此时，ID几乎不可能是有序的
-    # 因此，推荐方法的实质应该是：根据排序的键值进行分页，而非根据ID分页
-    # 在这个排序的键值上建立索引（多键值则建立复合索引）
-    # 即：需要在SQL的where子句里填充比较操作，并且在order by子句里填充排序操作
-    # key = [{'id': (0, 'asc')}, {'regtime': (0, 'desc')}]
-
     def fetch_user(self, uid):
         user = self.db.get("select *, from_unixtime(regtime) as regtime_str, "
                 "from_unixtime(last_modifytime) as last_modifytime_str, "
@@ -45,15 +34,7 @@ class UserBaseHandler(BaseHandler):
             params.append(uid)
             self.db.execute(tmpl, *params)
 
-    def query_users(self, **args):
-        sql = '''
-            select m.id, m.username, m.email, m.member_type, m.regtime,
-                m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
-                from_unixtime(m.regtime) as regtime_str,
-                from_unixtime(s.lastlogintime) as lastlogintime_str
-            from md_member m left outer join md_member_statistics s on m.id = s.member_id
-        '''
-
+    def query_users_where_clause(self, **args):
         query = []  # 保存SQL查询条件
         params = []  # 保存SQL查询参数
 
@@ -103,7 +84,41 @@ class UserBaseHandler(BaseHandler):
         else:
             query_str = ""
 
+        return query_str, params
+
+    def query_users_size(self, **args):
+        sql = '''
+            select count(distinct m.id) as cnt
+            from md_member m left outer join md_member_statistics s on m.id = s.member_id
+        '''
+        query_str, params = self.query_users_where_clause(**args)
         sql = sql + query_str
+
+        entry = self.db.get(sql, *params)
+        if entry is None:
+            return 0
+        else:
+            return entry.cnt
+
+    def query_users(self, **args):
+        sql = '''
+            select m.id, m.username, m.email, m.member_type, m.regtime,
+                m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
+                from_unixtime(m.regtime) as regtime_str,
+                from_unixtime(s.lastlogintime) as lastlogintime_str
+            from md_member m left outer join md_member_statistics s on m.id = s.member_id
+        '''
+
+        query_str, params = self.query_users_where_clause(**args)
+        sql = sql + query_str
+
+        # 分页
+        page = int(args["page"])
+
+        page_size = 50  # 每一页的记录条数
+        start_pos = (page - 1) * page_size  # 起始位置
+
+        sql += " limit %s, %s" % (start_pos, page_size)
 
         return self.db.query(sql, *params)
 
@@ -121,10 +136,13 @@ class UserHandler(UserBaseHandler):
             regtime_to=self.get_argument("regtime_to", str(datetime.date.today())),
             lastlogintime_from=self.get_argument("lastlogintime_from", ""),
             lastlogintime_to=self.get_argument("lastlogintime_to", str(datetime.date.today())),
+            page=self.get_argument("page", 1)
         )
 
         try:
             entries = self.query_users(**query_params)
+            count = self.query_users_size(**query_params)
+            page_count = count / 50 + 1;
         except Exception, e:
             print e
             self.redirect("/users")
@@ -135,7 +153,8 @@ class UserHandler(UserBaseHandler):
             entries=entries,
             query_params=query_params,
             config=self.config,
-            informer=BootstrapInformer("success", "共 %s 条记录" % len(entries), "查询结果：")
+            informer=BootstrapInformer("success", "共 %s 条记录" % count, "查询结果："),
+            page_count=page_count,
         )
         self.render("users/index.html", **params)
 

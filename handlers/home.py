@@ -19,8 +19,3 @@ class HomeHandler(BaseHandler):
             self.redirect("/users")
         else:
             self.redirect("/login")
-
-    def fetch_default_users(self):
-        '''获取【用户管理】页默认显示的用户列表'''
-        return []
-        pass

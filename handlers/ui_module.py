@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import re
+import urlparse
 import tornado.web
 
 
@@ -33,3 +35,21 @@ class PictureListModule(tornado.web.UIModule):
             pics=pics,
         )
         return self.render_string("modules/pic_list/_list.html", **params)
+
+
+class PaginationModule(tornado.web.UIModule):
+    def uri_without_keyword(self, key):
+        parsed = urlparse.urlparse(self.handler.request.uri)
+        query = [e for e in parsed.query.split('&') if e != "" and not re.match("%s=" % key, e)]
+        return parsed.path + '?' + '&'.join(query)
+
+    def render(self, page_count):
+        base_url = self.uri_without_keyword("page")
+        page = self.handler.get_argument("page", 1)
+
+        params = dict(
+            base_url=base_url,
+            page=page,
+            page_count=page_count,
+        )
+        return self.render_string("modules/_pagination.html", **params)

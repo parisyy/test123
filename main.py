@@ -15,7 +15,7 @@ define('port', default=8000, help='run on the given port', type=int)
 define('environment', default='development', help='run on the specific environment')
 
 from handlers.base import BaseApplication
-from handlers.ui_module import UserQueryModule, PictureListModule
+from handlers.ui_module import UserQueryModule, PictureListModule, PaginationModule
 from handlers.login import LoginHandler, LogoutHandler
 from handlers.home import HomeHandler
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
@@ -67,6 +67,7 @@ class Application(BaseApplication):
                 'UserEditBasicModule': UserEditBasicModule,
                 'UserQueryModule': UserQueryModule,
                 'PictureListModule': PictureListModule,
+                'PaginationModule': PaginationModule,
             },
             autoescape=None,
             cookie_secret='74f51c2f337676d9d6491aaa013624cb3c2226c0',

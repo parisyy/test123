@@ -1,0 +1,45 @@
+<!-- 分页模块 -->
+{% set step = 10 %}
+{% set start_pos = int((int(page) - 1) / step) * step + 1 %}
+{% set end_pos = start_pos + step %}
+{% if end_pos > int(page_count) %}
+	{% set end_pos = int(page_count) + 1 %}
+{% end %}
+
+{% if base_url.find('?') == -1 %}
+	{% set page_url = base_url + '?page=' %}
+{% else %}
+	{% set page_url = base_url + 'page=' %}
+{% end %}
+
+<div class="pagination">
+	<ul>
+		{% if int(page) > 1 %}
+			{% if base_url[-1] == '?' %}
+			<li><a href="{{ base_url[:-1] }}">&lt;&lt;</a></li>
+			{% else %}
+			<li><a href="{{ base_url }}">&lt;&lt;</a></li>
+			{% end %}
+			<li><a href="{{ page_url + str(int(page) - 1) }}">Prev</a></li>
+		{% else %}
+			<li class="disabled"><a href="javascript: void(0)">&lt;&lt;</a></li>
+			<li class="disabled"><a href="javascript: void(0)">Prev</a></li>
+		{% end %}
+
+		{% for i in xrange(start_pos, end_pos) %}
+			{% if str(i) == str(page) %}
+				<li class="active"><a href="javascript: void(0)">{{ i }}</a></li>
+			{% else %}
+				<li><a href="{{ page_url + str(i) }}">{{ i }}</a></li>
+			{% end %}
+		{% end %}
+
+		{% if int(page) >= int(page_count) %}
+			<li class="disabled"><a href="javascript: void(0)">Next</a></li>
+			<li class="disabled"><a href="javascript: void(0)">&gt;&gt;</a></li>
+		{% else %}
+			<li><a href="{{ page_url + str(int(page) + 1) }}">Next</a></li>
+			<li><a href="{{ page_url + str(page_count) }}">&gt;&gt;</a></li>
+		{% end %}
+	</ul>
+</div>
