@@ -16,6 +16,7 @@ define('environment', default='development', help='run on the specific environme
 
 from handlers.base import BaseApplication
 from handlers.ui_module import UserQueryModule, PictureListModule
+from handlers.login import LoginHandler, LogoutHandler
 from handlers.home import HomeHandler
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
@@ -28,6 +29,10 @@ class Application(BaseApplication):
     def __init__(self):
         handlers = [
             (r'/', HomeHandler),
+
+            # 登录
+            (r'/login', LoginHandler),
+            (r'/logout', LogoutHandler),
 
             # 用户管理
             (r'/users[\/]*', UserHandler),

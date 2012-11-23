@@ -15,7 +15,10 @@ class HomeHandler(BaseHandler):
         entries = self.fetch_default_users()
         self.render("index.html", entries=entries)
         '''
-        self.redirect("/users")
+        if self.get_current_user():
+            self.redirect("/users")
+        else:
+            self.redirect("/login")
 
     def fetch_default_users(self):
         '''获取【用户管理】页默认显示的用户列表'''

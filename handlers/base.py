@@ -118,6 +118,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def db(self):
         return self.application.db
 
+    def get_current_user(self):
+        return self.get_secure_cookie("username")
+
     def fetch_provinces(self):
         '''读取全部省份信息'''
         return self.db.query("select id, region_name from md_region where level = 1")
