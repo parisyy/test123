@@ -24,7 +24,7 @@ class ImageUploaderHandler(BaseHandler):
                 except Exception, e:
                     self.write(json.dumps({
                         'code': -1,
-                        'error': str(e),
+                        'error': unicode(e),
                     }))
 
     def delete(self):
@@ -43,5 +43,5 @@ class ImageUploaderHandler(BaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': str(e),
+                'error': unicode(e),
             }))

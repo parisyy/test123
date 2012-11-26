@@ -6,12 +6,22 @@ import time
 import datetime
 from handlers.base import BaseHandler
 from ext.informer import BootstrapInformer
+from ext.pagination import Pagination
 
 
 class SeasonBaseHandler(BaseHandler):
-    def fetch_all_seasons(self):
-        return self.db.query("select *, date(from_unixtime(createtime)) as createtime_str "
-                "from md_season_period order by createtime desc")
+    def fetch_all_seasons(self, page):
+        sql = '''select *, date(from_unixtime(createtime)) as createtime_str
+                from md_season_period order by createtime desc'''
+        sql = Pagination.add_limit_clause(sql, page)
+        return self.db.query(sql)
+
+    def fetch_all_seasons_size(self):
+        entry = self.db.get("select count(*) as cnt from md_season_period")
+        if entry is None:
+            return 0
+        else:
+            return entry.cnt
 
     def fetch_season(self, id):
         return self.db.get("select *, date(from_unixtime(start_time)) as start_time_str, "
@@ -28,9 +38,17 @@ class SeasonBaseHandler(BaseHandler):
 
 class SeasonHandler(SeasonBaseHandler):
     def get(self):
-        seasons = self.fetch_all_seasons()
-        informer = BootstrapInformer("success", "共 %s 条记录" % len(seasons), "查询结果：")
-        self.render("seasons/index.html", seasons=seasons, informer=informer)
+        page = self.get_argument("page", 1)
+        seasons = self.fetch_all_seasons(page)
+        count = self.fetch_all_seasons_size()
+        page_count = Pagination.page_count(count)
+
+        params = dict(
+            seasons=seasons,
+            informer=BootstrapInformer("success", "共 %s 条记录" % len(seasons), "查询结果："),
+            page_count=page_count,
+        )
+        self.render("seasons/index.html", **params)
 
 
 class SeasonNewHandler(SeasonBaseHandler):

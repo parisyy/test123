@@ -5,9 +5,42 @@ import datetime
 import tornado.web
 from base import BaseHandler, none_to_empty_str
 from ext.informer import BootstrapInformer
+from ext.pagination import Pagination
 
 
 class UserBaseHandler(BaseHandler):
+    config = {
+        'member_type': {
+            0: '普通用户',
+            1: '发型师',
+        },
+        'actived': {
+            0: '未激活',
+            1: '激活',
+            2: '已禁用',
+            3: '用户未通过审核（仅发型师）',
+            4: '等待审核(仅发型师)',
+            5: '已通过认证（仅发型师）',
+            6: '申请修改资料（仅发型师）',
+            7: '小号',
+        },
+        'gender': {
+            0: '男',
+            1: '女',
+            2: '保密',
+        },
+        'price': {
+            1: '小于100',
+            2: '100~300',
+            3: '300~500',
+            4: '大于500',
+        },
+        'recommend': {
+            0: '否',
+            1: '是',
+        },
+    }
+
     def fetch_user(self, uid):
         user = self.db.get("select *, from_unixtime(regtime) as regtime_str, "
                 "from_unixtime(last_modifytime) as last_modifytime_str, "
@@ -108,18 +141,9 @@ class UserBaseHandler(BaseHandler):
                 from_unixtime(s.lastlogintime) as lastlogintime_str
             from md_member m left outer join md_member_statistics s on m.id = s.member_id
         '''
-
         query_str, params = self.query_users_where_clause(**args)
         sql = sql + query_str
-
-        # 分页
-        page = int(args["page"])
-
-        page_size = 50  # 每一页的记录条数
-        start_pos = (page - 1) * page_size  # 起始位置
-
-        sql += " limit %s, %s" % (start_pos, page_size)
-
+        sql = Pagination.add_limit_clause(sql, args["page"])
         return self.db.query(sql, *params)
 
 
@@ -142,7 +166,7 @@ class UserHandler(UserBaseHandler):
         try:
             entries = self.query_users(**query_params)
             count = self.query_users_size(**query_params)
-            page_count = count / 50 + 1;
+            page_count = Pagination.page_count(count)
         except Exception, e:
             print e
             self.redirect("/users")

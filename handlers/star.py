@@ -3,19 +3,13 @@
 
 import json
 from handlers.base import BaseHandler
+from handlers.user import UserBaseHandler
 from ext.informer import BootstrapInformer
+from ext.pagination import Pagination
 
 
-class StarBaseHandler(BaseHandler):
-    def query_users(self, **args):
-        sql = '''
-            select m.id, m.username, m.email, m.member_type, m.regtime,
-                m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
-                from_unixtime(m.regtime) as regtime_str,
-                from_unixtime(s.lastlogintime) as lastlogintime_str
-            from md_member m left outer join md_member_statistics s on m.id = s.member_id
-        '''
-
+class StarBaseHandler(UserBaseHandler):
+    def query_users_where_clause(self, **args):
         query = ["recommend = 1"]  # 保存SQL查询条件
         params = []  # 保存SQL查询参数
 
@@ -36,8 +30,8 @@ class StarBaseHandler(BaseHandler):
             params.append(args["city_id"])
 
         if args["username"]:
-            query.append("username = %s")
-            params.append(args["username"])
+            query.append("username like %s")
+            params.append('%' + args["username"] + '%')
 
         if args["email"]:
             query.append("email = %s")
@@ -65,9 +59,7 @@ class StarBaseHandler(BaseHandler):
         else:
             query_str = ""
 
-        sql = sql + query_str
-
-        return self.db.query(sql, *params)
+        return query_str, params
 
 
 class StarHandler(StarBaseHandler):
@@ -83,19 +75,25 @@ class StarHandler(StarBaseHandler):
             regtime_to=self.get_argument("regtime_to", ""),
             lastlogintime_from=self.get_argument("lastlogintime_from", ""),
             lastlogintime_to=self.get_argument("lastlogintime_to", ""),
+            page=self.get_argument("page", 1)
         )
 
         try:
             entries = self.query_users(**query_params)
-        except:
-            self.redirect("/users")
+            count = self.query_users_size(**query_params)
+            page_count = Pagination.page_count(count)
+        except Exception, e:
+            print e
+            self.redirect("/stars")
+            return
 
         params = dict(
             provinces=self.fetch_provinces(),
             entries=entries,
             query_params=query_params,
             config=self.config,
-            informer=BootstrapInformer("success", "共 %s 条记录" % len(entries), "查询结果：")
+            informer=BootstrapInformer("success", "共 %s 条记录" % count, "查询结果："),
+            page_count=page_count,
         )
 
         self.render("stars/index.html", **params)

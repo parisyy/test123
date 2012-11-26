@@ -9,7 +9,7 @@
 {% if base_url.find('?') == -1 %}
 	{% set page_url = base_url + '?page=' %}
 {% else %}
-	{% set page_url = base_url + 'page=' %}
+	{% set page_url = base_url + '&page=' %}
 {% end %}
 
 <div class="pagination">

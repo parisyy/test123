@@ -3,7 +3,6 @@
 
 import os
 import re
-import sys
 import time
 import base64
 import hashlib
@@ -14,31 +13,9 @@ from PIL import Image
 import sqlalchemy
 import tornado.web
 import tornado.database
-from tornado.options import options
 from sqlalchemy.orm import sessionmaker
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from config.parser import TornadoConfigParser
-
-
-def parse_mysql_config():
-    '''读取MySQL数据库配置'''
-    options.parse_command_line()
-
-    parser = TornadoConfigParser()
-    db_host = parser.get(options.environment, 'host')
-    db_database = parser.get(options.environment, 'database')
-    db_user = parser.get(options.environment, 'user')
-    db_password = parser.get(options.environment, 'password')
-
-    return (db_user, db_password, db_host, db_database)
-
-
-def parse_upload_config():
-    '''读取图片上传功能的配置'''
-    parser = TornadoConfigParser()
-    base_dir = parser.get('upload', 'base_dir')
-    return base_dir
+from ext.parser import parse_mysql_config
 
 
 def none_to_empty_str(obj):
@@ -46,18 +23,6 @@ def none_to_empty_str(obj):
         return ""
     else:
         return obj
-
-
-def without_none(obj):
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            if obj[k] is None:
-                obj[k] = ""
-    elif isinstance(obj, list):
-        for i in xrange(len(obj)):
-            if obj[i] is None:
-                obj[i] = ""
-    return obj
 
 
 class Backend(object):
@@ -78,38 +43,6 @@ class Backend(object):
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    config = {
-        'member_type': {
-            0: '普通用户',
-            1: '发型师',
-        },
-        'actived': {
-            0: '未激活',
-            1: '激活',
-            2: '已禁用',
-            3: '用户未通过审核（仅发型师）',
-            4: '等待审核(仅发型师)',
-            5: '已通过认证（仅发型师）',
-            6: '申请修改资料（仅发型师）',
-            7: '小号',
-        },
-        'gender': {
-            0: '男',
-            1: '女',
-            2: '保密',
-        },
-        'price': {
-            1: '小于100',
-            2: '100~300',
-            3: '300~500',
-            4: '大于500',
-        },
-        'recommend': {
-            0: '否',
-            1: '是',
-        },
-    }
-
     @property
     def backend(self):
         return Backend.instance()

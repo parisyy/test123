@@ -32,13 +32,3 @@ class BootstrapInformer(Informer):
         else:
             tmpl = tmpl % ('', self.heading, self.info)
         return tmpl
-
-
-if __name__ == "__main__":
-    informer = Informer()
-    print informer
-
-    informer2 = BootstrapInformer('info', 'Hello, world!')
-    informer3 = BootstrapInformer('', '')
-    print informer2
-    print informer3
