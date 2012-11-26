@@ -60,34 +60,42 @@ class SeasonNewHandler(SeasonBaseHandler):
         self.render("seasons/new.html", **params)
 
     def post(self):
-        period_name = self.get_argument("period_name")
-        content = self.get_argument("content", "")
-        package_id = self.get_argument("package_id", 0)
-        start_time = self.get_argument("start_time", 0)
-        end_time = self.get_argument("end_time", 0)
-        theme_pic_id = self.get_argument("theme_pic_id", 0)
-        theme_pic_url = self.get_argument("theme_pic_url", "")
-        pic_ids = self.get_argument("pic_ids", "")
+        try:
+            period_name = self.get_argument("period_name", "未知主题名称")
+            content = self.get_argument("content", "")
+            package_id = self.get_argument("package_id", 0)
+            start_time = self.get_argument("start_time", "2012-01-01")
+            end_time = self.get_argument("end_time", "2012-01-01")
+            theme_pic_id = self.get_argument("theme_pic_id", 0)
+            theme_pic_url = self.get_argument("theme_pic_url", "")
+            pic_ids = self.get_argument("pic_ids", "")
 
-        if isinstance(start_time, str) or isinstance(start_time, unicode):
-            start_time = self.convert_date_to_timestamp(start_time)
-        if isinstance(end_time, str) or isinstance(end_time, unicode):
-            end_time = self.convert_date_to_timestamp(end_time)
-        createtime = time.mktime(datetime.datetime.now().timetuple())
+            if isinstance(start_time, str) or isinstance(start_time, unicode):
+                start_time = self.convert_date_to_timestamp(start_time)
+            if isinstance(end_time, str) or isinstance(end_time, unicode):
+                end_time = self.convert_date_to_timestamp(end_time)
+            createtime = time.mktime(datetime.datetime.now().timetuple())
 
-        id = self.db.execute("insert into md_season_period(period_name, content, package_id, "
-                "start_time, end_time, createtime, theme_pic_id, theme_pic_url, actived) "
-                "values(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                period_name, content, package_id, start_time, end_time, createtime,
-                theme_pic_id, theme_pic_url, "N")
+            id = self.db.execute("insert into md_season_period(period_name, content, package_id, "
+                    "start_time, end_time, createtime, theme_pic_id, theme_pic_url, actived) "
+                    "values(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    period_name, content, package_id, start_time, end_time, createtime,
+                    theme_pic_id, theme_pic_url, "N")
 
-        pic_ids = pic_ids.split(",")
-        for pic_id in pic_ids:
-            if pic_id:
-                self.db.execute("insert into md_season_picture(period_id, tid, actived) "
-                        "values(%s, %s, %s)", id, pic_id, 'Y')
+            pic_ids = pic_ids.split(",")
+            for pic_id in pic_ids:
+                if pic_id:
+                    self.db.execute("insert into md_season_picture(period_id, tid, actived) "
+                            "values(%s, %s, %s)", id, pic_id, 'Y')
 
-        self.redirect("/seasons")
+            self.redirect("/seasons")
+        except Exception, e:
+            params = dict(
+                pics=[],
+                packages=self.fetch_packages(),
+                informer=BootstrapInformer("error", e)
+            )
+            self.render("seasons/new.html", **params)
 
 
 class SeasonEditHandler(SeasonBaseHandler):
@@ -142,17 +150,9 @@ class SeasonEditHandler(SeasonBaseHandler):
                 packages=self.fetch_packages(),
                 informer=BootstrapInformer("error", e),
                 pic_url=self.pic_url(season.theme_pic_id),
+                pics=self.fetch_season_pics(id)
             )
             self.render("seasons/edit.html", **params)
-
-    def pic_url(self, pic_id):
-        pic = self.db.get("select * from md_theme_picture where id = %s", pic_id)
-        if pic is not None:
-            pic_url = "/" + pic.img_path + "/" + pic.pic_url + "." + pic.img_type
-            pic_url = pic_url.replace("assets", "static")
-        else:
-            pic_url = None
-        return pic_url
 
 
 class PictureSelectorHandler(SeasonBaseHandler):

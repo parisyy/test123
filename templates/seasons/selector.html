@@ -79,7 +79,8 @@
         success: function(resp) {
           response = JSON.parse(resp);
           if (response['code'] == 0) {
-            var url = '/' + response['pics']['img_path'] + '/' + response['pics']['pic_url'];
+            var url = '/' + response['pics']['img_path'] + '/' + response['pics']['pic_url']
+              + '.' + response['pics']['img_type'];
             $('#thumbnail-snippet a').attr('href', url);
             $('#thumbnail-snippet img').attr('src', url);
             $('#preview').append($('#thumbnail-snippet').html());

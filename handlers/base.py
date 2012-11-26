@@ -65,6 +65,15 @@ class BaseHandler(tornado.web.RequestHandler):
         '''读取当前有效的发型包列表'''
         return self.db.query("select id, package_name from md_hairpackage where actived = 1")
 
+    def pic_url(self, pic_id):
+        '''获取图片的url地址'''
+        pic = self.db.get("select * from md_theme_picture where id = %s", pic_id)
+        if pic is not None:
+            pic_url = "/" + pic.img_path + "/" + pic.pic_url + "." + pic.img_type
+        else:
+            pic_url = None
+        return pic_url
+
     def convert_to_timestamp(self, str):
         '''将datetime格式字符串转换为timestamp'''
         date_time = datetime.datetime.strptime(str, "%Y-%m-%d %H:%M:%S")
