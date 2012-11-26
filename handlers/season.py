@@ -148,7 +148,7 @@ class SeasonEditHandler(SeasonBaseHandler):
     def pic_url(self, pic_id):
         pic = self.db.get("select * from md_theme_picture where id = %s", pic_id)
         if pic is not None:
-            pic_url = "/" + pic.img_path + "/" + pic.pic_url
+            pic_url = "/" + pic.img_path + "/" + pic.pic_url + "." + pic.img_type
             pic_url = pic_url.replace("assets", "static")
         else:
             pic_url = None

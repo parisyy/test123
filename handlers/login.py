@@ -19,15 +19,14 @@ class LoginHandler(BaseHandler):
         password = self.get_argument("password", "")
         next_url = self.get_argument("next_url", "/")
 
-        print username, password, next_url
-
         user = self.db.get("select password from md_admin_member where username = %s", username)
         if user is not None and user.password == hashlib.md5(password).hexdigest():
             self.set_secure_cookie("username", username)
             self.set_secure_cookie("password", password)
         else:
             informer = BootstrapInformer("error", "错误的用户名或密码", "认证失败：")
-            self.render("login/login.html", informer=informer)
+            self.render("login/login.html", informer=informer, next_url=next_url)
+            return
 
         self.redirect(next_url)
 
