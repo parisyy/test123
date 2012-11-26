@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os
 import re
 import time
-import base64
-import hashlib
 import datetime
-import tempfile
-from PIL import Image
 
 import sqlalchemy
 import tornado.web
@@ -79,53 +74,6 @@ class BaseHandler(tornado.web.RequestHandler):
         '''将datetime格式字符串转换为timestamp'''
         date_time = datetime.datetime.strptime(str, "%Y-%m-%d")
         return time.mktime(date_time.timetuple())
-
-    def create_image_file(self, fd):
-        '''创建图片'''
-        # 数据库记录
-        pic_id = self.db.execute("insert into md_theme_picture "
-                "(pic_url, img_path, img_type, width, height) values('', '', '', 0, 0)")
-
-        # 文件名称
-        postfix = fd.filename.split(".").pop()
-        if len(postfix) > 4:
-            postfix = postfix[:4]
-        if not postfix in ["jpg", "jpeg", "png"]:
-            self.db.execute("delete from md_theme_picture where id = %s", pic_id)
-            raise Exception("不支持该文件格式")
-
-        # prefix = md5(base64(pic_id + microsecond))
-        microsecond = datetime.datetime.now().microsecond
-        prefix = hashlib.md5(base64.b64encode(str(pic_id) + str(microsecond))).hexdigest()
-
-        dstname = str(prefix) + "." + postfix
-        
-        # 目录名称
-        # format: theme/2012/11/17/16/30
-        tmp_datetime = datetime.datetime.now()
-        dstdir = "assets/pictures/theme/%s/%s/%s/%s" % (tmp_datetime.year, tmp_datetime.month,
-                tmp_datetime.day, tmp_datetime.hour)
-        if not os.path.exists(dstdir):
-            os.makedirs(dstdir)
-
-        # 创建临时文件
-        tmpf = tempfile.NamedTemporaryFile()
-        tmpf.write(fd['body'])
-        tmpf.seek(0)
-
-        # 保存图片
-        img = Image.open(tmpf.name)
-        tmpf.close()
-        #img.thumbnail((400, 400), resample=1)
-        img.save(dstdir + "/" + dstname)  # 文件保存在pictures目录下
-        img_width, img_height = img.size
-
-        # 设置数据库
-        dstdir = dstdir.replace('assets', 'static')
-        self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
-                "img_type = %s, width = %s, height = %s where id = %s",
-                dstname, dstdir, postfix, img_width, img_height, pic_id)
-        return pic_id, dstname, dstdir + "/" + dstname
 
 
 class BaseApplication(tornado.web.Application):
