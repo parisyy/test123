@@ -73,6 +73,8 @@ class UploaderBaseHandler(BaseHandler):
 
         # 文件名
         filename = self._avatar_path(uid)
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
         img.save(filename)  # 文件保存在pictures目录下
 
         return filename.replace("assets", "static")
