@@ -20,7 +20,7 @@ from handlers.login import LoginHandler, LogoutHandler
 from handlers.home import HomeHandler
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
-from handlers.uploader import ImageUploaderHandler
+from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler
 
@@ -51,6 +51,7 @@ class Application(BaseApplication):
 
             # 图片上传
             (r'/uploader', ImageUploaderHandler),
+            (r'/avatar_uploader', AvatarUploaderHandler),
 
             # 图片选择
             (r'/selector', PictureSelectorHandler),

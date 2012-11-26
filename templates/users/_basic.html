@@ -1,4 +1,11 @@
 <div class="control-group">
+  <label class="control-label">用户头像</label>
+  <div class="controls input-large">
+    <img id="avatar_img" src="{{ avatar_pic }}" width="64" height="64" />
+    <input type="button" id="change_avatar" value="更改" />
+  </div>
+</div><br />
+<div class="control-group">
   <label class="control-label">用户ID</label>
   <div class="controls">
     <input type="text" value="{{ user.id }}" disabled="disabled" />
@@ -70,11 +77,5 @@
   <label class="control-label">个人描述</label>
   <div class="controls">
     <textarea id="sign_text" name="sign_text">{{ user.sign_text }}</textarea>
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label">用户头像ID</label>
-  <div class="controls">
-    <textarea id="avatar_id" name="avatar_id">{{ user.avatar_id }}</textarea>
   </div>
 </div>

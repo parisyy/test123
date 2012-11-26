@@ -107,7 +107,15 @@
 {% end %}
 
 {% block javascript %}
+<script type="text/javascript" src="{{ static_url("js/json2.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
 <script type="text/javascript">
+  function uploader_callback(file, response) {
+    $('#avatar_img').attr('src', '/' + response['url']);
+    window.location.reload();
+  }
+
   $(document).ready(function() {
     $('#nav-users').addClass('active');
 
@@ -123,6 +131,8 @@
     $('#recommend').val('{{ user.recommend }}');
 
     $('.chzn-select').chosen();
+
+    upload_avatar('change_avatar', '{{ user.id }}', uploader_callback);
   });
 </script>
 {% end %}

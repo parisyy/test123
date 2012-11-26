@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
 import datetime
 import tornado.web
 from base import BaseHandler, none_to_empty_str
@@ -44,7 +45,7 @@ class UserBaseHandler(BaseHandler):
     }
 
     def fetch_user(self, uid):
-        user = self.db.get("select *, from_unixtime(regtime) as regtime_str, "
+        user = self.db.get("select m.*, from_unixtime(regtime) as regtime_str, "
                 "from_unixtime(last_modifytime) as last_modifytime_str, "
                 "from_unixtime(s.lastlogintime) as lastlogintime_str "
                 "from md_member m left outer join md_member_statistics s "
@@ -193,9 +194,12 @@ class UserDetailHandler(UserBaseHandler):
 
 class UserEditHandler(UserBaseHandler):
     def get(self, id):
+        avatar_pic = self.get_avatar_pic(id)
+
         params = dict(
             user=self.fetch_user(id),
             config=self.config,
+            avatar_pic=avatar_pic,
         )
         self.render("users/edit.html", **params)
 
@@ -243,5 +247,6 @@ class UserEditBasicModule(tornado.web.UIModule):
             config=self.handler.config,
             provinces=self.handler.fetch_provinces(),
             cities=self.handler.fetch_cities(),
+            avatar_pic=self.handler.get_avatar_pic(user.id),
         )
         return self.render_string("users/_basic.html", **params)

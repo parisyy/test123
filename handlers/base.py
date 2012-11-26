@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import os
 import re
 import time
 import datetime
@@ -73,6 +74,22 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             pic_url = None
         return pic_url
+
+    def _avatar_path(self, id):
+        '''返回用户头像的文件路径，若不存在则返回None'''
+        path = "assets/pictures/avatar"
+        id = "%09d" % int(id)
+        filename = id[0:3] + '/' + id[3:5] + '/' + id[5:7] + '/' + id[7:9]
+        url = path + '/' + filename + '.jpg'
+        return url
+
+    def get_avatar_pic(self, id):
+        '''返回用户头像的url地址，若不存在则返回默认头像的url地址'''
+        filename = self._avatar_path(id)
+        if os.path.isfile(filename):
+            return "/" + filename.replace("assets", "static")
+        else:
+            return "/static/pictures/avatar/default.png"
 
     def convert_to_timestamp(self, str):
         '''将datetime格式字符串转换为timestamp'''

@@ -7,7 +7,7 @@ from tornado.options import options
 
 
 class TornadoConfigParser(object):
-    _config_files = ['database.ini', 'pagination.ini']
+    _config_files = ['database.ini', 'pagination.ini', 'uploader.ini']
 
     def __init__(self):
         self.parser = SafeConfigParser()

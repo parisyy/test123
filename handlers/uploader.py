@@ -59,6 +59,24 @@ class UploaderBaseHandler(BaseHandler):
                 prefix, dstdir, postfix, img_width, img_height, pic_id)
         return pic_id, dstname, dstdir + "/" + dstname
 
+    def create_avatar_file(self, fd, uid):
+        '''创建用户头像'''
+        # 创建临时文件
+        tmpf = tempfile.NamedTemporaryFile()
+        tmpf.write(fd['body'])
+        tmpf.seek(0)
+
+        # 保存图片
+        img = Image.open(tmpf.name)
+        tmpf.close()
+        #img.thumbnail((400, 400), resample=1)
+
+        # 文件名
+        filename = self._avatar_path(uid)
+        img.save(filename)  # 文件保存在pictures目录下
+
+        return filename.replace("assets", "static")
+
 
 class ImageUploaderHandler(UploaderBaseHandler):
     def get(self):
@@ -94,6 +112,24 @@ class ImageUploaderHandler(UploaderBaseHandler):
             self.db.execute("delete from md_theme_picture where id = %s", pic_id)
             print filename
             os.remove(filename)
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
+
+
+class AvatarUploaderHandler(UploaderBaseHandler):
+    def post(self):
+        try:
+            uid = self.get_argument("uid")
+            if self.request.files:
+                for f in self.request.files["userfile"]:
+                        pic_url = self.create_avatar_file(f, uid)
+                        self.write(json.dumps({
+                            'code': 0,
+                            'url': pic_url
+                        }))
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
