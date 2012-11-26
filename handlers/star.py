@@ -10,7 +10,7 @@ from ext.pagination import Pagination
 
 class StarBaseHandler(UserBaseHandler):
     def query_users_where_clause(self, **args):
-        query = ["recommend = 1"]  # 保存SQL查询条件
+        query = ["recommend = 2"]  # 保存SQL查询条件
         params = []  # 保存SQL查询参数
 
         if args["member_type"] is not None:
