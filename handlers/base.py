@@ -58,6 +58,18 @@ class BaseHandler(tornado.web.RequestHandler):
         '''读取全部城市信息'''
         return self.db.query("select id, region_name from md_region where level = 2")
 
+    def fetch_domains(self):
+        '''读取全部区域信息'''
+        return self.db.query("select id, region_name from md_region where level = 3")
+
+    def fetch_cities_by_province_id(self, province_id):
+        '''读取指定省份的城市列表'''
+        return self.db.query("select * from md_region where level = 2 and parent_id = %s", province_id)
+
+    def fetch_domains_by_city_id(self, city_id):
+        '''读取制定城市的区域列表'''
+        return self.db.query("select * from md_region where level = 3 and parent_id = %s", city_id)
+
     def fetch_stylists(self):
         '''读取发型师信息'''
         return self.db.query("select id, username, email from md_member where member_type = 2")

@@ -15,9 +15,12 @@ define('port', default=8000, help='run on the given port', type=int)
 define('environment', default='development', help='run on the specific environment')
 
 from handlers.base import BaseApplication
-from handlers.ui_module import UserQueryModule, PictureListModule, PaginationModule
 from handlers.login import LoginHandler, LogoutHandler
 from handlers.home import HomeHandler
+
+from handlers.region import RegionHandler
+
+from handlers.ui_module import UserQueryModule, PictureListModule, PaginationModule
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler
@@ -55,6 +58,9 @@ class Application(BaseApplication):
 
             # 图片选择
             (r'/selector', PictureSelectorHandler),
+
+            # 省市区信息
+            (r'/region', RegionHandler),
 
             # 当季主题
             (r'/seasons[\/]*', SeasonHandler),

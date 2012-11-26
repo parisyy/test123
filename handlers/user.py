@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os
 import datetime
 import tornado.web
 from base import BaseHandler, none_to_empty_str
@@ -176,7 +175,6 @@ class UserHandler(UserBaseHandler):
             return
 
         params = dict(
-            provinces=self.fetch_provinces(),
             entries=entries,
             query_params=query_params,
             config=self.config,
@@ -242,11 +240,22 @@ class UserEditHandler(UserBaseHandler):
 
 class UserEditBasicModule(tornado.web.UIModule):
     def render(self, user):
+        if user.province_id:
+            cities = self.handler.fetch_cities_by_province_id(user.province_id)
+        else:
+            cities = self.handler.fetch_cities()
+
+        if user.city_id:
+            domains = self.handler.fetch_domains_by_city_id(user.city_id)
+        else:
+            domains = self.handler.fetch_domains()
+
         params = dict(
             user=user,
             config=self.handler.config,
             provinces=self.handler.fetch_provinces(),
-            cities=self.handler.fetch_cities(),
+            cities=cities,
+            domains=domains,
             avatar_pic=self.handler.get_avatar_pic(user.id),
         )
         return self.render_string("users/_basic.html", **params)
