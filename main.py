@@ -25,7 +25,7 @@ from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserE
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
-from handlers.star import StarHandler, StarRecommendHandler
+from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 
 
 class Application(BaseApplication):
@@ -46,6 +46,7 @@ class Application(BaseApplication):
             (r'/stars[\/]*', StarHandler),
             (r'/stars/delete/([0-9]+)', StarHandler),
             (r'/stars/recommend_pics/([0-9]+)', StarRecommendHandler),
+            (r'/stars/recommend_pics/edit/([0-9]+)', StarRecommendEditHandler),
 
             # DIY课堂
             (r'/lessons[\/]*', LessonHandler),

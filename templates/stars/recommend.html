@@ -4,34 +4,32 @@
 <ul class="breadcrumb">
   <li><a href="/stars">星光巨匠</a></li>
   <li class="divider">/</li>
-  <li>推荐图片列表</li>
+  <li>我要秀图片列表</li>
 </ul>
 {% end %}
 
 {% block content %}
 <!-- 我要秀图片列表（最多10张） -->
-<div class="thumbnails">
-  {% set i = 0 %}
-  {% for pic in pics %}
-    {% if pic.img_path is None %}
-      {% set pic["img_path"] = "" %}
+{% if len(pics) == 0 %}
+  <div class="well">
+    <p>该用户的我要秀图片列表为空</p>
+  </div>
+{% else %}
+  <div class="thumbnails">
+    {% for pic in pics[:10] %}
+      <li class="span3">
+        <div class="thumbnail">
+          <a href="/{{ pic.img_path + '/' + pic.pic_url + '.' + pic.img_type }}" target="_blank">
+            <img src="/{{ pic.img_path + '/' + pic.pic_url + '.' + pic.img_type }}" width="100%" height="120" />
+          </a>
+        </div>
+        <p><input type="checkbox" onclick="append({{ pic.tid }})" />选择</p>
+      </li>
     {% end %}
-    {% if pic.pic_url is None %}
-      {% set pic["pic_url"] = "" %}
-    {% end %}
-    {% if i < 10 %}
-    <li class="span3">
-      <div class="thumbnail">
-        <a href="/{{ pic.img_path + '/' + pic.pic_url }}" target="_blank">
-          <img src="/{{ pic.img_path + '/' + pic.pic_url }}" width="100%" height="120" />
-        </a>
-      </div>
-      <input type="checkbox" onclick="append({{ pic.tid }})">
-    </li>
-    {% end %}
-    {% set i += 1 %}
-  {% end %}
-</div>
+  </div>
+{% end %}
+
+<a href="/stars/recommend_pics/edit/{{ uid }}" class="btn btn-success span2" target="_blank">新增图片</a>
 {% end %}
 
 {% block javascript %}

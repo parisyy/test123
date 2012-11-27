@@ -110,8 +110,21 @@ class StarHandler(StarBaseHandler):
 
 
 class StarRecommendHandler(BaseHandler):
-    def get(self, id):
-        pics = self.db.query("select t.id, t.member_id, t.actived, p.tid, tp.* "
-                "from md_talent t, md_talent_picture p, md_theme_picture tp "
-                "where t.id = p.talent_id and p.tid = tp.id and t.member_id = %s", id)
-        self.render("stars/recommend.html", pics=pics)
+    def get(self, uid):
+        pics = self.db.query("select m.*, p.img_path, p.img_type, p.pic_url, p.width, p.height "
+                "from md_talent m, md_talent_picture t, md_theme_picture p "
+                "where m.id = t.talent_id and t.tid = p.id and m.member_id = %s", uid)
+
+        params = dict(
+            pics=pics,
+            uid=uid,
+        )
+        self.render("stars/recommend.html", **params)
+
+
+class StarRecommendEditHandler(BaseHandler):
+    def get(self, uid):
+        params = dict(
+            uid=uid,
+        )
+        self.render("stars/recommend_edit.html", **params)
