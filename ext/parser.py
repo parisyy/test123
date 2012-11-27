@@ -29,3 +29,8 @@ def parse_mysql_config():
     db_password = parser.get(options.environment, 'password')
 
     return (db_user, db_password, db_host, db_database)
+
+
+def get_default_img_path():
+    parser = TornadoConfigParser()
+    return parser.get('uploader', 'default_img_path')

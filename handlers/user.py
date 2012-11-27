@@ -11,8 +11,8 @@ from ext.pagination import Pagination
 class UserBaseHandler(BaseHandler):
     config = {
         'member_type': {
-            0: '普通用户',
-            1: '发型师',
+            1: '普通用户',
+            2: '发型师',
         },
         'actived': {
             0: '未激活',

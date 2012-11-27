@@ -1,6 +1,61 @@
 {% extends "../layouts/base.html" %}
 
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/salons">沙龙管理</a></li>
+  <li class="divider">/</li>
+  <li>沙龙列表</li>
+</ul>
+{% end %}
+
 {% block content %}
+<form method="get" class="well query form-horizontal">
+  <div class="control-group">
+    <label class="control-label">沙龙名称</label>
+    <div class="controls">
+      <input type="text" id="salon_name" name="salon_name" class="input-xxlarge" />
+    </div>
+  </div><br />
+  <div class="control-group">
+    <label class="control-label">省份</label>
+    <div class="controls">
+      <select id="province_id" name="province_id">
+        <option></option>
+        {% for province in provinces %}
+        <option value="{{ province.id }}">{{ province.region_name }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">城市</label>
+    <div class="controls">
+      <select id="city_id" name="city_id">
+        <option></option>
+        {% for city in cities %}
+        <option value="{{ city.id }}">{{ city.region_name }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">区域</label>
+    <div class="controls">
+      <select id="domain_id" name="area_id">
+        <option></option>
+        {% for domain in domains %}
+        <option value="{{ domain.id }}">{{ domain.region_name }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <p>
+    <input type="submit" value="查询" class="btn btn-success span2">
+    <input type="reset" value="重置" class="btn btn-success span2">
+  </p>
+  {{ xsrf_form_html() }}
+</form>
+
 <table class="table">
   <thead>
     <tr>
@@ -20,17 +75,38 @@
     <tr>
       <td>{{ salon.id }}</td>
       <td>{{ salon.salon_name }}</td>
-      <td>{{ "" }}</td>
+      <td><img src="{{ logos.get(salon.id, default_img) }}" width="50" height="50" /></td>
       <td>{{ regions.get(salon.province_id, "无") }} / {{ regions.get(salon.city_id, "无") }}</td>
       <td>{{ salon.address }}</td>
       <td>{{ salon.salon_telephone }}</td>
-      <td>{{ 0 }}</td>
-      <td>{{ salon.recommend }}</td>
-      <td></td>
+      <td>{{ hairstylists.get(salon.id, 0) }}</td>
+      <td>{{ config["recommend"].get(salon.recommend) }}</td>
+      <td>
+        <a href="#">编辑</a>
+        <a href="#">设为无效</a>
+        <a href="#">所属发型师</a>
+      </td>
     </tr>
     {% end %}
   </tbody>
 </table>
 
 {{ modules.PaginationModule(page_count) }}
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  function set_query_form_values() {
+    $('#province_id').val('{{ arguments.get("province_id", [""])[0] }}');
+    $('#city_id').val('{{ arguments.get("city_id", [""])[0] }}');
+    $('#domain_id').val('{{ arguments.get("domain_id", [""])[0] }}');
+    $('#salon_name').val('{{ arguments.get("salon_name", [""])[0] }}');
+  }
+
+  $(document).ready(function() {
+    $('#nav-salons').addClass('active');
+    set_query_form_values();
+    set_region_selectors();
+  });
+</script>
 {% end %}

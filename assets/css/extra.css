@@ -9,6 +9,10 @@ textarea,
     font-family: Verdana, "微软雅黑";
 }
 
+body {
+    margin-top: 50px;
+}
+
 .main-body {
     margin-left: 5px;
 }
