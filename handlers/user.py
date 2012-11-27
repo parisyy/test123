@@ -138,6 +138,7 @@ class UserBaseHandler(BaseHandler):
     def query_users(self, **args):
         sql = '''
             select m.id, m.username, m.email, m.member_type, m.regtime, m.recommend,
+                m.province_id, m.city_id,
                 m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
                 from_unixtime(m.regtime) as regtime_str,
                 from_unixtime(s.lastlogintime) as lastlogintime_str
@@ -166,15 +167,18 @@ class UserHandler(UserBaseHandler):
         )
 
         try:
+            regions = self.fetch_all_regions()
             entries = self.query_users(**query_params)
             count = self.query_users_size(**query_params)
             page_count = Pagination.page_count(count)
+            print regions
         except Exception, e:
             print e
             self.redirect("/users")
             return
 
         params = dict(
+            regions=regions,
             entries=entries,
             query_params=query_params,
             config=self.config,

@@ -50,6 +50,13 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("username")
 
+    def fetch_all_regions(self):
+        entries = self.db.query("select id, region_name from md_region")
+        dataset = {}
+        for e in entries:
+            dataset.setdefault(e.id, e.region_name)
+        return dataset
+
     def fetch_provinces(self):
         '''读取全部省份信息'''
         return self.db.query("select id, region_name from md_region where level = 1")

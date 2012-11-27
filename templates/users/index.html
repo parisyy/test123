@@ -19,6 +19,7 @@
             <th>#</th>
             <th>昵称</th>
             <th>邮箱</th>
+            <th>省份/城市</th>
             <th>用户类型</th>
             <th>注册时间</th>
             <th>最后登录时间</th>
@@ -34,7 +35,8 @@
             <td>{{ entry.id }}</td>
             <td>{{ entry.username }}</td>
             <td>{{ entry.email }}</td>
-            <td>{{ entry.member_type}} {{ config["member_type"].get(entry.member_type, "") }}</td>
+            <td>{{ regions.get(entry.province_id, "无") }} / {{ regions.get(entry.city_id, "无") }}</td>
+            <td>{{ config["member_type"].get(entry.member_type, "") }}</td>
             <td>{{ entry.regtime_str }}</td>
             <td>{{ entry.lastlogintime_str }}</td>
             <td>{{ config["actived"].get(entry.actived, "") }}</td>
