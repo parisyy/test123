@@ -108,7 +108,7 @@ class BaseHandler(tornado.web.RequestHandler):
         if os.path.isfile(filename):
             return "/" + filename.replace("assets", "static")
         else:
-            return "/static/pictures/avatar/default.png"
+            return "/static/default.jpg"
 
     def convert_to_timestamp(self, str):
         '''将datetime格式字符串转换为timestamp'''

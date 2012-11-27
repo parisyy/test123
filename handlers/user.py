@@ -171,7 +171,6 @@ class UserHandler(UserBaseHandler):
             entries = self.query_users(**query_params)
             count = self.query_users_size(**query_params)
             page_count = Pagination.page_count(count)
-            print regions
         except Exception, e:
             print e
             self.redirect("/users")
