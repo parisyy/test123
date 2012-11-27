@@ -26,6 +26,7 @@ from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
+from handlers.salon import SalonHandler
 
 
 class Application(BaseApplication):
@@ -67,6 +68,9 @@ class Application(BaseApplication):
             (r'/seasons[\/]*', SeasonHandler),
             (r'/seasons/new', SeasonNewHandler),
             (r'/seasons/edit/([0-9]+)', SeasonEditHandler),
+
+            # 沙龙管理
+            (r'/salons', SalonHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),

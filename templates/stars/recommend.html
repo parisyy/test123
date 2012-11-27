@@ -34,19 +34,6 @@
 
 {% block javascript %}
 <script type="text/javascript">
-  var counter = 0;
-  var pic_ids = [];
-
-  function append(pic_id) {
-    if (counter >= 10) {
-      alert("最多只能选择10张推荐图片");
-      return ;
-    }
-
-    pic_ids[counter] = pic_id;
-    counter += 1;
-  }
-
   $(document).ready(function() {
     $('#nav-stars').addClass('active');
   });

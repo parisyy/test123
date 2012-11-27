@@ -1,0 +1,36 @@
+{% extends "../layouts/base.html" %}
+
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>沙龙名称</th>
+      <th>LOGO</th>
+      <th>省份 / 城市</th>
+      <th>地址</th>
+      <th>电话</th>
+      <th>发型师数量</th>
+      <th>状态</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for salon in salons %}
+    <tr>
+      <td>{{ salon.id }}</td>
+      <td>{{ salon.salon_name }}</td>
+      <td>{{ "" }}</td>
+      <td>{{ regions.get(salon.province_id, "无") }} / {{ regions.get(salon.city_id, "无") }}</td>
+      <td>{{ salon.address }}</td>
+      <td>{{ salon.salon_telephone }}</td>
+      <td>{{ 0 }}</td>
+      <td>{{ salon.recommend }}</td>
+      <td></td>
+    </tr>
+    {% end %}
+  </tbody>
+</table>
+
+{{ modules.PaginationModule(page_count) }}
+{% end %}
