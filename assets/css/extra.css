@@ -4,6 +4,8 @@ input,
 button,
 select,
 textarea,
+.uneditable-input,
+.ui-autocomplete-input,
 .btn {
     font-size: 12px;
     font-family: Verdana, "微软雅黑";

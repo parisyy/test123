@@ -57,7 +57,7 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget {   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size:13px; }
+.ui-widget {   font-family: Verdana, "微软雅黑"; font-size:12px; }
 .ui-widget .ui-widget { font-size: 1em; }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 1em; }
 .ui-widget-content { border: 1px solid #aaaaaa; background: #ffffff url(images/ui-bg_glass_75_ffffff_1x400.png) 50% 50% repeat-x; color: #404040; }
@@ -88,7 +88,7 @@
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
 
   color: #333;
-  font-size: 13px;
+  font-size: 12px;
   line-height: normal;
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
@@ -123,7 +123,7 @@
 
 
 .ui-state-highlight p, .ui-state-error p, .ui-state-default p{
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: normal;
 	line-height: 18px;
 	margin:7px 15px;
@@ -532,7 +532,7 @@
   margin: 0;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   color: #333;
-  font-size: 13px;
+  font-size: 12px;
   line-height: normal;
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
@@ -1079,7 +1079,7 @@ textarea,
 .uneditable-input {
   display: inline-block;
   padding: 4px;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 18px;
   color: #808080;
   border: 1px solid #ccc;
@@ -1132,7 +1132,7 @@ textarea,
   padding: 5px 14px 6px;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
   color: #333;
-  font-size: 13px;
+  font-size: 12px;
   line-height: normal;
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
