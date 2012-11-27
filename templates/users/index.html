@@ -24,6 +24,7 @@
             <th>最后登录时间</th>
             <th>状态</th>
             <th>发图数/表情数</th>
+            <th>其他</th>
             <th>操作</th>
         </tr>
     </thead>
@@ -33,11 +34,12 @@
             <td>{{ entry.id }}</td>
             <td>{{ entry.username }}</td>
             <td>{{ entry.email }}</td>
-            <td>{{ config["member_type"].get(entry.member_type, "") }}</td>
+            <td>{{ entry.member_type}} {{ config["member_type"].get(entry.member_type, "") }}</td>
             <td>{{ entry.regtime_str }}</td>
             <td>{{ entry.lastlogintime_str }}</td>
             <td>{{ config["actived"].get(entry.actived, "") }}</td>
             <td>{{ entry.twitter_num }} / {{ entry.emotion_num }}</td>
+            <td>{{ config["recommend"].get(entry.recommend, "") }}</td>
             <td>
                 <a href="/users/edit/{{ entry.id }}">资料</a>
                 <a href="#">动态</a>

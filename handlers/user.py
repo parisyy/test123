@@ -137,7 +137,7 @@ class UserBaseHandler(BaseHandler):
 
     def query_users(self, **args):
         sql = '''
-            select m.id, m.username, m.email, m.member_type, m.regtime,
+            select m.id, m.username, m.email, m.member_type, m.regtime, m.recommend,
                 m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
                 from_unixtime(m.regtime) as regtime_str,
                 from_unixtime(s.lastlogintime) as lastlogintime_str
