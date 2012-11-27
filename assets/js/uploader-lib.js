@@ -1,3 +1,4 @@
+/* 上传图片 */
 function upload_file(element, callback) {
     new AjaxUpload(element, {
         action: '/uploader',
@@ -15,6 +16,7 @@ function upload_file(element, callback) {
     });
 }
 
+/* 上传用户头像 */
 function upload_avatar(element, uid, callback) {
     new AjaxUpload(element, {
         action: '/avatar_uploader',
