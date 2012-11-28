@@ -4,7 +4,6 @@
 import tornado.web
 from handlers.base import BaseHandler
 from ext.pagination import Pagination
-from ext.parser import get_default_img_path
 from ext.informer import BootstrapInformer
 
 
@@ -25,6 +24,11 @@ class SalonBaseHandler(BaseHandler):
             dataset.setdefault(e.salon_id, e.cnt)
         return dataset
 
+    def _logo_url(self, entry):
+        filename = self.get_salon_path_prefix()
+        filename = str(filename) + "/" + str(entry.img_path) + "/" + str(entry.pic_url) + "." + str(entry.img_type)
+        return self.path_to_url(filename)
+
     def fetch_all_logos(self):
         '''读取所有的logo'''
         entries = self.db.query("select salon_id, p.img_path, p.pic_url, p.img_type "
@@ -33,9 +37,21 @@ class SalonBaseHandler(BaseHandler):
         dataset = {}
         for e in entries:
             if e.img_path and e.pic_url and e.img_type:
-                dataset.setdefault(e.salon_id, e.img_path + "/" + e.pic_url + "." + e.img_type)
-        print dataset
+                dataset.setdefault(e.salon_id, self._logo_url(e))
         return dataset
+
+    def fetch_logo_url(self, salon_id):
+        '''读取指定沙龙的logo'''
+        entry = self.db.query("select salon_id, p.img_path, p.pic_url, p.img_type "
+                "from md_salon_picture m, md_theme_picture p "
+                "where m.salon_pic_id = p.id and m.is_logo = 'Y' and salon_id = %s",
+                salon_id)
+        if entry == []:
+            return self.default_image_url()
+        else:
+            print entry
+            entry = entry[0]
+            return self._logo_url(entry)
 
     def gen_query_str(self, sql, salon_name, province_id, city_id, domain_id):
         '''生成查询语句的where子语句'''
@@ -67,8 +83,7 @@ class SalonBaseHandler(BaseHandler):
     def query_salons(self, salon_name, province_id, city_id, domain_id, page):
         '''查询沙龙'''
         sql = '''
-            select m.*, s.salon_pic_url from md_salon m left outer join md_salon_picture s
-            on m.id = s.salon_id and s.is_logo = 'Y'
+            select * from md_salon
         '''
         sql, params = self.gen_query_str(sql, salon_name, province_id, city_id, domain_id)
         sql = Pagination.add_limit_clause(sql, page)
@@ -77,8 +92,7 @@ class SalonBaseHandler(BaseHandler):
     def fetch_salons_count(self, salon_name, province_id, city_id, domain_id):
         '''计算该查询条件下的沙龙数量'''
         sql = '''
-            select count(*) as cnt from md_salon m left outer join md_salon_picture s
-            on m.id = s.salon_id and s.is_logo = 'Y'
+            select count(*) as cnt from md_salon
         '''
         sql, params = self.gen_query_str(sql, salon_name, province_id, city_id, domain_id)
         entry = self.db.get(sql, *params)
@@ -88,9 +102,13 @@ class SalonBaseHandler(BaseHandler):
             return entry.cnt
 
     def fetch_salon_by_id(self, id):
-        return self.db.get("select m.*, s.salon_pic_url from md_salon m "
+        entry = self.db.query("select m.*, s.salon_pic_url from md_salon m "
                 "left outer join md_salon_picture s on m.id = s.salon_id and s.is_logo = 'Y' "
                 "where m.id = %s", id)
+        if entry == []:
+            return None
+        else:
+            return entry[0]
 
     def update_salon(self, id, **args):
         # 删除NoneType的数据项
@@ -129,7 +147,8 @@ class SalonHandler(SalonBaseHandler):
             salons=salons,
             hairstylists=hairstylists,
             logos=logos,
-            default_img="/static/" + get_default_img_path(),
+            default_img=self.default_image_url(),
+            #path_prefix=self.get_salon_path_prefix(),
 
             # 查询模块
             regions=self.fetch_all_regions(),
@@ -157,7 +176,7 @@ class SalonEditHandler(SalonBaseHandler):
                 cities=self.fetch_cities(),
                 domains=self.fetch_domains(),
                 config=self.config,
-                logo_pic="",
+                logo_pic=self.fetch_logo_url(id),
             )
             self.render("salons/edit.html", **params)
         else:

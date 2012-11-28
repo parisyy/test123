@@ -3,6 +3,7 @@
 
 import os
 import json
+import time
 import datetime
 import hashlib
 import base64
@@ -41,7 +42,7 @@ class UploaderBaseHandler(BaseHandler):
         img_width, img_height = img.size
 
         # 设置数据库
-        self.set_table_md_theme_picture(filename, dirname, postfix, img_width, img_height, pic_id)
+        self.update_table_md_theme_picture(filename, dirname, postfix, img_width, img_height, pic_id)
 
         return pic_id, filename + "." + postfix, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
 
@@ -66,15 +67,36 @@ class UploaderBaseHandler(BaseHandler):
 
         return filename.replace("assets", "static")
 
-    def create_salon_file(self, fd, salon_id):
-        '''创建沙龙图片'''
+    def create_salon_logo_file(self, fd, salon_id):
         img_type = self.get_img_type(fd)
-        if not img_type in self.support_img_type:
+        if not img_type in self.support_img_types:
             raise Exception("不支持该文件格式")
-        dirname, filename = self.get_salon_path(salon_id)
-        img = self.create_file(dirname + "/" + filename + "." + img_type)
+
+        dirname, filename = self.gen_salon_path(salon_id)
+        prefix_path = self.get_salon_path_prefix()
+        real_dirname = prefix_path + "/" + dirname
+        if not os.path.exists(real_dirname):
+            os.makedirs(real_dirname)
+
+        img = self.create_file(fd, real_dirname + "/" + filename + "." + img_type)
         img_width, img_height = img.size
-        pass
+
+        # 更新数据库
+        pic_id = self.insert_table_md_theme_picture(dirname, filename, img_type, img_width, img_height)
+        self.remove_salon_logo_file(salon_id)
+        now = datetime.datetime.now()
+        self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime) "
+                "values(%s, %s, %s, %s, %s)",
+                salon_id, pic_id, filename + "." + img_type, 'Y', time.mktime(datetime.datetime.timetuple(now)))
+
+        # 计算URL地址
+        pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
+        pic_url = self.path_to_url(pic_url)
+        return pic_url.replace("//", "/")
+
+    def remove_salon_logo_file(self, salon_id):
+        # 只删除数据库记录，不删除已上传的图片
+        self.db.execute("delete from md_salon_picture where is_logo = 'Y' and salon_id = %s", salon_id)
 
     def create_file(self, fd, filename):
         '''保存上传文件
@@ -91,12 +113,22 @@ class UploaderBaseHandler(BaseHandler):
 
         return img
 
-    def set_table_md_theme_picture(self, *args):
+    def update_table_md_theme_picture(self, *args):
         '''在md_theme_picture表中创建图片文件的记录'''
-        pic_url, img_path, img_type, width, height, id = args
-        self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
+        img_path, pic_url, img_type, width, height, id = args
+        self.db.execute("update md_theme_picture set img_path = %s, pic_url = %s, "
                 "img_type = %s, width = %s, height = %s where id = %s",
-                pic_url, img_path, img_type, width, height, id)
+                img_path, pic_url, img_type, width, height, id)
+
+    def insert_table_md_theme_picture(self, *args):
+        img_path, pic_url, img_type, width, height = args
+        id = self.db.execute("insert into md_theme_picture(img_path, pic_url, img_type, width, height) "
+                "values(%s, %s, %s, %s, %s)",
+                img_path, pic_url, img_type, width, height)
+        return id
+
+    def delete_table_md_theme_picture(self, id):
+        self.db.execute("delete from md_theme_picture where id = %s", id)
 
     def gen_avatar_path(self, id):
         '''用户头像的文件名生成规则：
@@ -127,7 +159,7 @@ class UploaderBaseHandler(BaseHandler):
         '''
         now = datetime.datetime.now()
         filename = hashlib.md5(base64.b64encode(str(id)) + str(now.microsecond)).hexdigest()
-        id = "%09d" % id
+        id = "%09d" % int(id)
         dirname = "%s/%s/%s/%s" % (id[:3], id[3:5], id[5:7], id[7:9])
         return dirname, filename
 
@@ -194,6 +226,24 @@ class AvatarUploaderHandler(UploaderBaseHandler):
             if self.request.files:
                 for f in self.request.files["userfile"]:
                         pic_url = self.create_avatar_file(f, uid)
+                        self.write(json.dumps({
+                            'code': 0,
+                            'url': pic_url
+                        }))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
+
+
+class SalonLogoUploaderHandler(UploaderBaseHandler):
+    def post(self):
+        try:
+            salon_id = self.get_argument("salon_id")
+            if self.request.files:
+                for f in self.request.files["userfile"]:
+                        pic_url = self.create_salon_logo_file(f, salon_id)
                         self.write(json.dumps({
                             'code': 0,
                             'url': pic_url

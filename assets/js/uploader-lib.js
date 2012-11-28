@@ -38,10 +38,10 @@ function upload_avatar(element, uid, callback) {
 /* 上传沙龙LOGO */
 function upload_salon_logo(element, id, callback) {
     new AjaxUpload(element, {
-        action: '/salon_uploader',
+        action: '/salon_logo_uploader',
         data: {
             _xsrf: getCookie('_xsrf'),
-            id: id,
+            salon_id: id,
         },
         onComplete: function(file, response) {
             response = JSON.parse(response);

@@ -90,6 +90,8 @@
 {% end %}
 
 {% block javascript %}
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
 <script type="text/javascript">
   function set_default_form_values() {
     $('#province_id').val('{{ salon.province_id }}');
@@ -98,10 +100,18 @@
     $('#recommend').val('{{ salon.recommend }}');
   }
 
+  function upload_callback(file, response) {
+    $('#logo_img').attr('src', response['url']);
+    //window.location.reload();
+    console.log(response);
+  }
+
   $(document).ready(function() {
     $('#nav-salons').addClass('active');
     set_default_form_values();
     set_region_selectors();
+
+    upload_salon_logo('change_logo', {{ salon.id }}, upload_callback);
   });
 </script>
 {% end %}

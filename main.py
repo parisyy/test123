@@ -22,7 +22,7 @@ from handlers.region import RegionHandler
 from handlers.ui_module import UserQueryModule, PictureListModule, PaginationModule
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
-from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, TestUploaderHandler
+from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, SalonLogoUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 from handlers.salon import SalonHandler, SalonEditHandler
@@ -54,9 +54,9 @@ class Application(BaseApplication):
             (r'/lessons/edit/([0-9]+)', LessonEditHandler),
 
             # 图片上传
-            (r'/test_uploader', TestUploaderHandler),  # 测试
             (r'/uploader', ImageUploaderHandler),
             (r'/avatar_uploader', AvatarUploaderHandler),
+            (r'/salon_logo_uploader', SalonLogoUploaderHandler),
 
             # 图片选择
             (r'/selector', PictureSelectorHandler),
