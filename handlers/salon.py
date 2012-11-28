@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import tornado.web
 from handlers.base import BaseHandler
 from ext.pagination import Pagination
 from ext.parser import get_default_img_path
@@ -16,6 +17,7 @@ class SalonBaseHandler(BaseHandler):
     }
 
     def fetch_hairstylist_count(self):
+        '''根据沙龙ID，计算各沙龙的发型师数量'''
         entries = self.db.query("select salon_id, count(*) as cnt from md_member where member_type = 2 "
                 "group by salon_id")
         dataset = {}
@@ -24,6 +26,7 @@ class SalonBaseHandler(BaseHandler):
         return dataset
 
     def fetch_all_logos(self):
+        '''读取所有的logo'''
         entries = self.db.query("select salon_id, p.img_path, p.pic_url, p.img_type "
                 "from md_salon_picture m left outer join md_theme_picture p "
                 "on m.salon_pic_id = p.id and m.is_logo = 'Y'")
@@ -35,6 +38,7 @@ class SalonBaseHandler(BaseHandler):
         return dataset
 
     def gen_query_str(self, sql, salon_name, province_id, city_id, domain_id):
+        '''生成查询语句的where子语句'''
         query_str = []
         params = []
 
@@ -61,6 +65,7 @@ class SalonBaseHandler(BaseHandler):
         return sql, params
 
     def query_salons(self, salon_name, province_id, city_id, domain_id, page):
+        '''查询沙龙'''
         sql = '''
             select m.*, s.salon_pic_url from md_salon m left outer join md_salon_picture s
             on m.id = s.salon_id and s.is_logo = 'Y'
@@ -70,6 +75,7 @@ class SalonBaseHandler(BaseHandler):
         return self.db.query(sql, *params)
 
     def fetch_salons_count(self, salon_name, province_id, city_id, domain_id):
+        '''计算该查询条件下的沙龙数量'''
         sql = '''
             select count(*) as cnt from md_salon m left outer join md_salon_picture s
             on m.id = s.salon_id and s.is_logo = 'Y'
@@ -80,6 +86,26 @@ class SalonBaseHandler(BaseHandler):
             return 0
         else:
             return entry.cnt
+
+    def fetch_salon_by_id(self, id):
+        return self.db.get("select m.*, s.salon_pic_url from md_salon m "
+                "left outer join md_salon_picture s on m.id = s.salon_id and s.is_logo = 'Y' "
+                "where m.id = %s", id)
+
+    def update_salon(self, id, **args):
+        # 删除NoneType的数据项
+        for k in args.keys():
+            if args.get(k) is None:
+                args.pop(k)
+        # 更新数据库
+        setters = map(lambda x: x + ' = %s', args.keys())
+        if len(setters) == 0:
+            return
+        else:
+            tmpl = "update md_salon set " + ", ".join(setters) + " where id = %s"
+            params = args.values()
+            params.append(id)
+            self.db.execute(tmpl, *params)
 
 
 class SalonHandler(SalonBaseHandler):
@@ -119,3 +145,35 @@ class SalonHandler(SalonBaseHandler):
             informer=BootstrapInformer("success", "共 %s 条记录" % count, "查询结果："),
         )
         self.render("salons/index.html", **params)
+
+
+class SalonEditHandler(SalonBaseHandler):
+    def get(self, id):
+        salon = self.fetch_salon_by_id(id)
+        if salon:
+            params = dict(
+                salon=salon,
+                provinces=self.fetch_provinces(),
+                cities=self.fetch_cities(),
+                domains=self.fetch_domains(),
+                config=self.config,
+            )
+            self.render("salons/edit.html", **params)
+        else:
+            raise tornado.web.HTTPError(404)
+
+    def post(self, id):
+        try:
+            args = dict(
+                salon_name=self.get_argument("salon_name"),
+                recommend=self.get_argument("recommend"),
+                province_id=self.get_argument("province_id"),
+                city_id=self.get_argument("city_id"),
+                area_id=self.get_argument("domain_id"),
+                address=self.get_argument("address"),
+                salon_telephone=self.get_argument("salon_telephone"),
+            )
+            self.update_salon(id, **args)
+            self.redirect("/salons")
+        except:
+            self.redirect("/salons/edit/%s" % id)
