@@ -11,7 +11,7 @@ import tornado.web
 import tornado.database
 from sqlalchemy.orm import sessionmaker
 
-from ext.parser import parse_mysql_config
+from ext.parser import parse_mysql_config, TornadoConfigParser
 
 
 def none_to_empty_str(obj):
@@ -85,13 +85,45 @@ class BaseHandler(tornado.web.RequestHandler):
         '''读取当前有效的发型包列表'''
         return self.db.query("select id, package_name from md_hairpackage where actived = 1")
 
+    def path_to_url(self, path):
+        '''将文件路径转换为URL地址'''
+        return path.replace("assets/pictures", "static/pictures")
+
+    def get_subject_path_prefix(self):
+        '''DIY课堂图片和当季主题图片的URL地址前缀'''
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "subject_path")
+        return self.path_to_url("/" + root_path + "/" + subject_path)
+
+    def get_avatar_path_prefix(self):
+        '''用户头像的URL地址前缀'''
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "avatar_path")
+        return self.path_to_url("/" + root_path + "/" + subject_path)
+
+    def get_salon_path_prefix(self):
+        '''沙龙图片的URL地址前缀'''
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "salon_path")
+        return self.path_to_url("/" + root_path + "/" + subject_path)
+
+    def get_twitter_path_prefix(self):
+        '''用户图片的URL地址前缀'''
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "twitter_path")
+        return self.path_to_url("/" + root_path + "/" + subject_path)
+
     def pic_url(self, pic_id):
         '''获取图片的url地址'''
         pic = self.db.get("select * from md_theme_picture where id = %s", pic_id)
         if pic is not None:
-            pic_url = "/" + pic.img_path + "/" + pic.pic_url + "." + pic.img_type
+            pic_url = pic.img_path + "/" + pic.pic_url + "." + pic.img_type
         else:
-            pic_url = None
+            pic_url = ""
         return pic_url
 
     def _avatar_path(self, id):

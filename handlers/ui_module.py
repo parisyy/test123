@@ -29,10 +29,11 @@ class UserQueryModule(tornado.web.UIModule):
 
 
 class PictureListModule(tornado.web.UIModule):
-    def render(self, pics):
+    def render(self, pics, path_prefix):
         pics = [pic for pic in pics if pic.img_path is not None and pic.pic_url is not None]
         params = dict(
             pics=pics,
+            path_prefix=path_prefix,
         )
         return self.render_string("modules/pic_list/_list.html", **params)
 

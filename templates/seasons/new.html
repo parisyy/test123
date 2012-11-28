@@ -63,15 +63,7 @@
     <label class="control-label">其它图片</label>
     <div class="controls">
       <ul class="thumbnails" id="others-preview">
-        {% for pic in pics %}
-        <li class="span3">
-            <div class="thumbnail">
-              <a href="/{{ pic.img_path + '/' + pic.pic_url }}" target="_blank">
-                <img src="/{{ pic.img_path + '/' + pic.pic_url }}" width="100%" height="120" />
-              </a>
-            </div>
-        </li>
-        {% end %}
+        {{ modules.PictureListModule(pics, path_prefix) }}
       </ul>
     </div>
   </div>

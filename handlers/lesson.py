@@ -109,13 +109,12 @@ class LessonEditHandler(LessonBaseHandler):
             raise tornado.web.HTTPError(404)
 
         pics = self.fetch_all_pics(id)
-        #pic_urls = [(e.img_path + "/" + e.pic_url).replace("assets", "static") for e in pics]
 
         params = dict(
             lesson=lesson,
             stylists=self.fetch_stylists(),
-            #pic_urls=pic_urls,
             pics=pics,
+            path_prefix=self.get_subject_path_prefix(),
         )
         self.render("lessons/edit.html", **params)
 
@@ -125,7 +124,6 @@ class LessonEditHandler(LessonBaseHandler):
         content = self.get_argument("content", "")
         start_date = self.get_argument("start_date", "")
         end_date = self.get_argument("end_date", "")
-
         pics = self.get_arguments("pics")
 
         lesson = self.fetch_lesson(id)
@@ -150,11 +148,11 @@ class LessonEditHandler(LessonBaseHandler):
             lesson.start_time = start_date
             lesson.end_date = end_date
             pics = self.fetch_all_pics(id)
-            #pic_urls = [(e.img_path + "/" + e.pic_url).replace("assets", "static") for e in pics]
             params = dict(
                 lesson=lesson,
                 informer=Informer("error", str(e)),
                 stylists=stylists,
                 pics=pics,
+                path_prefix=self.get_subject_path_prefix(),
             )
             self.render("lessons/edit.html", **params)

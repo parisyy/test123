@@ -9,12 +9,10 @@ import base64
 import tempfile
 from PIL import Image
 from handlers.base import BaseHandler
+from ext.parser import TornadoConfigParser
 
 
 class UploaderBaseHandler(BaseHandler):
-    dirname_prefix = "assets/pictures"
-
-    # TODO: 需要重构
     def create_image_file(self, fd):
         '''创建图片'''
         # 创建一条新的数据库记录，因为后续操作需要指定的pic_id
@@ -29,41 +27,30 @@ class UploaderBaseHandler(BaseHandler):
             self.db.execute("delete from md_theme_picture where id = %s", pic_id)
             raise Exception("不支持该文件格式")
 
-        # prefix = md5(base64(pic_id + microsecond)).hexdigest()
-        microsecond = datetime.datetime.now().microsecond
-        prefix = hashlib.md5(base64.b64encode(str(pic_id) + str(microsecond))).hexdigest()
+        # 从配置文件中读取目录前缀
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "subject_path")
+        prefix_path = root_path + "/" + subject_path
 
-        dstname = str(prefix) + "." + postfix
-        
-        # 目录名称
-        # 文件系统路径: assets/pictures/theme/2012/11/17/16/30
-        # 数据库保存路径：2012/11/17/16/30
-        # url路径：/static/pictures/theme/2012/11/17/16/30
-        tmp_datetime = datetime.datetime.now()
-        pic_dir = "%s/%s/%s/%s" % (tmp_datetime.year, tmp_datetime.month,
-                tmp_datetime.day, tmp_datetime.hour)
-        dstdir = self.dirname_prefix + "/theme/" + pic_dir
-        if not os.path.exists(dstdir):
-            os.makedirs(dstdir)
+        # 获取按照指定规则生成的目录名和文件名
+        dirname, filename = self.gen_subject_path(pic_id)
 
-        # 创建临时文件
-        tmpf = tempfile.NamedTemporaryFile()
-        tmpf.write(fd['body'])
-        tmpf.seek(0)
+        # 本地文件的路径，不存在则自动创建
+        real_dirname = prefix_path + "/" + dirname
+        if not os.path.exists(real_dirname):
+            os.makedirs(real_dirname)
 
-        # 保存图片
-        img = Image.open(tmpf.name)
-        tmpf.close()
-        #img.thumbnail((400, 400), resample=1)
-        img.save(dstdir + "/" + dstname)  # 文件保存在pictures目录下
+        img = self.create_file(fd, real_dirname + "/" + filename + "." + postfix)
         img_width, img_height = img.size
 
         # 设置数据库
-        dstdir = dstdir.replace('assets', 'static')
+        #dstdir = dstdir.replace('assets', 'static')
         self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
                 "img_type = %s, width = %s, height = %s where id = %s",
-                prefix, dstdir, postfix, img_width, img_height, pic_id)
-        return pic_id, dstname, dstdir + "/" + dstname
+                filename, dirname, postfix, img_width, img_height, pic_id)
+
+        return pic_id, filename + "." + postfix, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
 
     # TODO: 需要重构
     def create_avatar_file(self, fd, uid):
@@ -99,7 +86,7 @@ class UploaderBaseHandler(BaseHandler):
         tmpf.close()
         img.save(filename)
 
-        return filename
+        return img
 
     def set_table_md_theme_picture(self):
         '''在md_theme_picture表中创建图片文件的记录'''
