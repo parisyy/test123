@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./main.py --environment=development >& logs/logs
+./main.py --environment=testing >& logs/logs
