@@ -56,6 +56,7 @@ class SeasonNewHandler(SeasonBaseHandler):
         params = dict(
             pics=[],
             packages=self.fetch_packages(),
+            path_prefix=self.path_to_url(self.get_subject_path_prefix()),
         )
         self.render("seasons/new.html", **params)
 
@@ -93,7 +94,8 @@ class SeasonNewHandler(SeasonBaseHandler):
             params = dict(
                 pics=[],
                 packages=self.fetch_packages(),
-                informer=BootstrapInformer("error", e)
+                informer=BootstrapInformer("error", e),
+                path_prefix=self.path_to_url(self.get_subject_path_prefix()),
             )
             self.render("seasons/new.html", **params)
 

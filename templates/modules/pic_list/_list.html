@@ -1,5 +1,5 @@
 {% for pic in pics %}
-{% set url = path_prefix + '/' + pic.img_path + '/' + pic.pic_url + '.' + pic.img_type %}
+{% set url = (path_prefix + '/' + pic.img_path + '/' + pic.pic_url + '.' + pic.img_type).replace('//', '/') %}
 <li class="span3">
     <div class="thumbnail">
       <a href="{{ url }}" target="_blank">

@@ -42,7 +42,7 @@ class UploaderBaseHandler(BaseHandler):
         img_width, img_height = img.size
 
         # 设置数据库
-        self.update_table_md_theme_picture(filename, dirname, postfix, img_width, img_height, pic_id)
+        self.update_table_md_theme_picture(dirname, filename, postfix, img_width, img_height, pic_id)
 
         return pic_id, filename + "." + postfix, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
 
