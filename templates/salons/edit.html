@@ -11,6 +11,13 @@
 {% block content %}
 <form method="post" class="well query form-horizontal">
   <div class="control-group">
+    <label class="control-label">LOGO</label>
+    <div class="controls">
+      <img id="logo_img" src="{{ logo_pic }}" width="64" height="64" />
+      <input type="button" id="change_logo" value="更改" />
+    </div>
+  </div><br />
+  <div class="control-group">
     <label class="control-label">沙龙名称</label>
     <div class="controls">
       <input type="text" name="salon_name" value="{{ salon.salon_name}}" />

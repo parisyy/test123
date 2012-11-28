@@ -34,3 +34,23 @@ function upload_avatar(element, uid, callback) {
         },
     });
 }
+
+/* 上传沙龙LOGO */
+function upload_salon_logo(element, id, callback) {
+    new AjaxUpload(element, {
+        action: '/salon_uploader',
+        data: {
+            _xsrf: getCookie('_xsrf'),
+            id: id,
+        },
+        onComplete: function(file, response) {
+            response = JSON.parse(response);
+            if (response["code"] == 0) {
+                callback(file, response);
+            } else {
+                alert(response["error"] + '\n\n上传图片失败！');
+            }
+        },
+    });
+}
+

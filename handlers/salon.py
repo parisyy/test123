@@ -157,6 +157,7 @@ class SalonEditHandler(SalonBaseHandler):
                 cities=self.fetch_cities(),
                 domains=self.fetch_domains(),
                 config=self.config,
+                logo_pic="",
             )
             self.render("salons/edit.html", **params)
         else:
