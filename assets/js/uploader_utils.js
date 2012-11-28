@@ -30,7 +30,7 @@ function upload_file(element, callback) {
 }
 
 function upload_callback(file, response) {
-    create_thumbnail('http://' + location.host + '/' + response["url"]);
+    create_thumbnail('http://' + location.host + response["url"]);
     $('#pic_ids').append('<input type="hidden" name="pics" value="'
         + response["id"] + '|' + response["name"] + '">');
 }

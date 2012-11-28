@@ -9,29 +9,25 @@ import base64
 import tempfile
 from PIL import Image
 from handlers.base import BaseHandler
-from ext.parser import TornadoConfigParser
 
 
 class UploaderBaseHandler(BaseHandler):
-    def create_image_file(self, fd):
+    support_img_types = ["jpg", "jpeg", "png"]
+
+    def create_subject_file(self, fd):
         '''创建图片'''
         # 创建一条新的数据库记录，因为后续操作需要指定的pic_id
         pic_id = self.db.execute("insert into md_theme_picture "
                 "(pic_url, img_path, img_type, width, height) values('', '', '', 0, 0)")
 
         # 生成文件名称
-        postfix = fd.filename.split(".").pop()
-        if len(postfix) > 4:
-            postfix = postfix[:4]
-        if not postfix in ["jpg", "jpeg", "png"]:
+        postfix = self.get_img_type(fd)
+        if not postfix in self.support_img_types:
             self.db.execute("delete from md_theme_picture where id = %s", pic_id)
             raise Exception("不支持该文件格式")
 
         # 从配置文件中读取目录前缀
-        parser = TornadoConfigParser()
-        root_path = parser.get("uploader", "root_path")
-        subject_path = parser.get("uploader", "subject_path")
-        prefix_path = root_path + "/" + subject_path
+        prefix_path = self.url_to_path(self.get_subject_path_prefix())
 
         # 获取按照指定规则生成的目录名和文件名
         dirname, filename = self.gen_subject_path(pic_id)
@@ -45,10 +41,7 @@ class UploaderBaseHandler(BaseHandler):
         img_width, img_height = img.size
 
         # 设置数据库
-        #dstdir = dstdir.replace('assets', 'static')
-        self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
-                "img_type = %s, width = %s, height = %s where id = %s",
-                filename, dirname, postfix, img_width, img_height, pic_id)
+        self.set_table_md_theme_picture(filename, dirname, postfix, img_width, img_height, pic_id)
 
         return pic_id, filename + "." + postfix, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
 
@@ -73,6 +66,16 @@ class UploaderBaseHandler(BaseHandler):
 
         return filename.replace("assets", "static")
 
+    def create_salon_file(self, fd, salon_id):
+        '''创建沙龙图片'''
+        img_type = self.get_img_type(fd)
+        if not img_type in self.support_img_type:
+            raise Exception("不支持该文件格式")
+        dirname, filename = self.get_salon_path(salon_id)
+        img = self.create_file(dirname + "/" + filename + "." + img_type)
+        img_width, img_height = img.size
+        pass
+
     def create_file(self, fd, filename):
         '''保存上传文件
         @fd 文件数据
@@ -88,17 +91,12 @@ class UploaderBaseHandler(BaseHandler):
 
         return img
 
-    def set_table_md_theme_picture(self):
+    def set_table_md_theme_picture(self, *args):
         '''在md_theme_picture表中创建图片文件的记录'''
-        session = self.backend.get_session()
-        try:
-            session.execute("insert into md_theme_picture(pic_url, img_path, img_type, width, height) "
-                    "values(%s, %s, %s, %s, %s)")
-            session.commit()
-            session.close()
-        except Exception, e:
-            session.rollback()
-            raise e
+        pic_url, img_path, img_type, width, height, id = args
+        self.db.execute("update md_theme_picture set pic_url = %s, img_path = %s, "
+                "img_type = %s, width = %s, height = %s where id = %s",
+                pic_url, img_path, img_type, width, height, id)
 
     def gen_avatar_path(self, id):
         '''用户头像的文件名生成规则：
@@ -143,6 +141,10 @@ class UploaderBaseHandler(BaseHandler):
         dirname = "%s/%s/%s/%s" % (now.year, now.month, now.day, now.hour)
         return dirname, filename
 
+    def get_img_type(self, fd):
+        postfix = fd.filename.split(".").pop()
+        return postfix[:4]
+
 
 class ImageUploaderHandler(UploaderBaseHandler):
     def get(self):
@@ -152,7 +154,7 @@ class ImageUploaderHandler(UploaderBaseHandler):
         if self.request.files:
             for f in self.request.files["userfile"]:
                 try:
-                    pic_id, pic_name, pic_url = self.create_image_file(f)
+                    pic_id, pic_name, pic_url = self.create_subject_file(f)
                     self.write(json.dumps({
                         'code': 0,
                         'id': pic_id,

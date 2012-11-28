@@ -114,8 +114,8 @@
   function uploader_callback(file, response) {
     // 清空原有的预览图
     // 设置并显示预览模块
-    $('#title-preview a').attr('href', '/' + response['url']);
-    $('#title-preview img').attr('src', '/' + response['url']);
+    $('#title-preview a').attr('href', response['url']);
+    $('#title-preview img').attr('src', response['url']);
     $('#title-preview').show();
 
     // 设置需要提交的表单

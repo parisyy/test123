@@ -102,7 +102,7 @@ class SeasonEditHandler(SeasonBaseHandler):
     def get(self, id):
         season = self.fetch_season(id)
         pics = self.fetch_season_pics(id)
-        path_prefix = self.get_subject_path_prefix()
+        path_prefix = self.path_to_url(self.get_subject_path_prefix())
         pic_url = path_prefix + "/" + self.pic_url(season.theme_pic_id)
 
         params = dict(
@@ -147,7 +147,7 @@ class SeasonEditHandler(SeasonBaseHandler):
 
             self.redirect("/seasons")
         except Exception, e:
-            path_prefix = self.get_subject_path_prefix()
+            path_prefix = self.path_to_url(self.get_subject_path_prefix())
             pic_url = path_prefix + "/" + self.pic_url(season.theme_pic_id)
             params = dict(
                 season=season,
@@ -166,7 +166,7 @@ class PictureSelectorHandler(SeasonBaseHandler):
 
         params = dict(
             members=members,
-            path_prefix=self.get_subject_path_prefix(),
+            path_prefix=self.path_to_url(self.get_subject_path_prefix()),
         )
         self.render("seasons/selector.html", **params)
 

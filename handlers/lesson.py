@@ -114,7 +114,7 @@ class LessonEditHandler(LessonBaseHandler):
             lesson=lesson,
             stylists=self.fetch_stylists(),
             pics=pics,
-            path_prefix=self.get_subject_path_prefix(),
+            path_prefix=self.path_to_url(self.get_subject_path_prefix()),
         )
         self.render("lessons/edit.html", **params)
 
@@ -153,6 +153,6 @@ class LessonEditHandler(LessonBaseHandler):
                 informer=Informer("error", str(e)),
                 stylists=stylists,
                 pics=pics,
-                path_prefix=self.get_subject_path_prefix(),
+                path_prefix=self.path_to_url(self.get_subject_path_prefix()),
             )
             self.render("lessons/edit.html", **params)

@@ -87,35 +87,39 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def path_to_url(self, path):
         '''将文件路径转换为URL地址'''
-        return path.replace("assets/pictures", "static/pictures")
+        return path.replace("assets/pictures", "/static/pictures")
+
+    def url_to_path(self, url):
+        '''将图片URL地址转换为文件路径'''
+        return url.replace("/static/pictures", "assets/pictures")
 
     def get_subject_path_prefix(self):
         '''DIY课堂图片和当季主题图片的URL地址前缀'''
         parser = TornadoConfigParser()
         root_path = parser.get("uploader", "root_path")
         subject_path = parser.get("uploader", "subject_path")
-        return self.path_to_url("/" + root_path + "/" + subject_path)
+        return root_path + "/" + subject_path
 
     def get_avatar_path_prefix(self):
         '''用户头像的URL地址前缀'''
         parser = TornadoConfigParser()
         root_path = parser.get("uploader", "root_path")
         subject_path = parser.get("uploader", "avatar_path")
-        return self.path_to_url("/" + root_path + "/" + subject_path)
+        return root_path + "/" + subject_path
 
     def get_salon_path_prefix(self):
         '''沙龙图片的URL地址前缀'''
         parser = TornadoConfigParser()
         root_path = parser.get("uploader", "root_path")
         subject_path = parser.get("uploader", "salon_path")
-        return self.path_to_url("/" + root_path + "/" + subject_path)
+        return root_path + "/" + subject_path
 
     def get_twitter_path_prefix(self):
         '''用户图片的URL地址前缀'''
         parser = TornadoConfigParser()
         root_path = parser.get("uploader", "root_path")
         subject_path = parser.get("uploader", "twitter_path")
-        return self.path_to_url("/" + root_path + "/" + subject_path)
+        return root_path + "/" + subject_path
 
     def pic_url(self, pic_id):
         '''获取图片的url地址'''
