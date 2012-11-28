@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "./main.py", line 102, in <module>
+    run_server()
+  File "./main.py", line 97, in run_server
+    http_server.listen(options.port)
+  File "/usr/local/lib/python2.7/dist-packages/tornado/netutil.py", line 120, in listen
+    sockets = bind_sockets(port, address=address)
+  File "/usr/local/lib/python2.7/dist-packages/tornado/netutil.py", line 286, in bind_sockets
+    sock.bind(sockaddr)
+  File "/usr/lib/python2.7/socket.py", line 224, in meth
+    return getattr(self._sock,name)(*args)
+socket.error: [Errno 98] Address already in use
