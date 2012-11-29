@@ -120,7 +120,7 @@ class TwitterHandler(TwitterBaseHandler):
         # 图片的URL地址
         for entry in entries:
             path_prefix = self.get_twitter_path_prefix()
-            entry["real_pic_url"] = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "/" + entry.img_type
+            entry["real_pic_url"] = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "." + entry.img_type
             entry["real_pic_url"].replace("//", "/")
             entry["real_pic_url"] = self.path_to_url(entry["real_pic_url"])
 
