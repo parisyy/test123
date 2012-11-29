@@ -177,5 +177,34 @@ class TwitterEditHandler(TwitterBaseHandler):
 class TwitterCommentDeleteHandler(TwitterBaseHandler):
     def post(self, id):
         import json
-        result = self.db.execute("delete from md_twitter_comment where id = %s", id)
-        self.write(json.dumps(result))
+        entry = self.db.get("select tid, member_id from md_twitter_comment where id = %s", id)
+        if not entry:
+            return
+        else:
+            tid = entry.tid
+            member_id = entry.member_id
+
+        # 计数减1
+        try:
+            self.db.execute("update md_twitter_show set comment_num = comment_num - 1 "
+                    "where member_id = %s and tid = %s", member_id, tid)
+            self.write(json.dumps({
+                'code': 0,
+            }))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
+            return
+
+        # 删除记录
+        try:
+            self.db.execute("delete from md_twitter_comment where id = %s", id)
+        except Exception, e:
+            self.db.execute("update md_twitter_show set comment_num = comment_num + 1 "
+                    "where member_id = %s and tid = %s", member_id, tid)
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
