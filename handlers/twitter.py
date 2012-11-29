@@ -187,7 +187,7 @@ class TwitterCommentDeleteHandler(TwitterBaseHandler):
         # 计数减1
         try:
             self.db.execute("update md_twitter_show set comment_num = comment_num - 1 "
-                    "where member_id = %s and tid = %s", member_id, tid)
+                    "where tid = %s", tid)
             self.write(json.dumps({
                 'code': 0,
             }))
