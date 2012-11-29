@@ -26,7 +26,8 @@ from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, Salon
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 from handlers.salon import SalonHandler, SalonEditHandler
-from handlers.twitter import TwitterHandler
+from handlers.twitter import TwitterHandler, TwitterEditHandler
+from handlers.twitter import TwitterCommentDeleteHandler
 
 
 class Application(BaseApplication):
@@ -76,6 +77,8 @@ class Application(BaseApplication):
 
             # 动态管理
             (r'/twitters', TwitterHandler),
+            (r'/twitters/edit/([0-9]+)', TwitterEditHandler),
+            (r'/twitter_comments/delete/([0-9]+)', TwitterCommentDeleteHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),

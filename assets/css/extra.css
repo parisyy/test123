@@ -55,3 +55,7 @@ body {
 .table-noborder td {
     border: 0;
 }
+
+.table.list td {
+    border: 0;
+}

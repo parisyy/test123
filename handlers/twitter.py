@@ -34,6 +34,11 @@ class TwitterBaseHandler(BaseHandler):
             1: '普通用户',
             2: '发型师',
         },
+        'love_type': {
+            0: '不喜欢',
+            1: '喜欢',
+            -1: '无状态',
+        },
     }
 
     def gen_query_str(self, sql, **args):
@@ -109,6 +114,30 @@ class TwitterBaseHandler(BaseHandler):
         else:
             return 0
 
+    def fetch_twitter_by_id(self, id):
+        sql = '''
+            select m.id, m.share_type, m.createtime, from_unixtime(m.createtime) as createtime_str,
+                m.actived, s.description, s.comment_num,
+                p.pic_url, p.img_path, p.img_type,
+                u.id as uid, u.username, u.member_type, u.email
+            from md_twitter m, md_twitter_show s, md_twitter_picture p, md_member u
+            where m.id = s.tid and s.pic_id = p.id and m.member_id = u.id and m.id = %s
+        '''
+        return self.db.get(sql, id)
+
+    def fetch_comments_by_twitter_id(self, twitter_id):
+        return self.db.query("select c.id, c.member_type, c.createtime, "
+                "from_unixtime(c.createtime) as createtime_str, c.content, "
+                "c.love_type, m.username "
+                "from md_twitter_comment c, md_member m "
+                "where c.member_id = m.id and tid = %s", twitter_id)
+
+    def real_pic_url(self, entry):
+        path_prefix = self.get_twitter_path_prefix()
+        url = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "." + entry.img_type
+        url = url.replace("//", "/")
+        return self.path_to_url(url)
+
 
 class TwitterHandler(TwitterBaseHandler):
     def get(self):
@@ -119,10 +148,7 @@ class TwitterHandler(TwitterBaseHandler):
 
         # 图片的URL地址
         for entry in entries:
-            path_prefix = self.get_twitter_path_prefix()
-            entry["real_pic_url"] = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "." + entry.img_type
-            entry["real_pic_url"].replace("//", "/")
-            entry["real_pic_url"] = self.path_to_url(entry["real_pic_url"])
+            entry["real_pic_url"] = self.real_pic_url(entry)
 
         params = dict(
             entries=entries,
@@ -132,3 +158,24 @@ class TwitterHandler(TwitterBaseHandler):
             args=self.request.arguments,
         )
         self.render("twitters/index.html", **params)
+
+
+class TwitterEditHandler(TwitterBaseHandler):
+    def get(self, id):
+        entry = self.fetch_twitter_by_id(id)
+        entry["real_pic_url"] = self.real_pic_url(entry)
+        comments = self.fetch_comments_by_twitter_id(id)
+
+        params = dict(
+            config=self.config,
+            entry=entry,
+            comments=comments,
+        )
+        self.render("twitters/edit.html", **params)
+
+
+class TwitterCommentDeleteHandler(TwitterBaseHandler):
+    def post(self, id):
+        import json
+        result = self.db.execute("delete from md_twitter_comment where id = %s", id)
+        self.write(json.dumps(result))

@@ -1,0 +1,79 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/twitters">动态管理</a></li>
+  <li class="divider">/</li>
+  <li>动态明细</li>
+</ul>
+{% end %}
+
+{% block content %}
+<table class="table list">
+  <tbody>
+    <tr>
+      <td style="width:10%">动态描述</td>
+      <td>{{ entry.description }}</td>
+    </tr>
+    <tr>
+      <td>图片</td>
+      <td><img src="{{ entry.real_pic_url }}" /></td>
+    </tr>
+    <tr>
+      <td>用户昵称</td>
+      <td>{{ entry.username }}</td>
+    </tr>
+    <tr>
+      <td>邮件地址</td>
+      <td>{{ entry.email }}</td>
+    </tr>
+    <tr>
+      <td>用户类型</td>
+      <td>{{ config["member_type"].get(entry.member_type, "未知用户类型") }}</td>
+    </tr>
+    <tr>
+      <td>日期时间</td>
+      <td>{{ entry.createtime_str }}</td>
+    </tr>
+  </tbody>
+</table>
+
+评论列表<hr />
+{% for comment in comments %}
+  <div class="well well-small">
+    <p>序号：{{ comment.id }}<p>
+    <p>用户昵称：{{ comment.username }}</p>
+    <p>日期：{{ comment.createtime_str }}</p>
+    <p>内容：{{ comment.content }}</p>
+    <p>状态：{{ config["love_type"].get(comment.love_type, "未知状态") }}</p>
+    <a class="" href="javascript:void(0)" onclick="delete_comment({{ comment.id }})">删除</a>
+  </div>
+{% end %}
+
+<!-- 删除评论时的确认对话框 -->
+<div id="ensure_dialog" style="display:none">
+  你确定要删除该评论吗？
+</div>
+
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  function delete_comment(comment_id) {
+    popup_alert('#ensure_dialog', function() {
+      $.ajax({
+        url: '/twitter_comments/delete/' + comment_id,
+        type: 'post',
+        data: { _xsrf: getCookie('_xsrf') },
+        success: function(data) {
+          window.location.reload();
+        },
+      });
+    });
+  }
+
+  $(document).ready(function() {
+    $('#nav-twitters').addClass('active');
+  });
+</script>
+{% end %}
