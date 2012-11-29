@@ -89,7 +89,7 @@ class TwitterBaseHandler(BaseHandler):
         sql = '''
             select m.id, m.share_type, m.createtime, from_unixtime(m.createtime) as createtime_str,
                 m.actived, s.description, s.comment_num,
-                p.pic_url, p.img_path, p.img_type,
+                p.id as pic_id, p.pic_url, p.img_path, p.img_type,
                 u.id as uid, u.username, u.member_type
             from md_twitter m, md_twitter_show s, md_twitter_picture p, md_member u
             where m.id = s.tid and s.pic_id = p.id and m.member_id = u.id
