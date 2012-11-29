@@ -80,7 +80,6 @@
   <thead>
     <tr>
       <th>#</th>
-      <th>类型</th>
       <th>昵称</th>
       <th>缩略图ID</th>
       <th>缩略图</th>
@@ -96,7 +95,6 @@
     {% for entry in entries %}
     <tr>
       <td>{{ entry.id }}</td>
-      <td>{{ config["share_type"].get(entry.share_type, "未知类型") }}</td>
       <td>{{ entry.username }}</td>
       <td>{{ entry.pic_id }}</td>
       <td style="width:20%"><img src="{{ entry.real_pic_url }}" width="120" height="140" /></td>
