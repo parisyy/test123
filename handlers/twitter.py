@@ -129,5 +129,6 @@ class TwitterHandler(TwitterBaseHandler):
             config=self.config,
             page_count=page_count,
             informer=informer,
+            args=self.request.arguments,
         )
         self.render("twitters/index.html", **params)
