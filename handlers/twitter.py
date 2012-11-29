@@ -35,5 +35,7 @@ class TwitterBaseHandler(BaseHandler):
 class TwitterHandler(TwitterBaseHandler):
     def get(self):
         params = dict(
+            entries=[""],
+            config=self.config,
         )
         self.render("twitters/index.html", **params)
