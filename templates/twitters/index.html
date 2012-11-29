@@ -11,6 +11,17 @@
 {% block content %}
 <form method="get" class="well query form-horizontal">
   <div class="control-group">
+    <label class="control-label">动态类型</label>
+    <div class="controls">
+      <select name="share_type" id="share_type">
+        <option value=""></option>
+        {% for k, v in config["share_type"].items() %}
+        <option value="{{ k }}">{{ v }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
     <label class="control-label">动态状态</label>
     <div class="controls">
       <select name="actived" id="actived">
@@ -22,29 +33,21 @@
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label">动态类型</label>
-    <div class="controls">
-      <select name="share_type" id="share_type">
-        <option value=""></option>
-      </select>
-    </div>
-  </div>
-  <div class="control-group">
     <label class="control-label">起始日期</label>
     <div class="controls">
-      <input type="text" name="start_date" value="" />
+      <input type="text" id="start_date" name="start_date" value="" />
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">结束日期</label>
     <div class="controls">
-      <input type="text" name="end_date" value="" />
+      <input type="text" id="end_date" name="end_date" value="" />
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">描述关键字</label>
     <div class="controls">
-      <input type="text" name="keyword" value="" />
+      <input type="text" name="description" value="" />
     </div>
   </div><br />
   <div class="control-group">
@@ -52,6 +55,9 @@
     <div class="controls">
       <select name="member_type" id="member_type">
         <option value=""></option>
+        {% for k, v in config["member_type"].items() %}
+        <option value="{{ k }}">{{ v }}</option>
+        {% end %}
       </select>
     </div>
   </div>
@@ -88,15 +94,15 @@
   <tbody>
     {% for entry in entries %}
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{ entry.id }}</td>
+      <td>{{ entry.share_type }}</td>
+      <td>{{ entry.username }}</td>
+      <td><img src="{{ entry.real_pic_url }}" width="60" height="40" /></td>
+      <td>{{ entry.description }}</td>
+      <td>{{ config["member_type"].get(entry.member_type, "未知用户类型") }}</td>
+      <td>{{ entry.client_createtime }}</td>
+      <td>{{ entry.comment_num }}</td>
+      <td>{{ config["actived"].get(entry.actived, "未知状态") }}</td>
       <td>
         <a href="#">查看明细</a>
         <a href="#">隐藏</a>
@@ -106,12 +112,16 @@
     {% end %}
   </tbody>
 </table>
+
+{{ modules.PaginationModule(page_count) }}
 {% end %}
 
 {% block javascript %}
 <script type="text/javascript">
   $(document).ready(function() {
     $('#nav-twitters').addClass('active');
+    $('#start_date').datepicker({ dateFormat: 'yy-mm-dd' });
+    $('#end_date').datepicker({ dateFormat: 'yy-mm-dd' });
   });
 </script>
 {% end %}
