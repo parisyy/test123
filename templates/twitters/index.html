@@ -1,0 +1,21 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/twitters">动态管理</a></li>
+  <li class="divider">/</li>
+  <li>动态列表</li>
+</ul>
+{% end %}
+
+{% block content %}
+aaa
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#nav-twitters').addClass('active');
+  });
+</script>
+{% end %}
