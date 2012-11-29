@@ -49,12 +49,12 @@ class TwitterBaseHandler(BaseHandler):
             params.append(args.get("actived")[0])
 
         if args.get("start_date"):
-            query_str.append("client_createtime >= %s")
+            query_str.append("m.createtime >= %s")
             start_date = self.convert_date_to_timestamp(args.get("start_date")[0])
             params.append(start_date)
 
         if args.get("end_date"):
-            query_str.append("client_createtime <= %s")
+            query_str.append("m.createtime <= %s")
             end_date = self.convert_date_to_timestamp(args.get("end_date")[0])
             params.append(end_date)
 
