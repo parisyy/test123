@@ -46,7 +46,10 @@
         {% end %}
         </p>
         {% end %}
+
+        {% if entry.member_type == 2 %}
         <a href="javascript:void(0)" onclick="$('#pic_form').toggle()">编辑</a>
+        {% end %}
       </td>
     </tr>
     <tr>
