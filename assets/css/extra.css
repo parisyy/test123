@@ -56,6 +56,31 @@ body {
     border: 0;
 }
 
+/* 动态管理 - 查看明细 */
+.table.list {
+    border: 1px solid #ddd;
+}
+
 .table.list td {
     border: 0;
 }
+
+.table.comments td:hover {
+    background-color: transparent;
+}
+
+.table.comments caption,
+.table.list caption {
+    font-size: 12px;
+    background-color: #ddd;
+    padding: 5px;
+}
+
+.table.comments td {
+    padding: 5px;
+}
+
+.table.comments tr {
+    border: 1px solid #ddd;
+}
+/* 动态管理 - 查看明细 */

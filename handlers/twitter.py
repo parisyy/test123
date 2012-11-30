@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import tornado.web
 from handlers.base import BaseHandler
 from ext.pagination import Pagination
 from ext.informer import BootstrapInformer
@@ -38,6 +39,21 @@ class TwitterBaseHandler(BaseHandler):
             0: '不喜欢',
             1: '喜欢',
             -1: '无状态',
+        },
+        'hair_face': {
+            1: '圆脸',
+            2: '长脸',
+            4: '方脸',
+            8: '瓜子脸',
+        },
+        'hair_volume': {
+            1: '多密',
+            2: '中等',
+            4: '偏少',
+        },
+        'easy_style': {
+            0: '否',
+            1: '是',
         },
     }
 
@@ -117,7 +133,7 @@ class TwitterBaseHandler(BaseHandler):
     def fetch_twitter_by_id(self, id):
         sql = '''
             select m.id, m.share_type, m.createtime, from_unixtime(m.createtime) as createtime_str,
-                m.actived, s.description, s.comment_num,
+                m.actived, s.description, s.comment_num, s.hair_face, s.hair_volume, s.easy_style,
                 p.pic_url, p.img_path, p.img_type,
                 u.id as uid, u.username, u.member_type, u.email
             from md_twitter m, md_twitter_show s, md_twitter_picture p, md_member u
@@ -128,7 +144,7 @@ class TwitterBaseHandler(BaseHandler):
     def fetch_comments_by_twitter_id(self, twitter_id):
         return self.db.query("select c.id, c.member_type, c.createtime, "
                 "from_unixtime(c.createtime) as createtime_str, c.content, "
-                "c.love_type, m.username "
+                "c.love_type, m.username, m.email "
                 "from md_twitter_comment c, md_member m "
                 "where c.member_id = m.id and tid = %s", twitter_id)
 
@@ -137,6 +153,17 @@ class TwitterBaseHandler(BaseHandler):
         url = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "." + entry.img_type
         url = url.replace("//", "/")
         return self.path_to_url(url)
+
+    def check_hair_config(self, entry, attr):
+        '''检查缩略图的发型特征，返回发行特征的配置项列表
+        注意，self.config配置项名称需要与数据库字段名称保持一致
+        例如，md_twitter_show.hair_face对应self.config['hair_face']
+        '''
+        dataset = {}
+        for k, v in self.config[attr].items():
+            if entry[attr] & k == k:
+                dataset.setdefault(k, v)
+        return dataset
 
 
 class TwitterHandler(TwitterBaseHandler):
@@ -163,6 +190,9 @@ class TwitterHandler(TwitterBaseHandler):
 class TwitterEditHandler(TwitterBaseHandler):
     def get(self, id):
         entry = self.fetch_twitter_by_id(id)
+        if not entry:
+            raise tornado.web.HTTPError(404)
+
         entry["real_pic_url"] = self.real_pic_url(entry)
         comments = self.fetch_comments_by_twitter_id(id)
 
@@ -170,8 +200,42 @@ class TwitterEditHandler(TwitterBaseHandler):
             config=self.config,
             entry=entry,
             comments=comments,
+
+            # 缩略图信息
+            hair_face=self.check_hair_config(entry, 'hair_face'),
+            hair_volume=self.check_hair_config(entry, 'hair_volume'),
+            easy_style=self.check_hair_config(entry, 'easy_style'),
         )
         self.render("twitters/edit.html", **params)
+
+    def post(self, id):
+        try:
+            # 去掉_xsrf参数
+            args = self.request.arguments
+            args.pop('_xsrf')
+
+            setter = []
+            easy_style = self.get_argument("easy_style", 0)
+            args.pop('easy_style')
+            setter.append("easy_style = %s" % easy_style)
+
+            dataset = {}
+            for e in args.keys():
+                items = e.split('_')
+                k = '_'.join(items[:-1])
+                v = items[-1]
+                dataset[k] = dataset.get(k, 0) + int(v)
+
+            tmpl = "%s = %s"
+            for k, v in dataset.items():
+                setter.append(tmpl % (k, v))
+
+            sql = "update md_twitter_show set " + ",".join(setter) + " where id = %s"
+            self.db.execute(sql, id)
+            self.redirect("/twitters/edit/%s" % id)
+        except Exception, e:
+            print e
+            self.redirect("/twitters/edit/%s" % id)
 
 
 class TwitterCommentDeleteHandler(TwitterBaseHandler):

@@ -10,14 +10,41 @@
 
 {% block content %}
 <table class="table list">
+  <caption>动态明细</caption>
   <tbody>
     <tr>
-      <td style="width:10%">动态描述</td>
+      <td style="width:20%">动态描述</td>
       <td>{{ entry.description }}</td>
     </tr>
     <tr>
       <td>图片</td>
-      <td><img src="{{ entry.real_pic_url }}" /></td>
+      <td>
+        <p><img src="{{ entry.real_pic_url }}" /></p>
+        <p>
+        脸型：
+        {% for k, v in config['hair_face'].items() %}
+          {% if k in hair_face.keys() %}
+           {{ v }} 
+          {% end %}
+        {% end %}
+        </p>
+        <p>
+        发量：
+        {% for k, v in config['hair_volume'].items() %}
+          {% if k in hair_volume.keys() %}
+           {{ v }} 
+          {% end %}
+        {% end %}
+        </p>
+        <p>
+        是否容易打理：
+        {% for k, v in config['easy_style'].items() %}
+          {% if k in easy_style.keys() %}
+           {{ v }} 
+          {% end %}
+        {% end %}
+        </p>
+      </td>
     </tr>
     <tr>
       <td>用户昵称</td>
@@ -35,20 +62,76 @@
       <td>日期时间</td>
       <td>{{ entry.createtime_str }}</td>
     </tr>
+    <tr>
+      <td><a href="javascript:void(0)" onclick="$('#comments').toggle()">评论数量</a></td>
+      <td>
+        {{ entry.comment_num }}
+      </td>
+    </tr>
   </tbody>
 </table>
 
-评论列表<hr />
-{% for comment in comments %}
-  <div class="well well-small">
-    <p>序号：{{ comment.id }}<p>
-    <p>用户昵称：{{ comment.username }}</p>
-    <p>日期：{{ comment.createtime_str }}</p>
-    <p>内容：{{ comment.content }}</p>
-    <p>状态：{{ config["love_type"].get(comment.love_type, "未知状态") }}</p>
-    <a class="" href="javascript:void(0)" onclick="delete_comment({{ comment.id }})">删除</a>
+<!-- 图片属性 -->
+<form method="post" class="well">
+  <div class="control-group">
+    <label class="control-label">脸型</label>
+    <div class="controls">
+      {% for k, v in config['hair_face'].items() %}
+        {% if k in hair_face.keys() %}
+          <input type="checkbox" name="hair_face_{{ k }}" checked="checked" class="checkbox inline" /> {{ v }} 
+        {% else %}
+          <input type="checkbox" name="hair_face_{{ k }}" class="checkbox inline" /> {{ v }} 
+        {% end %}
+      {% end %}
+    </div>
   </div>
-{% end %}
+  <div class="control-group">
+    <label class="control-label">发量</label>
+    <div class="controls">
+      {% for k, v in config['hair_volume'].items() %}
+        {% if k in hair_volume.keys() %}
+          <input type="checkbox" name="hair_volume_{{ k }}" checked="checked" class="checkbox inline" /> {{ v }} 
+        {% else %}
+          <input type="checkbox" name="hair_volume_{{ k }}" class="checkbox inline" /> {{ v }} 
+        {% end %}
+      {% end %}
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label">打理</label>
+    <div class="controls">
+      {% for k, v in config['easy_style'].items() %}
+        {% if k in easy_style.keys() %}
+          <input type="radio" name="easy_style" value="{{ k }}" checked="checked" class="checkbox inline" /> {{ v }} 
+        {% else %}
+          <input type="radio" name="easy_style" value="{{ k }}" class="checkbox inline" /> {{ v }} 
+        {% end %}
+      {% end %}
+    </div>
+  </div>
+  <p><input type="submit" value="修改缩略图属性" class="btn btn-success span2" /></p>
+  {{ xsrf_form_html() }}
+</form>
+
+<!-- 评论列表 -->
+<table id="comments" class="table comments" style="display:none">
+  <caption>评论列表</caption>
+  <tbody>
+    <tr><td style="text-align:left">
+    {% for comment in comments %}
+      <div class="well well-small">
+        <p>序号：{{ comment.id }}<p>
+        <p>用户昵称：{{ comment.username }}</p>
+        <p>邮件地址：{{ comment.email }}</p>
+        <p>日期：{{ comment.createtime_str }}</p>
+        <p>内容：{{ comment.content }}</p>
+        <p>状态：{{ config["love_type"].get(comment.love_type, "未知状态") }}</p>
+        <a class="" href="javascript:void(0)" onclick="delete_comment({{ comment.id }})">删除</a>
+      </div>
+    {% end %}
+    </td></tr>
+  </tbody>
+</table>
 
 <!-- 删除评论时的确认对话框 -->
 <div id="ensure_dialog" style="display:none">
