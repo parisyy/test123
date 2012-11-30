@@ -108,13 +108,23 @@
       <td>{{ config["actived"].get(entry.actived, "未知状态") }}</td>
       <td>
         <a href="/twitters/edit/{{ entry.id }}">查看明细</a>
-        <a href="#">隐藏</a>
-        <a href="#">屏蔽</a>
+        <a href="javascript:void(0)" onclick="set_actived_status({{ entry.id }}, 9)">隐藏</a>
+        <a href="javascript:void(0)" onclick="set_actived_status({{ entry.id }}, 6)">屏蔽</a>
       </td>
     </tr>
     {% end %}
   </tbody>
 </table>
+
+<!-- 隐藏操作的确认对话框 -->
+<div id="ensure_hide" style="display:none">
+  你确定要隐藏该条动态吗？
+</div>
+
+<!-- 屏蔽操作的确认对话框 -->
+<div id="ensure_hide" style="display:none">
+  你确定要屏蔽该条动态吗？
+</div>
 
 {{ modules.PaginationModule(page_count) }}
 {% end %}
@@ -128,6 +138,27 @@
 
     $('#start_date').val({{ args.get("start_date", [""]) }});
     $('#end_date').val({{ args.get("end_date", [""]) }});
+  }
+
+  function set_actived_status(id, status) {
+    popup_alert('#ensure_hide', function(){
+      $.ajax({
+        url: '/api/twitters/' + id,
+        type: 'POST',
+        data: {
+          _xsrf: getCookie('_xsrf'),
+          actived: status,
+        },
+        success: function(data) {
+          response = JSON.parse(data);
+          if (response['code'] == -1) {
+            alert(response['error']);
+          } else {
+            window.location.reload();
+          }
+        },
+      });
+    })
   }
 
   $(document).ready(function() {

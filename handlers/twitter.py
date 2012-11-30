@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import json
 import tornado.web
 from handlers.base import BaseHandler
 from ext.pagination import Pagination
@@ -173,6 +174,29 @@ class TwitterBaseHandler(BaseHandler):
 
 
 class TwitterHandler(TwitterBaseHandler):
+    def post(self, id):
+        args = self.request.arguments
+        args.pop('_xsrf')
+
+        setters = []
+        for k, v in args.items():
+            setters.append("%s = %s" % (k, v[0]))
+
+        if not setters:
+            self.write(json.dumps({'code': 0}))
+            return
+
+        try:
+            self.db.execute("update md_twitter set " + ",".join(setters) + " where id = %s", id)
+            self.write(json.dumps({'code': 0}))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': e,
+            }))
+
+
+class TwitterListHandler(TwitterBaseHandler):
     def get(self):
         entries = self.query_twitters(**self.request.arguments)
         count = self.query_twitters_count(**self.request.arguments)

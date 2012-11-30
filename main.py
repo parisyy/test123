@@ -26,7 +26,7 @@ from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, Salon
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 from handlers.salon import SalonHandler, SalonEditHandler
-from handlers.twitter import TwitterHandler, TwitterEditHandler
+from handlers.twitter import TwitterHandler, TwitterListHandler, TwitterEditHandler
 from handlers.twitter import TwitterCommentDeleteHandler
 
 
@@ -76,7 +76,8 @@ class Application(BaseApplication):
             (r'/salons/edit/([0-9]+)', SalonEditHandler),
 
             # 动态管理
-            (r'/twitters', TwitterHandler),
+            (r'/api/twitters/([0-9]*)', TwitterHandler),
+            (r'/twitters', TwitterListHandler),
             (r'/twitters/edit/([0-9]+)', TwitterEditHandler),
             (r'/twitter_comments/delete/([0-9]+)', TwitterCommentDeleteHandler),
         ]
