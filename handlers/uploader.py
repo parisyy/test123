@@ -87,7 +87,7 @@ class UploaderBaseHandler(BaseHandler):
         now = datetime.datetime.now()
         self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime) "
                 "values(%s, %s, %s, %s, %s)",
-                salon_id, pic_id, filename + "." + img_type, 'Y', time.mktime(datetime.datetime.timetuple(now)))
+                salon_id, pic_id, filename, 'Y', time.mktime(datetime.datetime.timetuple(now)))
 
         # 计算URL地址
         pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
