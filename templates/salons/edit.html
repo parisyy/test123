@@ -84,9 +84,32 @@
     <div class="controls">
     </div>
   </div>
-  <p><input type="submit" value="确定" class="btn btn-success span2"></p>
+  <p>
+  <input type="submit" value="确定" class="btn btn-success span2" />
+  <input type="button" value="发型师列表" class="btn btn-warning span2" onclick="$('#stylist-list').toggle()" />
+  </p>
   {{ xsrf_form_html() }}
 </form>
+
+<!-- 发型师列表 -->
+<table class="table" id="stylist-list" style="display:none">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>昵称</th>
+      <th>邮件地址</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for hairstylist in hairstylists %}
+    <tr>
+      <td>{{ hairstylist.id }}</td>
+      <td>{{ hairstylist.username }}</td>
+      <td>{{ hairstylist.email }}</td>
+    </tr>
+    {% end %}
+  </tbody>
+</table>
 {% end %}
 
 {% block javascript %}

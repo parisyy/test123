@@ -15,6 +15,10 @@ class SalonBaseHandler(BaseHandler):
         },
     }
 
+    def fetch_hairstylists(self, salon_id):
+        '''根据沙龙ID，获取属于该沙龙的所有发型师'''
+        return self.db.query("select * from md_member where member_type = 2 and salon_id = %s", salon_id)
+
     def fetch_hairstylist_count(self):
         '''根据沙龙ID，计算各沙龙的发型师数量'''
         entries = self.db.query("select salon_id, count(*) as cnt from md_member where member_type = 2 "
@@ -177,6 +181,7 @@ class SalonEditHandler(SalonBaseHandler):
                 domains=self.fetch_domains(),
                 config=self.config,
                 logo_pic=self.fetch_logo_url(id),
+                hairstylists=self.fetch_hairstylists(salon.id),
             )
             self.render("salons/edit.html", **params)
         else:

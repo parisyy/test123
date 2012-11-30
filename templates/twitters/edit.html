@@ -129,13 +129,13 @@
     <tr><td style="text-align:left">
     {% for comment in comments %}
       <div class="well well-small">
-        <p>序号：{{ comment.id }}<p>
-        <p>用户昵称：{{ comment.username }}</p>
-        <p>邮件地址：{{ comment.email }}</p>
-        <p>日期：{{ comment.createtime_str }}</p>
-        <p>内容：{{ comment.content }}</p>
-        <p>状态：{{ config["love_type"].get(comment.love_type, "未知状态") }}</p>
+        <p>
+        {{ comment.id }}
+        {{ comment.username }}
+        {{ comment.createtime_str }}
         <a class="" href="javascript:void(0)" onclick="delete_comment({{ comment.id }})">删除</a>
+        </p>
+        {{ comment.content }}
       </div>
     {% end %}
     </td></tr>
