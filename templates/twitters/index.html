@@ -47,7 +47,7 @@
   <div class="control-group">
     <label class="control-label">描述关键字</label>
     <div class="controls">
-      <input type="text" id="description" name="description" value="" />
+      <input type="text" id="description" name="description" value="{{ args.get("description", "") }}" />
     </div>
   </div><br />
   <div class="control-group">
@@ -64,17 +64,20 @@
   <div class="control-group">
     <label class="control-label">用户昵称</label>
     <div class="controls">
-      <input type="text" id="username" name="username" value="" />
+      <input type="text" id="username" name="username" value="{{ args.get("username", "") }}" />
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">邮件地址</label>
     <div class="controls">
-      <input type="text" id="email" name="email" value="" />
+      <input type="text" id="email" name="email" value="{{ args.get("email", "") }}" />
     </div>
   </div>
 
-  <p><input type="submit" value="查询" class="btn btn-success span2"></p>
+  <p>
+  <input type="submit" value="查询" class="btn btn-success span2">
+  <input type="reset" value="重置" class="btn btn-success span2">
+  </p>
 </form>
 <table class="table">
   <thead>
@@ -125,9 +128,6 @@
 
     $('#start_date').val({{ args.get("start_date", [""]) }});
     $('#end_date').val({{ args.get("end_date", [""]) }});
-    $('#description').val({{ args.get("description", [""]) }});
-    $('#username').val({{ args.get("username", [""]) }});
-    $('#email').val({{ args.get("email", [""]) }});
   }
 
   $(document).ready(function() {

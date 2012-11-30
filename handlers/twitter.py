@@ -86,7 +86,7 @@ class TwitterBaseHandler(BaseHandler):
             params.append(end_date)
 
         if args.get("description"):
-            query_str.append("description like %s")
+            query_str.append("m.description like %s")
             params.append("%" + args.get("description")[0] + "%")
 
         if args.get("member_type"):
@@ -183,12 +183,17 @@ class TwitterHandler(TwitterBaseHandler):
         for entry in entries:
             entry["real_pic_url"] = self.real_pic_url(entry)
 
+        # 查询参数由数组变为数值
+        dataset = {}
+        for k, v in self.request.arguments.items():
+            dataset.setdefault(k, list(v)[0])
+
         params = dict(
             entries=entries,
             config=self.config,
             page_count=page_count,
             informer=informer,
-            args=self.request.arguments,
+            args=dataset,
         )
         self.render("twitters/index.html", **params)
 
