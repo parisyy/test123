@@ -17,7 +17,7 @@
       <td>{{ entry.description }}</td>
     </tr>
     <tr>
-      <td>图片</td>
+      <td><a href="javascript:void(0)" onclick="$('#pic_form').toggle()">图片</a></td>
       <td>
         <p><img src="{{ entry.real_pic_url }}" /></p>
         <p>
@@ -72,7 +72,8 @@
 </table>
 
 <!-- 图片属性 -->
-<form method="post" class="well">
+<form id="pic_form" method="post" class="well" style="display:none">
+  编辑缩略图属性<hr />
   <div class="control-group">
     <label class="control-label">脸型</label>
     <div class="controls">

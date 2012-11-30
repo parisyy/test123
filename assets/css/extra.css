@@ -62,7 +62,7 @@ body {
 }
 
 .table.list td {
-    border: 0;
+    text-align: left;
 }
 
 .table.comments td:hover {
