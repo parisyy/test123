@@ -32,27 +32,6 @@
     </div><br />
   {% elif user.member_type == 2 %}
     <div class="control-group">
-      <label class="control-label">是否推荐发型师</label>
-      <div class="controls">
-        <select id="recommend" name="recommend">
-          {% for k, v in config["recommend"].items() %}
-          <option value="{{ k }}">{{ v }}</option>
-          {% end %}
-        </select>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label">是否星光巨匠</label>
-      <div class="controls">
-        <select id="recommend_talent" name="recommend_talent">
-          {% for k, v in config["recommend_talent"].items() %}
-          <option value="{{ k }}">{{ v }}</option>
-          {% end %}
-        </select>
-      </div>
-    </div>
-
-    <div class="control-group">
       <label class="control-label">所属发廊</label>
       <div class="controls">
         {% if user.actived == 6 or user.actived == 4 %}
@@ -65,7 +44,7 @@
     <div class="control-group">
       <label class="control-label">发廊名称</label>
       <div class="controls">
-        {% if user.actived == 6 or user.actived == 4 %}
+        {% if user.actived in (4, 5, 6) %}
         <input type="text" name="salon_name" value="{{ user.salon_name }}" />
         {% else %}
         <input type="text" value="{{ user.salon_name }}" disabled="disabled" />
@@ -75,7 +54,7 @@
     <div class="control-group">
       <label class="control-label">发廊地址</label>
       <div class="controls">
-        {% if user.actived == 6 or user.actived == 4 %}
+        {% if user.actived in (4, 5, 6) %}
         <input type="text" name="salon_address" value="{{ user.salon_address }}" />
         {% else %}
         <input type="text" value="{{ user.salon_address }}" disabled="disabled" />
@@ -85,7 +64,7 @@
     <div class="control-group">
       <label class="control-label">发廊电话</label>
       <div class="controls">
-        {% if user.actived == 6 or user.actived == 4 %}
+        {% if user.actived in (4, 5, 6) %}
         <input type="text" name="salon_telephone" value="{{ user.salon_telephone }}" />
         {% else %}
         <input type="text" value="{{ user.salon_telephone }}" disabled="disabled" />

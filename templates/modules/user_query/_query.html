@@ -4,8 +4,9 @@
     <div class="controls">
       <select name="member_type" id="member_type" class="chzn-select" data-placeholder="全部类型">
         <option value="">全部用户</option>
-        <option value="0">普通用户</option>
-        <option value="1">发型师</option>
+        {% for k, v in config["member_type"].items() %}
+        <option value="{{ k }}">{{ config["member_type"].get(k) }}</option>
+        {% end %}
       </select>
     </div>
   </div>
@@ -14,14 +15,9 @@
     <div class="controls">
       <select name="actived" id="actived" class="chzn-select" data-placeholder="全部状态">
         <option value="">全部状态</option>
-        <option value="0">未激活</option>
-        <option value="1">激活</option>
-        <option value="2">已禁用</option>
-        <option value="3">用户未通过审核（仅发型师）</option>
-        <option value="4">等待审核（仅发型师）</option>
-        <option value="5">已通过认证（仅发型师）</option>
-        <option value="6">申请修改资料（仅发型师）</option>
-        <option value="7">小号</option>
+        {% for k, v in config["actived"].items() %}
+        <option value="{{ k }}">{{ config["actived"].get(k) }}</option>
+        {% end %}
       </select>
     </div>
   </div>

@@ -90,3 +90,23 @@
     <textarea id="sign_text" name="sign_text">{{ user.sign_text }}</textarea>
   </div>
 </div>
+<div class="control-group">
+  <label class="control-label">是否推荐达人</label>
+  <div class="controls">
+    <select id="recommend" name="recommend">
+      {% for k, v in config["recommend"].items() %}
+      <option value="{{ k }}">{{ v }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">是否星光巨匠</label>
+  <div class="controls">
+    <select id="recommend_talent" name="recommend_talent">
+      {% for k, v in config["recommend_talent"].items() %}
+      <option value="{{ k }}">{{ v }}</option>
+      {% end %}
+    </select>
+  </div>
+</div>

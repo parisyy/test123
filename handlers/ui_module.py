@@ -24,6 +24,7 @@ class UserQueryModule(tornado.web.UIModule):
             provinces=self.handler.fetch_provinces(),
             cities=self.handler.fetch_cities(),
             query_params=query_params,
+            config=self.handler.config,
         )
         return self.render_string("modules/user_query/_query.html", **params)
 

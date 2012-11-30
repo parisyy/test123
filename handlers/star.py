@@ -10,7 +10,7 @@ from ext.pagination import Pagination
 
 class StarBaseHandler(UserBaseHandler):
     def query_users_where_clause(self, **args):
-        query = ["recommend = 2"]  # 保存SQL查询条件
+        query = ["recommend_talent = 1"]  # 保存SQL查询条件
         params = []  # 保存SQL查询参数
 
         if args["member_type"] is not None:
@@ -100,7 +100,7 @@ class StarHandler(StarBaseHandler):
 
     def delete(self, id):
         try:
-            self.db.execute("update md_member set recommend = 0 where id = %s", id)
+            self.db.execute("update md_member set recommend_talent = 0 where id = %s", id)
             self.write(json.dumps({'code': 0}))
         except Exception, e:
             self.write(json.dumps({

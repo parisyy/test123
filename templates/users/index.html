@@ -53,8 +53,7 @@
             </td>
             <td>
                 <a href="/users/edit/{{ entry.id }}">资料</a>
-                <a href="#">动态</a>
-                <a href="#">推荐</a>
+                <a href="/twitters?username={{ entry.username }}">动态</a>
                 <!-- 用户处于【已禁用】状态时，显示【激活】链接，其它状态均显示【禁用】 -->
                 {% if entry.actived == 2 %}
                 <a id="link-actived" href="#">激活</a>
