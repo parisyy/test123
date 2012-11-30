@@ -35,13 +35,23 @@
       <label class="control-label">是否推荐发型师</label>
       <div class="controls">
         <select id="recommend" name="recommend">
-          <option></option>
           {% for k, v in config["recommend"].items() %}
           <option value="{{ k }}">{{ v }}</option>
           {% end %}
         </select>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label">是否星光巨匠</label>
+      <div class="controls">
+        <select id="recommend_talent" name="recommend_talent">
+          {% for k, v in config["recommend_talent"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        </select>
+      </div>
+    </div>
+
     <div class="control-group">
       <label class="control-label">所属发廊</label>
       <div class="controls">
@@ -164,6 +174,7 @@
     $('#price_dye').val('{{ user.price_dye }}');
     $('#price_care').val('{{ user.price_care }}');
     $('#recommend').val('{{ user.recommend }}');
+    $('#recommend_talent').val('{{ user.recommend_talent }}');
 
     $('.chzn-select').chosen();
 

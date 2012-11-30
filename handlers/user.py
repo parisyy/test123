@@ -36,10 +36,12 @@ class UserBaseHandler(BaseHandler):
             4: '大于500',
         },
         'recommend': {
-            0: '未推荐',
-            1: '推荐发型师（达人）',
-            2: '星光巨匠',
-            3: '首次登录推荐',
+            0: '否',
+            1: '是',
+        },
+        'recommend_talent': {
+            0: '否',
+            1: '是',
         },
     }
 
@@ -138,7 +140,7 @@ class UserBaseHandler(BaseHandler):
     def query_users(self, **args):
         sql = '''
             select m.id, m.username, m.email, m.member_type, m.regtime, m.recommend,
-                m.province_id, m.city_id,
+                m.province_id, m.city_id, m.recommend_talent,
                 m.actived, s.works_count, s.lastlogintime, s.twitter_num, s.emotion_num,
                 from_unixtime(m.regtime) as regtime_str,
                 from_unixtime(s.lastlogintime) as lastlogintime_str
@@ -223,6 +225,7 @@ class UserEditHandler(UserBaseHandler):
 
             # stylists
             recommend=self.get_argument("recommend", None),
+            recommend_talent=self.get_argument("recommend_talent", None),
             salon_id=self.get_argument("salon_id", None),
             mobile=self.get_argument("mobile", None),
             price_haircut=self.get_argument("price_haircut", None),

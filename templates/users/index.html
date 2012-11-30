@@ -41,7 +41,16 @@
             <td>{{ entry.lastlogintime_str }}</td>
             <td>{{ config["actived"].get(entry.actived, "") }}</td>
             <td>{{ entry.twitter_num }} / {{ entry.emotion_num }}</td>
-            <td>{{ config["recommend"].get(entry.recommend, "") }}</td>
+            <td>
+              {% set recommend_str = [] %}
+              {% if entry.recommend %}
+                {% set recommend_str.append('达人') %}
+              {% end %}
+              {% if entry.recommend_talent %}
+                {% set recommend_str.append('星光巨匠') %}
+              {% end %}
+              {{ ' / '.join(recommend_str) }}
+            </td>
             <td>
                 <a href="/users/edit/{{ entry.id }}">资料</a>
                 <a href="#">动态</a>
