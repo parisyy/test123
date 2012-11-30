@@ -11,7 +11,7 @@
   <!-- 普通用户和发型师共用的基本资料 -->
   {{ modules.UserEditBasicModule(user) }}
 
-  {% if user.member_type == 0 %}
+  {% if user.member_type == 1 %}
     <div class="control-group">
       <label class="control-label">脸型</label>
       <div class="controls">
@@ -30,7 +30,7 @@
         <input type="text" id="hair_volume" name="hair_volume" value="{{ user.hair_volume }}" />
       </div>
     </div><br />
-  {% elif user.member_type == 1 %}
+  {% elif user.member_type == 2 %}
     <div class="control-group">
       <label class="control-label">是否推荐发型师</label>
       <div class="controls">
