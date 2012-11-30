@@ -17,9 +17,14 @@
       <td>{{ entry.description }}</td>
     </tr>
     <tr>
+      {% if entry.member_type == 2 %}
       <td><a href="javascript:void(0)" onclick="$('#pic_form').toggle()">图片</a></td>
+      {% else %}
+      <td>图片</td>
+      {% end %}
       <td>
         <p><img src="{{ entry.real_pic_url }}" width="120" height="140" /></p>
+        {% if entry.member_type == 2 %}
         <p>
         脸型：
         {% for k, v in config['hair_face'].items() %}
@@ -44,6 +49,7 @@
           {% end %}
         {% end %}
         </p>
+        {% end %}
       </td>
     </tr>
     <tr>
@@ -72,6 +78,7 @@
 </table>
 
 <!-- 图片属性 -->
+{% if entry.member_type == 2 %}
 <form id="pic_form" method="post" class="well" style="display:none">
   编辑缩略图属性<hr />
   <div class="control-group">
@@ -113,6 +120,7 @@
   <p><input type="submit" value="修改缩略图属性" class="btn btn-success span2" /></p>
   {{ xsrf_form_html() }}
 </form>
+{% end %}
 
 <!-- 评论列表 -->
 <table id="comments" class="table comments" style="display:none">

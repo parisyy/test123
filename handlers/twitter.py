@@ -52,10 +52,16 @@ class TwitterBaseHandler(BaseHandler):
             4: '偏少',
         },
         'easy_style': {
-            0: '居家打理',
-            1: '专业打理',
+            0: '可居家打理',
+            1: '需专业打理',
         },
     }
+
+    def stylist_type_id(self):
+        return 2
+
+    def user_type_id(self):
+        return 1
 
     def gen_query_str(self, sql, **args):
         query_str = []
