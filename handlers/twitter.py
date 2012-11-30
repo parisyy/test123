@@ -52,8 +52,8 @@ class TwitterBaseHandler(BaseHandler):
             4: '偏少',
         },
         'easy_style': {
-            0: '否',
-            1: '是',
+            0: '居家打理',
+            1: '专业打理',
         },
     }
 

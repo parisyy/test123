@@ -39,7 +39,7 @@
         <p>
         是否容易打理：
         {% for k, v in config['easy_style'].items() %}
-          {% if k in easy_style.keys() %}
+          {% if k == entry.easy_style %}
            {{ v }} 
           {% end %}
         {% end %}
@@ -102,7 +102,7 @@
     <label class="control-label">打理</label>
     <div class="controls">
       {% for k, v in config['easy_style'].items() %}
-        {% if k in easy_style.keys() %}
+        {% if k == entry.easy_style %}
           <input type="radio" name="easy_style" value="{{ k }}" checked="checked" class="checkbox inline" /> {{ v }} 
         {% else %}
           <input type="radio" name="easy_style" value="{{ k }}" class="checkbox inline" /> {{ v }} 
