@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import time
 import datetime
 import tornado.web
 from base import BaseHandler, none_to_empty_str
@@ -86,11 +87,13 @@ class UserBaseHandler(BaseHandler):
         # 更新数据库
         tmpl = "update md_member set %s = %%s where id = %s"
         setters = map(lambda x: x + ' = %s', args.keys())
+        setters.append("last_modifytime = %s")
         if len(setters) == 0:
             return
         else:
             tmpl = "update md_member set " + ", ".join(setters) + " where id = %s"
             params = args.values()
+            params.append(time.mktime(datetime.datetime.now().timetuple()))
             params.append(uid)
             self.db.execute(tmpl, *params)
 
