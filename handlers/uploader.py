@@ -94,6 +94,7 @@ class UploaderBaseHandler(BaseHandler):
             os.makedirs(real_dirname)
 
         img = self.create_file(fd, real_dirname + "/" + filename + "." + img_type)
+        img = self.create_file(fd, real_dirname + "/" + filename + "_192x192." + img_type, (192, 192))
         img_width, img_height = img.size
 
         # 更新数据库
@@ -122,6 +123,7 @@ class UploaderBaseHandler(BaseHandler):
             os.makedirs(real_dirname)
 
         img = self.create_file(fd, real_dirname + "/" + filename + "." + img_type)
+        img = self.create_file(fd, real_dirname + "/" + filename + "_192x192." + img_type, (192, 192))
         img_width, img_height = img.size
 
         # 更新数据库
@@ -140,7 +142,7 @@ class UploaderBaseHandler(BaseHandler):
         # 只删除数据库记录，不删除已上传的图片
         self.db.execute("delete from md_salon_picture where is_logo = 'Y' and salon_id = %s", salon_id)
 
-    def create_file(self, fd, filename):
+    def create_file(self, fd, filename, size=()):
         '''保存上传文件
         @fd 文件数据
         @filename 保存文件时的文件名（包含目录路径）
@@ -150,6 +152,8 @@ class UploaderBaseHandler(BaseHandler):
         tmpf.seek(0)
 
         img = Image.open(tmpf.name)
+        if size:
+            img.thumbnail((size[0], size[1]), resample=1)
         tmpf.close()
         img.save(filename)
 
