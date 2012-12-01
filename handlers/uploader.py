@@ -58,13 +58,27 @@ class UploaderBaseHandler(BaseHandler):
         # 保存图片
         img = Image.open(tmpf.name)
         tmpf.close()
-        #img.thumbnail((400, 400), resample=1)
 
-        # 文件名
-        filename = self._avatar_path(uid)
+        # big avatar
+        img.thumbnail((128, 128), resample=1)
+        filename = self._avatar_path(uid, 0)
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         img.save(filename)  # 文件保存在pictures目录下
+
+        # middle avatar
+        img.thumbnail((64, 64), resample=1)
+        filename = self._avatar_path(uid, 1)
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        img.save(filename)
+
+        # small avatar
+        img.thumbnail((32, 32), resample=1)
+        filename = self._avatar_path(uid, 2)
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        img.save(filename)
 
         return filename.replace("assets", "static")
 

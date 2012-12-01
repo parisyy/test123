@@ -141,11 +141,19 @@ class BaseHandler(tornado.web.RequestHandler):
             pic_url = ""
         return pic_url
 
-    def _avatar_path(self, id):
+    def _avatar_path(self, id, type=0):
         '''返回用户头像的文件路径，若不存在则返回None'''
         path = "assets/pictures/avatar"
         id = "%09d" % int(id)
         filename = id[0:3] + '/' + id[3:5] + '/' + id[5:7] + '/' + id[7:9]
+
+        if type == 0:
+            filename = filename + '_big'
+        elif type == 1:
+            filename = filename + '_middle'
+        elif type == 2:
+            filename = filename + '_small'
+
         url = path + '/' + filename + '.jpg'
         return url
 
