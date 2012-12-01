@@ -14,10 +14,10 @@
 <hr />
 <ul class="thumbnails">
   {% for pic in recommend_pics %}
-  <li class="span3">
+  <li class="span2">
     <div class="thumbnail">
       <a href="{{ pic.real_pic_url }}" target="_blank">
-        <img src="{{ pic.real_pic_url }}" width="100%" height="120" />
+        <img src="{{ pic.real_pic_url }}" height="140" />
       </a>
     </div>
   </li>
@@ -47,10 +47,10 @@
   <p><input type="submit" id="submit" value="提交" class="btn btn-success span2"></p>
 
   <div id="thumbnail-snippet" style="display:none">
-    <li class="span3">
+    <li class="span2">
       <div class="thumbnail">
         <a href="" target="_blank">
-          <img src="" width="140" height="120" />
+          <img src="" height="140" />
         </a>
       </div>
     </li>
