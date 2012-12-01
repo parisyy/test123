@@ -69,6 +69,7 @@ class LessonNewHandler(LessonBaseHandler):
             content = self.get_argument("content", "")
             start_date = self.get_argument("start_date", "2012-01-01")
             end_date = self.get_argument("end_date", "2012-01-01")
+            actived = self.get_argument("actived", "N")
             createtime = time.mktime(datetime.datetime.now().timetuple())
 
             pics = self.get_arguments("pics")
@@ -80,12 +81,12 @@ class LessonNewHandler(LessonBaseHandler):
             subject_id = self.db.execute("insert into md_diy_subject(subject_name, member_id, content, actived, "
                     "createtime, start_time, end_time) "
                     "values(%s, %s, %s, %s, %s, %s, %s)",
-                    name, member_id, content, 'N', createtime, start_date, end_date)
+                    name, member_id, content, actived, createtime, start_date, end_date)
             for pic in pics:
                 pic_id, pic_url = pic.split("|")
                 self.db.execute("insert into md_diy_subject_content(subject_id, theme_pic_id, "
                         "thme_pic_url, sort, actived) values(%s, %s, %s, %s, %s)",
-                        subject_id, pic_id, pic_url, 0, 'N')
+                        subject_id, pic_id, pic_url, 0, actived)
         except Exception, e:
             print e
             params = dict(
@@ -129,6 +130,7 @@ class LessonEditHandler(LessonBaseHandler):
         content = self.get_argument("content", "")
         start_date = self.get_argument("start_date", "")
         end_date = self.get_argument("end_date", "")
+        actived = self.get_argument("actived", "N")
         pics = self.get_arguments("pics")
 
         lesson = self.fetch_lesson(id)
@@ -138,13 +140,13 @@ class LessonEditHandler(LessonBaseHandler):
             new_start_date = self.convert_date_to_timestamp(start_date)
             new_end_date = self.convert_date_to_timestamp(end_date)
             self.db.execute("update md_diy_subject set subject_name = %s, member_id = %s, content = %s, "
-                    "start_time = %s, end_time = %s where id = %s",
-                    name, member_id, content, new_start_date, new_end_date, id)
+                    "start_time = %s, end_time = %s, actived = %s where id = %s",
+                    name, member_id, content, new_start_date, new_end_date, actived, id)
             for pic in pics:
                 pic_id, pic_url = pic.split("|")
                 self.db.execute("insert into md_diy_subject_content(subject_id, theme_pic_id, "
                         "thme_pic_url, sort, actived) values(%s, %s, %s, %s, %s)",
-                        lesson.id, pic_id, pic_url, 0, 'N')
+                        lesson.id, pic_id, pic_url, 0, actived)
             self.redirect("/lessons")
         except Exception, e:
             lesson.subject_name = name
