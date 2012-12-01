@@ -49,6 +49,17 @@ class UserBaseHandler(BaseHandler):
             4: '方脸',
             8: '瓜子脸',
         },
+        'hair_quality': {
+            1: '天然卷',
+            2: '粗硬',
+            4: '中等',
+            8: '细软',
+        },
+        'hair_volume': {
+            1: '多密',
+            2: '中等',
+            4: '偏少',
+        },
     }
 
     def fetch_user(self, uid):

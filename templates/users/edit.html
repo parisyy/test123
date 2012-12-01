@@ -16,8 +16,9 @@
       <label class="control-label">脸型</label>
       <div class="controls">
         <select name="hair_face" id="hair_face">
-          {% for tag in tags %}
-          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          <option></option>
+          {% for k, v in config["hair_face"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
           {% end %}
         </select>
       </div>
@@ -26,8 +27,9 @@
       <label class="control-label">发质</label>
       <div class="controls">
         <select name="hair_quality" id="hair_quality">
-          {% for tag in tags %}
-          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          <option></option>
+          {% for k, v in config["hair_quality"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
           {% end %}
         </select>
       </div>
@@ -36,8 +38,9 @@
       <label class="control-label">发量</label>
       <div class="controls">
         <select name="hair_volume" id="hair_volume">
-          {% for tag in tags %}
-          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          <option></option>
+          {% for k, v in config["hair_volume"].items() %}
+          <option value="{{ k }}">{{ v }}</option>
           {% end %}
         </select>
       </div>
