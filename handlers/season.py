@@ -75,6 +75,7 @@ class SeasonNewHandler(SeasonBaseHandler):
             theme_pic_url = self.get_argument("theme_pic_url", "")
             theme_spic_id = self.get_argument("theme_spic_id", 0)
             theme_spic_url = self.get_argument("theme_spic_url", "")
+            actived = self.get_argument("actived", "N")
             pic_ids = self.get_argument("pic_ids", "")
 
             if isinstance(start_time, str) or isinstance(start_time, unicode):
@@ -88,7 +89,7 @@ class SeasonNewHandler(SeasonBaseHandler):
                     "theme_spic_id, theme_spic_url, actived) "
                     "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     period_name, content, package_id, start_time, end_time, createtime,
-                    theme_pic_id, theme_pic_url, theme_spic_id, theme_spic_url, "N")
+                    theme_pic_id, theme_pic_url, theme_spic_id, theme_spic_url, actived)
 
             pic_ids = pic_ids.split(",")
             for pic_id in pic_ids:
@@ -139,6 +140,7 @@ class SeasonEditHandler(SeasonBaseHandler):
         season["theme_pic_url"] = self.get_argument("theme_pic_url", season.theme_pic_url)
         season["theme_spic_id"] = self.get_argument("theme_spic_id", season.theme_spic_id)
         season["theme_spic_url"] = self.get_argument("theme_spic_url", season.theme_spic_url)
+        season["actived"] = self.get_argument("actived", season.actived)
 
         pic_ids = self.get_argument("pic_ids", "")
 
@@ -151,10 +153,10 @@ class SeasonEditHandler(SeasonBaseHandler):
             self.db.execute("update md_season_period set period_name = %s, content = %s, "
                     "package_id = %s, start_time = %s, end_time = %s, "
                     "theme_pic_id = %s, theme_pic_url = %s, theme_spic_id = %s, "
-                    "theme_spic_url = %s where id = %s",
+                    "theme_spic_url = %s, actived = %s where id = %s",
                     season.period_name, season.content, season.package_id, season.start_time,
                     season.end_time, season.theme_pic_id, season.theme_pic_url,
-                    season.theme_spic_id, season.theme_spic_url, season.id)
+                    season.theme_spic_id, season.theme_spic_url, season.actived, season.id)
 
             pic_ids = pic_ids.split(",")
             for pic_id in pic_ids:

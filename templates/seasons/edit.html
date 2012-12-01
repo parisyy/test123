@@ -46,6 +46,15 @@
       </select>
     </div>
   </div>
+  <div class="control-group">
+    <label class="control-label">是否激活</label>
+    <div class="controls">
+      <select name="actived" id="actived">
+        <option value="N">否</option>
+        <option value="Y">是</option>
+      </select>
+    </div>
+  </div>
 
   <!-- 主题图片预览模块 -->
   <div class="control-group" id="title-preview" style="display:none">
@@ -104,6 +113,7 @@
 <script type="text/javascript">
   function set_default_values() {
     $('#package_id').val('{{ season.package_id }}');
+    $('#actived').val('{{ season.actived }}');
 
     $('#start_time').datepicker({
       dateFormat: 'yy-mm-dd',
