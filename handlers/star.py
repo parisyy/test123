@@ -112,18 +112,31 @@ class StarHandler(StarBaseHandler):
             }))
 
 
-class StarRecommendHandler(BaseHandler):
+class StarRecommendHandler(StarBaseHandler):
     @tornado.web.authenticated
     def get(self, uid):
-        pics = self.db.query("select m.*, p.id as tid, p.img_path, p.img_type, p.pic_url, p.width, p.height "
-                "from md_talent m, md_talent_picture t, md_theme_picture p "
-                "where m.id = t.talent_id and t.tid = p.id and m.member_id = %s", uid)
+        user = self.fetch_user(uid)
+        if not user:
+            raise tornado.web.HTTPError(404)
 
         params = dict(
-            pics=pics,
-            uid=uid,
+            user=user,
+            path_prefix=self.path_to_url(self.get_twitter_path_prefix()),
         )
         self.render("stars/recommend.html", **params)
+
+    def post(self, uid):
+        user = self.fetch_user(uid)
+        if not user:
+            raise tornado.web.HTTPError(404)
+
+        twitter_ids = self.get_arguments("twitter_id", [])
+        print twitter_ids
+        for twitter_id in twitter_ids:
+            self.db.execute("insert into md_talent_picture(talent_id, tid) values(%s, %s)",
+                    user.id, twitter_id)
+
+        self.redirect("/stars")
 
 
 class StarRecommendEditHandler(BaseHandler):

@@ -9,14 +9,19 @@
 {% end %}
 
 {% block content %}
-<form method="post" class="well" id="query">
+<form class="well" id="query">
   <div class="control-group">
     <label class="control-label">图片ID</label>
     <div class="controls">
-      <input type="text" name="pic_id" id="pic_id" class="input-xxlarge" />
+      <input type="text" name="twitter_id" id="twitter_id" class="input-xxlarge" />
     </div>
   </div>
-  <p><input type="button" id="btn-query" value="确定" class="btn btn-success span2"></p>
+  <p>
+  <input type="button" id="btn-query" value="确定" class="btn btn-success span2">
+  <a href="/twitters?username={{ user.get("username", "") }}" target="_blank">查看所有动态</a>
+  </p>
+
+  <input type="hidden" id="member_id" name="member_id" value="{{ user.get("id", 0) }}" class="" />
 </form>
 
 <div class="well">
@@ -35,13 +40,57 @@
     </li>
   </div>
 </div>
+
+<form method="post" id="twitter_ids" style="display:none">
+  {{ xsrf_form_html() }}
+</form>
+
+<div id="input_snippet" style="display:none">
+  <input type="hidden" name="twitter_id" value="" />
+</div>
 {% end %}
 
 {% block javascript %}
 <script type="text/javascript">
   $(document).ready(function() {
     $('#nav-stars').addClass('active');
+
+    $('#submit').click(function(e) {
+      $('#twitter_ids').submit();
+    });
+
+    $('#btn-query').click(function(e) {
+      $.ajax({
+        url: '/api/twitters/' + $('#twitter_id').val(),
+        type: 'GET',
+        data: {
+          member_id: $('#member_id').val(),
+        },
+        success: function(data) {
+          response = JSON.parse(data);
+          if (response['code'] == 0) {
+            // 设置图片预览
+            url = response['data']['img_path'] + '/' + response['data']['pic_url'] + '.' + response['data']['img_type'];
+            url = '{{ path_prefix }}' + '/' + url;
+            url = url.replace('//', '/');
+            console.log(url);
+
+            $('#thumbnail-snippet a').attr('href', url);
+            $('#thumbnail-snippet img').attr('src', url);
+            $('#preview').append($('#thumbnail-snippet').html());
+
+            // 设置twitter_ids表单
+            $('#input_snippet input').attr('value', $('#twitter_id').val());
+            $('#twitter_ids').append($('#input_snippet').html());
+
+            // 清除当前twitter_id输入框
+            $('#twitter_id').val('');
+          } else {
+            alert(response['error']);
+          }
+        }
+      });
+    });
   });
 </script>
 {% end %}
-

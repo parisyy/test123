@@ -196,6 +196,26 @@ class TwitterHandler(TwitterBaseHandler):
                 'error': e,
             }))
 
+    @tornado.web.authenticated
+    def get(self, id):
+        '''获取动态图片的信息，JSON格式'''
+        member_id = self.get_argument("member_id", 0)
+        entry = self.db.get("select p.img_path, p.pic_url, p.img_type from md_twitter_show s, md_twitter_picture p "
+                "where s.pic_id = p.id and s.tid = %s and s.member_id = %s", id, member_id)
+
+        print id, member_id
+
+        if entry:
+            self.write(json.dumps({
+                'code': 0,
+                'data': entry,
+            }))
+        else:
+            self.write(json.dumps({
+                'code': -1,
+                'error': '没有该条动态',
+            }))
+
 
 class TwitterListHandler(TwitterBaseHandler):
     @tornado.web.authenticated
