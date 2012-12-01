@@ -25,7 +25,7 @@ from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, SalonUploaderHandler, SalonLogoUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
-from handlers.salon import SalonHandler, SalonEditHandler
+from handlers.salon import SalonHandler, SalonEditHandler, SalonNewHandler
 from handlers.twitter import TwitterHandler, TwitterListHandler, TwitterEditHandler
 from handlers.twitter import TwitterCommentDeleteHandler
 
@@ -75,6 +75,7 @@ class Application(BaseApplication):
             # 沙龙管理
             (r'/salons', SalonHandler),
             (r'/salons/edit/([0-9]+)', SalonEditHandler),
+            (r'/salons/new', SalonNewHandler),
 
             # 动态管理
             (r'/api/twitters/([0-9]*)', TwitterHandler),

@@ -80,6 +80,8 @@ class SalonBaseHandler(BaseHandler):
         if query_str != []:
             query_str = "where " + " and ".join(query_str)
             sql = sql + query_str
+
+        sql = sql + " order by id desc"
         
         return sql, params
 
@@ -127,6 +129,17 @@ class SalonBaseHandler(BaseHandler):
             params = args.values()
             params.append(id)
             self.db.execute(tmpl, *params)
+
+    def create_salon(self, **args):
+        # 删除NoneType数据项
+        for k in args.keys():
+            if args.get(k) is None:
+                args.pop(k)
+        # 更新数据库
+        setters = map(lambda x: '%s', args.keys())
+        if setters:
+            tmpl = "insert into md_salon(" + ",".join(args.keys()) + ") values(" + ",".join(setters) + ")"
+            self.db.execute(tmpl, *args.values())
 
     def fetch_salon_pics(self, salon_id):
         entries = self.db.query("select p.img_path, p.pic_url, p.img_type "
@@ -219,3 +232,32 @@ class SalonEditHandler(SalonBaseHandler):
         except Exception, e:
             print e
             self.redirect("/salons/edit/%s" % id)
+
+
+class SalonNewHandler(SalonBaseHandler):
+    def get(self):
+        params = dict(
+            provinces=self.fetch_provinces(),
+            cities=self.fetch_cities(),
+            domains=self.fetch_domains(),
+            config=self.config,
+            logo_pic=self.fetch_logo_url(id),
+        )
+        self.render("salons/new.html", **params)
+
+    def post(self):
+        try:
+            args = dict(
+                salon_name=self.get_argument("salon_name"),
+                recommend=self.get_argument("recommend", 0),
+                province_id=self.get_argument("province_id", 0),
+                city_id=self.get_argument("city_id", 0),
+                area_id=self.get_argument("domain_id", 0),
+                address=self.get_argument("address"),
+                salon_telephone=self.get_argument("salon_telephone", ""),
+            )
+            self.create_salon(**args)
+            self.redirect("/salons")
+        except Exception, e:
+            print e
+            self.redirect("/salons/new")

@@ -4,7 +4,7 @@
 <ul class="breadcrumb">
   <li><a href="/salons">沙龙管理</a></li>
   <li class="divider">/</li>
-  <li>编辑沙龙</li>
+  <li>新建沙龙</li>
 </ul>
 {% end %}
 
@@ -20,7 +20,7 @@
   <div class="control-group">
     <label class="control-label">沙龙名称</label>
     <div class="controls">
-      <input type="text" name="salon_name" value="{{ salon.salon_name}}" />
+      <input type="text" name="salon_name" value="" />
     </div>
   </div>
   <div class="control-group">
@@ -70,92 +70,28 @@
   <div class="control-group">
     <label class="control-label">电话</label>
     <div class="controls">
-      <input type="text" name="salon_telephone" value="{{ salon.salon_telephone }}" />
+      <input type="text" name="salon_telephone" value="" />
     </div>
   </div>
   <div class="control-group">
     <label class="control-label">地址</label>
     <div class="controls">
-      <input type="text" name="address" value="{{ salon.address }}" class="input-xxlarge" />
+      <input type="text" name="address" value="" class="input-xxlarge" />
     </div>
   </div><br />
-  <div class="control-group">
-    <label class="control-label">沙龙图片</label>
-  </div><br />
-  <div class="control-group">
-      <ul class="thumbnails" id="salon-preview">
-      {{ modules.PictureListModule(pics, path_prefix) }}
-      </ul>
-  </div>
   <p>
   <input type="submit" value="确定" class="btn btn-success span2" />
-  <input type="button" value="上传图片" id="uploader" class="btn btn-danger span2" />
-  <input type="button" value="发型师列表" class="btn btn-warning span2" onclick="$('#stylist-list').toggle()" />
+  <input type="reset" value="重置" class="btn btn-success span2" />
   </p>
   {{ xsrf_form_html() }}
 </form>
 
-<!-- 图片代码段 -->
-<div id="thumbnail-snippet" style="display:none">
-  <li class="span3">
-    <div class="thumbnail">
-      <a href="" target="_blank">
-        <img src="" width="100%" height="120" />
-      </a>
-    </div>
-  </li>
-</div>
-
-<!-- 发型师列表 -->
-<table class="table" id="stylist-list" style="display:none">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>昵称</th>
-      <th>邮件地址</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for hairstylist in hairstylists %}
-    <tr>
-      <td>{{ hairstylist.id }}</td>
-      <td>{{ hairstylist.username }}</td>
-      <td>{{ hairstylist.email }}</td>
-    </tr>
-    {% end %}
-  </tbody>
-</table>
 {% end %}
 
 {% block javascript %}
-<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
-<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
 <script type="text/javascript">
-  function set_default_form_values() {
-    $('#province_id').val('{{ salon.province_id }}');
-    $('#city_id').val('{{ salon.city_id }}');
-    $('#domain_id').val('{{ salon.area_id }}');
-    $('#recommend').val('{{ salon.recommend }}');
-  }
-
-  function upload_logo(file, response) {
-    $('#logo_img').attr('src', response['url']);
-    window.location.reload();
-  }
-
-  function upload_pics(file, response) {
-    $('#thumbnail-snippet a').attr('href', response['url']);
-    $('#thumbnail-snippet img').attr('src', response['url']);
-    $('#salon-preview').append($('#thumbnail-snippet').html());
-  }
-
   $(document).ready(function() {
     $('#nav-salons').addClass('active');
-    set_default_form_values();
-    set_region_selectors();
-
-    upload_salon_logo('change_logo', {{ salon.id }}, upload_logo);
-    upload_salon('uploader', {{ salon.id }}, upload_pics);
   });
 </script>
 {% end %}
