@@ -145,7 +145,7 @@ class StarRecommendHandler(StarBaseHandler):
             self.db.execute("insert into md_talent_picture(talent_id, tid) values(%s, %s)",
                     user.id, twitter_id)
 
-        self.redirect("/stars")
+        self.redirect("/stars/recommend_pics/%s" % user.id)
 
 
 class StarRecommendEditHandler(BaseHandler):
