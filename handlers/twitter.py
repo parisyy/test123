@@ -30,7 +30,6 @@ class TwitterBaseHandler(BaseHandler):
             4: "未上传完成",
             5: "隐藏",
             6: "屏蔽",
-            9: "隐藏",
         },
         'member_type': {
             1: '普通用户',

@@ -108,7 +108,7 @@
       <td>{{ config["actived"].get(entry.actived, "未知状态") }}</td>
       <td>
         <a href="/twitters/edit/{{ entry.id }}">查看明细</a>
-        <a href="javascript:void(0)" onclick="set_actived_status({{ entry.id }}, 9, '#ensure_hide')">隐藏</a>
+        <a href="javascript:void(0)" onclick="set_actived_status({{ entry.id }}, 5, '#ensure_hide')">隐藏</a>
         <a href="javascript:void(0)" onclick="set_actived_status({{ entry.id }}, 6, '#ensure_mask')">屏蔽</a>
       </td>
     </tr>
