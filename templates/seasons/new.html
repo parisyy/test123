@@ -47,12 +47,22 @@
   </div>
 
   <!-- 主题图片预览模块 -->
-  <div class="control-group" id="preview" style="display:none">
-    <label class="control-label">主题图片</label>
+  <div class="control-group" id="title-preview" style="display:none">
+    <label class="control-label">主题图片（大）</label>
     <div class="controls">
       <ul class="thumbnails">
         <li class="span10">
         <a href=""><img src="" width="" height="" alt="主题图片"></img></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="control-group" id="title-preview-small" style="display:none">
+    <label class="control-label">主题图片（小）</label>
+    <div class="controls">
+      <ul class="thumbnails">
+        <li class="span10">
+        <a href="" target="_blank"><img src="" width="" height="" alt="主题图片"></img></a>
         </li>
       </ul>
     </div>
@@ -70,10 +80,13 @@
 
   <input type="hidden" id="theme_pic_id" name="theme_pic_id" value="" />
   <input type="hidden" id="theme_pic_url" name="theme_pic_url" value="" />
+  <input type="hidden" id="theme_spic_id" name="theme_spic_id" value="" />
+  <input type="hidden" id="theme_spic_url" name="theme_spic_url" value="" />
   <input type="hidden" id="pic_ids" name="pic_ids" value="" />
 
   <p>
-    <input type="button" id="upload-period-pic" value="上传主题图片" class="btn btn-danger span2" />
+    <input type="button" id="upload-period-pic" value="上传主题图片（大）" class="btn btn-danger span2" />
+    <input type="button" id="upload-period-spic" value="上传主题图片（小）" class="btn btn-danger span2" />
     <input type="button" id="select-pics" value="图片选择" class="btn btn-warning span2" />
     <input type="submit" value="创建主题" class="btn btn-success span2" />
   </p>
@@ -97,23 +110,36 @@
     $('.chzn-select').chosen();
   }
 
-  function uploader_callback(file, response) {
+  function upload_theme_pic(file, response) {
     // 清空原有的预览图
     // 设置并显示预览模块
-    $('#preview a').attr('href', response['url']);
-    $('#preview img').attr('src', response['url']);
-    $('#preview').show();
+    $('#title-preview a').attr('href', response['url']);
+    $('#title-preview img').attr('src', response['url']);
+    $('#title-preview').show();
 
     // 设置需要提交的表单
     $('#theme_pic_id').attr('value', response['id']);
     $('#theme_pic_url').attr('value', response['name']);
   }
 
+  function upload_theme_spic(file, response) {
+    // 清空原有的预览图
+    // 设置并显示预览模块
+    $('#title-preview-small a').attr('href', response['url']);
+    $('#title-preview-small img').attr('src', response['url']);
+    $('#title-preview-small').show();
+
+    // 设置需要提交的表单
+    $('#theme_spic_id').attr('value', response['id']);
+    $('#theme_spic_url').attr('value', response['name']);
+  }
+
   $(document).ready(function() {
     $('#nav-seasons').addClass('active');
 
     set_default_values();
-    upload_file('upload-period-pic', uploader_callback);
+    upload_file('upload-period-pic', upload_theme_pic);
+    upload_file('upload-period-spic', upload_theme_spic);
 
     $('#select-pics').click(function() {
         window.open('/selector');

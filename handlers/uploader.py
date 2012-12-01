@@ -45,7 +45,7 @@ class UploaderBaseHandler(BaseHandler):
         # 设置数据库
         self.update_table_md_theme_picture(dirname, filename, postfix, img_width, img_height, pic_id)
 
-        return pic_id, filename + "." + postfix, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
+        return pic_id, filename, self.path_to_url(real_dirname + "/" + filename + "." + postfix)
 
     # TODO: 需要重构
     def create_avatar_file(self, fd, uid):

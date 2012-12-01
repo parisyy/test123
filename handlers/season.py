@@ -73,6 +73,8 @@ class SeasonNewHandler(SeasonBaseHandler):
             end_time = self.get_argument("end_time", "2012-01-01")
             theme_pic_id = self.get_argument("theme_pic_id", 0)
             theme_pic_url = self.get_argument("theme_pic_url", "")
+            theme_spic_id = self.get_argument("theme_spic_id", 0)
+            theme_spic_url = self.get_argument("theme_spic_url", "")
             pic_ids = self.get_argument("pic_ids", "")
 
             if isinstance(start_time, str) or isinstance(start_time, unicode):
@@ -82,10 +84,11 @@ class SeasonNewHandler(SeasonBaseHandler):
             createtime = time.mktime(datetime.datetime.now().timetuple())
 
             id = self.db.execute("insert into md_season_period(period_name, content, package_id, "
-                    "start_time, end_time, createtime, theme_pic_id, theme_pic_url, actived) "
-                    "values(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    "start_time, end_time, createtime, theme_pic_id, theme_pic_url, "
+                    "theme_spic_id, theme_spic_url, actived) "
+                    "values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     period_name, content, package_id, start_time, end_time, createtime,
-                    theme_pic_id, theme_pic_url, "N")
+                    theme_pic_id, theme_pic_url, theme_spic_id, theme_spic_url, "N")
 
             pic_ids = pic_ids.split(",")
             for pic_id in pic_ids:
@@ -111,11 +114,13 @@ class SeasonEditHandler(SeasonBaseHandler):
         pics = self.fetch_season_pics(id)
         path_prefix = self.path_to_url(self.get_subject_path_prefix())
         pic_url = path_prefix + "/" + self.pic_url(season.theme_pic_id)
+        spic_url = path_prefix + "/" + self.pic_url(season.theme_spic_id)
 
         params = dict(
             season=season,
             packages=self.fetch_packages(),
             pic_url=pic_url,
+            spic_url=spic_url,
             pics=pics,
             path_prefix=path_prefix,
         )
@@ -132,6 +137,8 @@ class SeasonEditHandler(SeasonBaseHandler):
         season["end_time"] = self.get_argument("end_time", season.end_time)
         season["theme_pic_id"] = self.get_argument("theme_pic_id", season.theme_pic_id)
         season["theme_pic_url"] = self.get_argument("theme_pic_url", season.theme_pic_url)
+        season["theme_spic_id"] = self.get_argument("theme_spic_id", season.theme_spic_id)
+        season["theme_spic_url"] = self.get_argument("theme_spic_url", season.theme_spic_url)
 
         pic_ids = self.get_argument("pic_ids", "")
 
@@ -143,9 +150,11 @@ class SeasonEditHandler(SeasonBaseHandler):
 
             self.db.execute("update md_season_period set period_name = %s, content = %s, "
                     "package_id = %s, start_time = %s, end_time = %s, "
-                    "theme_pic_id = %s, theme_pic_url = %s where id = %s",
+                    "theme_pic_id = %s, theme_pic_url = %s, theme_spic_id = %s, "
+                    "theme_spic_url = %s where id = %s",
                     season.period_name, season.content, season.package_id, season.start_time,
-                    season.end_time, season.theme_pic_id, season.theme_pic_url, season.id)
+                    season.end_time, season.theme_pic_id, season.theme_pic_url,
+                    season.theme_spic_id, season.theme_spic_url, season.id)
 
             pic_ids = pic_ids.split(",")
             for pic_id in pic_ids:
