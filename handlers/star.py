@@ -119,9 +119,19 @@ class StarRecommendHandler(StarBaseHandler):
         if not user:
             raise tornado.web.HTTPError(404)
 
+        recommend_pics = self.db.query("select t.tid, p.id as pic_id, p.img_path, p.pic_url, p.img_type "
+                "from md_talent_picture t, md_twitter_show s, md_twitter_picture p "
+                "where t.tid = s.tid and s.pic_id = p.id and t.talent_id = %s", user.id)
+        for pic in recommend_pics:
+            pic["real_pic_url"] = self.get_twitter_path_prefix()
+            pic["real_pic_url"] += "/%s/%s.%s" % (pic.img_path, pic.pic_url, pic.img_type)
+            pic["real_pic_url"] = self.path_to_url(pic.real_pic_url)
+            pic["real_pic_url"] = pic.real_pic_url.replace("//", "/")
+
         params = dict(
             user=user,
             path_prefix=self.path_to_url(self.get_twitter_path_prefix()),
+            recommend_pics=recommend_pics,
         )
         self.render("stars/recommend.html", **params)
 
@@ -131,7 +141,6 @@ class StarRecommendHandler(StarBaseHandler):
             raise tornado.web.HTTPError(404)
 
         twitter_ids = self.get_arguments("twitter_id", [])
-        print twitter_ids
         for twitter_id in twitter_ids:
             self.db.execute("insert into md_talent_picture(talent_id, tid) values(%s, %s)",
                     user.id, twitter_id)
