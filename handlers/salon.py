@@ -31,6 +31,7 @@ class SalonBaseHandler(BaseHandler):
     def _logo_url(self, entry):
         filename = self.get_salon_path_prefix()
         filename = str(filename) + "/" + str(entry.img_path) + "/" + str(entry.pic_url) + "." + str(entry.img_type)
+        filename = filename.replace("//", "/")
         return self.path_to_url(filename)
 
     def fetch_all_logos(self):
