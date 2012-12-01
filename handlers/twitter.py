@@ -118,6 +118,7 @@ class TwitterBaseHandler(BaseHandler):
             where m.id = s.tid and s.pic_id = p.id and m.member_id = u.id
         '''
         sql, params = self.gen_query_str(sql, **args)
+        sql = sql + " order by m.createtime desc"
 
         page = args.get("page", [1])[0]
         sql = Pagination.add_limit_clause(sql, page)

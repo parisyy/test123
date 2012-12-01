@@ -236,8 +236,6 @@ class UserEditHandler(UserBaseHandler):
             price_care=self.get_argument("price_care", None),
         )
 
-        print args["hair_face"]
-
         user = self.fetch_user(id)
         try:
             self.update_user(id, **args)
