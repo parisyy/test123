@@ -4,6 +4,7 @@
 import json
 import time
 import datetime
+import tornado.web
 from handlers.base import BaseHandler
 from ext.informer import BootstrapInformer
 from ext.pagination import Pagination
@@ -37,6 +38,7 @@ class SeasonBaseHandler(BaseHandler):
 
 
 class SeasonHandler(SeasonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         page = self.get_argument("page", 1)
         seasons = self.fetch_all_seasons(page)
@@ -52,6 +54,7 @@ class SeasonHandler(SeasonBaseHandler):
 
 
 class SeasonNewHandler(SeasonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         params = dict(
             pics=[],
@@ -60,6 +63,7 @@ class SeasonNewHandler(SeasonBaseHandler):
         )
         self.render("seasons/new.html", **params)
 
+    @tornado.web.authenticated
     def post(self):
         try:
             period_name = self.get_argument("period_name", "未知主题名称")
@@ -101,6 +105,7 @@ class SeasonNewHandler(SeasonBaseHandler):
 
 
 class SeasonEditHandler(SeasonBaseHandler):
+    @tornado.web.authenticated
     def get(self, id):
         season = self.fetch_season(id)
         pics = self.fetch_season_pics(id)
@@ -116,6 +121,7 @@ class SeasonEditHandler(SeasonBaseHandler):
         )
         self.render("seasons/edit.html", **params)
 
+    @tornado.web.authenticated
     def post(self, id):
         season = self.fetch_season(id)
 
@@ -163,6 +169,7 @@ class SeasonEditHandler(SeasonBaseHandler):
 
 
 class PictureSelectorHandler(SeasonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         members = self.fetch_all_users()
 
@@ -172,6 +179,7 @@ class PictureSelectorHandler(SeasonBaseHandler):
         )
         self.render("seasons/selector.html", **params)
 
+    @tornado.web.authenticated
     def post(self):
         pic_id = self.get_argument("pic_id", 0)
         member_id = self.get_argument("member_id", 0)

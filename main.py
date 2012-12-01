@@ -22,7 +22,7 @@ from handlers.region import RegionHandler
 from handlers.ui_module import UserQueryModule, PictureListModule, PaginationModule
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
-from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, SalonLogoUploaderHandler
+from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, SalonUploaderHandler, SalonLogoUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 from handlers.salon import SalonHandler, SalonEditHandler
@@ -58,6 +58,7 @@ class Application(BaseApplication):
             # 图片上传
             (r'/uploader', ImageUploaderHandler),
             (r'/avatar_uploader', AvatarUploaderHandler),
+            (r'/salon_uploader', SalonUploaderHandler),
             (r'/salon_logo_uploader', SalonLogoUploaderHandler),
 
             # 图片选择
@@ -93,6 +94,8 @@ class Application(BaseApplication):
             autoescape=None,
             cookie_secret='74f51c2f337676d9d6491aaa013624cb3c2226c0',
             xsrf_cookies=True,
+            login_url=r'/login',
+            gzip=True,
             debug=True,
         )
         tornado.web.Application.__init__(self, handlers, **settings)

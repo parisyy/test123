@@ -38,6 +38,7 @@ class LessonBaseHandler(BaseHandler):
 
 
 class LessonHandler(LessonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         page = self.get_argument("page", 1)
         lessons = self.fetch_all_lessons(page)
@@ -53,12 +54,14 @@ class LessonHandler(LessonBaseHandler):
 
 
 class LessonNewHandler(LessonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         params = dict(
             stylists=self.fetch_stylists(),
         )
         self.render("lessons/new.html", **params)
 
+    @tornado.web.authenticated
     def post(self):
         try:
             name = self.get_argument("name", "未命名课程名称")
@@ -103,6 +106,7 @@ class LessonNewHandler(LessonBaseHandler):
 
 
 class LessonEditHandler(LessonBaseHandler):
+    @tornado.web.authenticated
     def get(self, id):
         lesson = self.fetch_lesson(id)
         if lesson is None:
@@ -118,6 +122,7 @@ class LessonEditHandler(LessonBaseHandler):
         )
         self.render("lessons/edit.html", **params)
 
+    @tornado.web.authenticated
     def post(self, id):
         name = self.get_argument("name", None)
         member_id = self.get_argument("member_id", 0)

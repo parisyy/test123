@@ -9,6 +9,7 @@ import hashlib
 import base64
 import tempfile
 from PIL import Image
+import tornado.web
 from handlers.base import BaseHandler
 
 
@@ -88,6 +89,32 @@ class UploaderBaseHandler(BaseHandler):
         self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime) "
                 "values(%s, %s, %s, %s, %s)",
                 salon_id, pic_id, filename, 'Y', time.mktime(datetime.datetime.timetuple(now)))
+
+        # 计算URL地址
+        pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
+        pic_url = self.path_to_url(pic_url)
+        return pic_url.replace("//", "/")
+
+    def create_salon_file(self, fd, salon_id):
+        img_type = self.get_img_type(fd)
+        if not img_type in self.support_img_types:
+            raise Exception("不支持该文件格式")
+
+        dirname, filename = self.gen_salon_path(salon_id)
+        prefix_path = self.get_salon_path_prefix()
+        real_dirname = prefix_path + "/" + dirname
+        if not os.path.exists(real_dirname):
+            os.makedirs(real_dirname)
+
+        img = self.create_file(fd, real_dirname + "/" + filename + "." + img_type)
+        img_width, img_height = img.size
+
+        # 更新数据库
+        pic_id = self.insert_table_md_theme_picture(dirname, filename, img_type, img_width, img_height)
+        now = datetime.datetime.now()
+        self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime) "
+                "values(%s, %s, %s, %s, %s)",
+                salon_id, pic_id, filename, 'N', time.mktime(datetime.datetime.timetuple(now)))
 
         # 计算URL地址
         pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
@@ -179,9 +206,11 @@ class UploaderBaseHandler(BaseHandler):
 
 
 class ImageUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.write("Hello, world!")
 
+    @tornado.web.authenticated
     def post(self):
         if self.request.files:
             for f in self.request.files["userfile"]:
@@ -199,6 +228,7 @@ class ImageUploaderHandler(UploaderBaseHandler):
                         'error': unicode(e),
                     }))
 
+    @tornado.web.authenticated
     def delete(self):
         pic_id = self.get_argument("pic_id", 0)
 
@@ -220,6 +250,7 @@ class ImageUploaderHandler(UploaderBaseHandler):
 
 
 class AvatarUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
     def post(self):
         try:
             uid = self.get_argument("uid")
@@ -238,12 +269,32 @@ class AvatarUploaderHandler(UploaderBaseHandler):
 
 
 class SalonLogoUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
     def post(self):
         try:
             salon_id = self.get_argument("salon_id")
             if self.request.files:
                 for f in self.request.files["userfile"]:
                         pic_url = self.create_salon_logo_file(f, salon_id)
+                        self.write(json.dumps({
+                            'code': 0,
+                            'url': pic_url
+                        }))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
+
+
+class SalonUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        try:
+            salon_id = self.get_argument("salon_id")
+            if self.request.files:
+                for f in self.request.files["userfile"]:
+                        pic_url = self.create_salon_file(f, salon_id)
                         self.write(json.dumps({
                             'code': 0,
                             'url': pic_url
@@ -262,6 +313,7 @@ class TestUploaderHandler(UploaderBaseHandler):
         self.test_gen_twitter_path()
         self.test_gen_subject_path()
 
+    @tornado.web.authenticated
     def test_gen_avatar_path(self):
         dataset = []
         entries = self.db.query("select id from md_member limit 10")

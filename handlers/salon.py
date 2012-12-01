@@ -53,7 +53,6 @@ class SalonBaseHandler(BaseHandler):
         if entry == []:
             return self.default_image_url()
         else:
-            print entry
             entry = entry[0]
             return self._logo_url(entry)
 
@@ -129,8 +128,18 @@ class SalonBaseHandler(BaseHandler):
             params.append(id)
             self.db.execute(tmpl, *params)
 
+    def fetch_salon_pics(self, salon_id):
+        entries = self.db.query("select p.img_path, p.pic_url, p.img_type "
+                "from md_salon_picture s, md_theme_picture p "
+                "where s.salon_pic_id = p.id and s.is_logo = 'N' "
+                "and salon_id = %s", salon_id)
+        for e in entries:
+            e["real_pic_url"] = self._logo_url(e)
+        return entries
+
 
 class SalonHandler(SalonBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         salon_name = self.get_argument("salon_name", "")
         province_id = self.get_argument("province_id", 0)
@@ -171,34 +180,42 @@ class SalonHandler(SalonBaseHandler):
 
 
 class SalonEditHandler(SalonBaseHandler):
+    @tornado.web.authenticated
     def get(self, id):
         salon = self.fetch_salon_by_id(id)
         if salon:
+            pics = self.fetch_salon_pics(salon.id)
             params = dict(
                 salon=salon,
                 provinces=self.fetch_provinces(),
                 cities=self.fetch_cities(),
                 domains=self.fetch_domains(),
                 config=self.config,
-                logo_pic=self.fetch_logo_url(id),
                 hairstylists=self.fetch_hairstylists(salon.id),
+
+                # 图片预览
+                logo_pic=self.fetch_logo_url(id),
+                path_prefix=self.path_to_url(self.get_salon_path_prefix()),
+                pics=pics,
             )
             self.render("salons/edit.html", **params)
         else:
             raise tornado.web.HTTPError(404)
 
+    @tornado.web.authenticated
     def post(self, id):
         try:
             args = dict(
                 salon_name=self.get_argument("salon_name"),
-                recommend=self.get_argument("recommend"),
-                province_id=self.get_argument("province_id"),
-                city_id=self.get_argument("city_id"),
-                area_id=self.get_argument("domain_id"),
+                recommend=self.get_argument("recommend", 0),
+                province_id=self.get_argument("province_id", 0),
+                city_id=self.get_argument("city_id", 0),
+                area_id=self.get_argument("domain_id", 0),
                 address=self.get_argument("address"),
-                salon_telephone=self.get_argument("salon_telephone"),
+                salon_telephone=self.get_argument("salon_telephone", ""),
             )
             self.update_salon(id, **args)
             self.redirect("/salons")
-        except:
+        except Exception, e:
+            print e
             self.redirect("/salons/edit/%s" % id)

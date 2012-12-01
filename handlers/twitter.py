@@ -174,6 +174,7 @@ class TwitterBaseHandler(BaseHandler):
 
 
 class TwitterHandler(TwitterBaseHandler):
+    @tornado.web.authenticated
     def post(self, id):
         args = self.request.arguments
         args.pop('_xsrf')
@@ -197,6 +198,7 @@ class TwitterHandler(TwitterBaseHandler):
 
 
 class TwitterListHandler(TwitterBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         entries = self.query_twitters(**self.request.arguments)
         count = self.query_twitters_count(**self.request.arguments)
@@ -223,6 +225,7 @@ class TwitterListHandler(TwitterBaseHandler):
 
 
 class TwitterEditHandler(TwitterBaseHandler):
+    @tornado.web.authenticated
     def get(self, id):
         entry = self.fetch_twitter_by_id(id)
         if not entry:
@@ -243,6 +246,7 @@ class TwitterEditHandler(TwitterBaseHandler):
         )
         self.render("twitters/edit.html", **params)
 
+    @tornado.web.authenticated
     def post(self, id):
         try:
             # 去掉_xsrf参数
@@ -274,6 +278,7 @@ class TwitterEditHandler(TwitterBaseHandler):
 
 
 class TwitterCommentDeleteHandler(TwitterBaseHandler):
+    @tornado.web.authenticated
     def post(self, id):
         import json
         entry = self.db.get("select tid, member_id from md_twitter_comment where id = %s", id)

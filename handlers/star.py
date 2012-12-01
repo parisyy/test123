@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import json
+import tornado.web
 from handlers.base import BaseHandler
 from handlers.user import UserBaseHandler
 from ext.informer import BootstrapInformer
@@ -63,6 +64,7 @@ class StarBaseHandler(UserBaseHandler):
 
 
 class StarHandler(StarBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         query_params = dict(
             member_type=self.get_argument("member_type", None),
@@ -98,6 +100,7 @@ class StarHandler(StarBaseHandler):
 
         self.render("stars/index.html", **params)
 
+    @tornado.web.authenticated
     def delete(self, id):
         try:
             self.db.execute("update md_member set recommend_talent = 0 where id = %s", id)
@@ -110,8 +113,9 @@ class StarHandler(StarBaseHandler):
 
 
 class StarRecommendHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self, uid):
-        pics = self.db.query("select m.*, p.img_path, p.img_type, p.pic_url, p.width, p.height "
+        pics = self.db.query("select m.*, p.id as tid, p.img_path, p.img_type, p.pic_url, p.width, p.height "
                 "from md_talent m, md_talent_picture t, md_theme_picture p "
                 "where m.id = t.talent_id and t.tid = p.id and m.member_id = %s", uid)
 
@@ -123,6 +127,7 @@ class StarRecommendHandler(BaseHandler):
 
 
 class StarRecommendEditHandler(BaseHandler):
+    @tornado.web.authenticated
     def get(self, uid):
         params = dict(
             uid=uid,

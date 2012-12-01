@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import json
+import tornado.web
 from handlers.base import BaseHandler
 
 
@@ -23,6 +24,7 @@ class RegionBaseHandler(BaseHandler):
 
 
 class RegionHandler(RegionBaseHandler):
+    @tornado.web.authenticated
     def get(self):
         try:
             data_type = int(self.get_argument("type"))
