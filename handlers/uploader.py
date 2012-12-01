@@ -191,7 +191,7 @@ class UploaderBaseHandler(BaseHandler):
         '''
         now = datetime.datetime.now()
         filename = hashlib.md5(base64.b64encode(str(id) + str(now.microsecond))).hexdigest()
-        dirname = "%s/%s/%s/%s" % (now.year, now.month, now.day, now.hour)
+        dirname = "%s/%s/%s/%s/" % (now.year, now.month, now.day, now.hour)
         return dirname, filename
 
     def gen_salon_path(self, id):
@@ -202,7 +202,7 @@ class UploaderBaseHandler(BaseHandler):
         now = datetime.datetime.now()
         filename = hashlib.md5(base64.b64encode(str(id)) + str(now.microsecond)).hexdigest()
         id = "%09d" % int(id)
-        dirname = "%s/%s/%s/%s" % (id[:3], id[3:5], id[5:7], id[7:9])
+        dirname = "%s/%s/%s/%s/" % (id[:3], id[3:5], id[5:7], id[7:9])
         return dirname, filename
 
     def gen_subject_path(self, id):
@@ -212,7 +212,7 @@ class UploaderBaseHandler(BaseHandler):
         '''
         now = datetime.datetime.now()
         filename = hashlib.md5(base64.b64encode(str(id) + str(now.microsecond))).hexdigest()
-        dirname = "%s/%s/%s/%s" % (now.year, now.month, now.day, now.hour)
+        dirname = "%s/%s/%s/%s/" % (now.year, now.month, now.day, now.hour)
         return dirname, filename
 
     def get_img_type(self, fd):
