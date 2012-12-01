@@ -97,7 +97,7 @@
       <div class="controls">
         <select id="price_haircut" name="price_haircut">
           <option></option>
-          {% for k, v in config["price"].items() %}
+          {% for k, v in config["haircut_price"].items() %}
           <option value="{{ k }}">{{ v }}</option>
           {% end %}
         </select>
