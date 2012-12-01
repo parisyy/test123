@@ -80,7 +80,6 @@
     });
 
     $('#submit').click(function(e) {
-        $('#query').preventDefault();
         window.opener.$('#pic_ids').attr('value', pic_ids.join(','));
         window.opener.$('#others-preview').append($('#preview').html());
         window.close();
