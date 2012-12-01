@@ -157,7 +157,7 @@ class TwitterBaseHandler(BaseHandler):
 
     def real_pic_url(self, entry):
         path_prefix = self.get_twitter_path_prefix()
-        url = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "." + entry.img_type
+        url = path_prefix + "/" + entry.img_path + "/" + entry.pic_url + "_small." + entry.img_type
         url = url.replace("//", "/")
         return self.path_to_url(url)
 
