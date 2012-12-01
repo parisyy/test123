@@ -215,6 +215,7 @@ class UserEditHandler(UserBaseHandler):
             gender=self.get_argument("gender", None),
             province_id=self.get_argument("province_id", None),
             city_id=self.get_argument("city_id", None),
+            area_id=self.get_argument("domain_id", None),
             sign_text=self.get_argument("sign_text", None),
             avatar_id=self.get_argument("avatar_id", None),
 
