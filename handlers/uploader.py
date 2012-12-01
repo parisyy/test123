@@ -50,36 +50,19 @@ class UploaderBaseHandler(BaseHandler):
     # TODO: 需要重构
     def create_avatar_file(self, fd, uid):
         '''创建用户头像'''
-        # 创建临时文件
-        tmpf = tempfile.NamedTemporaryFile()
-        tmpf.write(fd['body'])
-        tmpf.seek(0)
+        self.create_file(fd, self._avatar_path(uid, 0), (128, 128))
+        self.create_file(fd, self._avatar_path(uid, 1), (64, 64))
+        self.create_file(fd, self._avatar_path(uid, 2), (32, 32))
 
-        # 保存图片
-        img = Image.open(tmpf.name)
-        tmpf.close()
+        # 更新数据库设置
+        import uuid
+        avatar_id = str(uuid.uuid1())
+        avatar_id += str(datetime.datetime.now().microsecond)
+        avatar_id = hashlib.md5(base64.b64encode(avatar_id)).hexdigest()
+        print avatar_id
+        self.db.execute("update md_member set avatar_id = %s where id = %s", avatar_id, uid)
 
-        # big avatar
-        img.thumbnail((128, 128), resample=1)
         filename = self._avatar_path(uid, 0)
-        if not os.path.exists(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        img.save(filename)  # 文件保存在pictures目录下
-
-        # middle avatar
-        img.thumbnail((64, 64), resample=1)
-        filename = self._avatar_path(uid, 1)
-        if not os.path.exists(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        img.save(filename)
-
-        # small avatar
-        img.thumbnail((32, 32), resample=1)
-        filename = self._avatar_path(uid, 2)
-        if not os.path.exists(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        img.save(filename)
-
         return filename.replace("assets", "static")
 
     def create_salon_logo_file(self, fd, salon_id):
