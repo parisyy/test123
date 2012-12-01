@@ -57,6 +57,10 @@ class BaseHandler(tornado.web.RequestHandler):
             dataset.setdefault(e.id, e.region_name)
         return dataset
 
+    def fetch_all_tags(self):
+        '''读取所有脸型、发量、发质的tag'''
+        return self.db.query("select id, tag_name from md_tag")
+
     def fetch_provinces(self):
         '''读取全部省份信息'''
         return self.db.query("select id, region_name from md_region where level = 1")

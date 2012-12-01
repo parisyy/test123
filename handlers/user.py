@@ -203,6 +203,7 @@ class UserEditHandler(UserBaseHandler):
             user=self.fetch_user(id),
             config=self.config,
             avatar_pic=avatar_pic,
+            tags=self.fetch_all_tags(),
         )
         self.render("users/edit.html", **params)
 
@@ -234,6 +235,8 @@ class UserEditHandler(UserBaseHandler):
             price_dye=self.get_argument("price_dye", None),
             price_care=self.get_argument("price_care", None),
         )
+
+        print args["hair_face"]
 
         user = self.fetch_user(id)
         try:

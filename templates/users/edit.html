@@ -15,19 +15,31 @@
     <div class="control-group">
       <label class="control-label">脸型</label>
       <div class="controls">
-        <input type="text" id="hair_face" name="hair_face" value="{{ user.hair_face }}" />
+        <select name="hair_face" id="hair_face">
+          {% for tag in tags %}
+          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          {% end %}
+        </select>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label">发质</label>
       <div class="controls">
-        <input type="text" id="hair_quality" name="hair_quality" value="{{ user.hair_quality }}" />
+        <select name="hair_quality" id="hair_quality">
+          {% for tag in tags %}
+          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          {% end %}
+        </select>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label">发量</label>
       <div class="controls">
-        <input type="text" id="hair_volume" name="hair_volume" value="{{ user.hair_volume }}" />
+        <select name="hair_volume" id="hair_volume">
+          {% for tag in tags %}
+          <option value="{{ tag.id }}">{{ tag.tag_name }}</option>
+          {% end %}
+        </select>
       </div>
     </div><br />
   {% elif user.member_type == 2 %}
@@ -149,6 +161,9 @@
     $('#province_id').val('{{ user.province_id }}');
     $('#city_id').val('{{ user.city_id }}');
     $('#domain_id').val('{{ user.area_id }}');
+    $('#hair_face').val('{{ user.hair_face }}');
+    $('#hair_quality ').val('{{ user.hair_quality }}');
+    $('#hair_volume').val('{{ user.hair_volume }}');
     $('#price_haircut').val('{{ user.price_haircut }}');
     $('#price_perm').val('{{ user.price_perm }}');
     $('#price_dye').val('{{ user.price_dye }}');
