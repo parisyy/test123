@@ -30,10 +30,10 @@ class UserBaseHandler(BaseHandler):
             2: '保密',
         },
         'price': {
-            1: '小于100',
-            2: '100~300',
-            3: '300~500',
-            4: '大于500',
+            1: '小于300',
+            2: '300~600',
+            3: '600~1000',
+            4: '大于1000',
         },
         'recommend': {
             0: '否',
@@ -42,6 +42,12 @@ class UserBaseHandler(BaseHandler):
         'recommend_talent': {
             0: '否',
             1: '是',
+        },
+        'hair_face': {
+            1: '圆脸',
+            2: '长脸',
+            4: '方脸',
+            8: '瓜子脸',
         },
     }
 
