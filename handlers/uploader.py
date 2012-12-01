@@ -59,7 +59,6 @@ class UploaderBaseHandler(BaseHandler):
         avatar_id = str(uuid.uuid1())
         avatar_id += str(datetime.datetime.now().microsecond)
         avatar_id = hashlib.md5(base64.b64encode(avatar_id)).hexdigest()
-        print avatar_id
         self.db.execute("update md_member set avatar_id = %s where id = %s", avatar_id, uid)
 
         filename = self._avatar_path(uid, 0)
@@ -125,7 +124,7 @@ class UploaderBaseHandler(BaseHandler):
         # 只删除数据库记录，不删除已上传的图片
         self.db.execute("delete from md_salon_picture where is_logo = 'Y' and salon_id = %s", salon_id)
 
-    def create_file(self, fd, filename, size=()):
+    def create_file(self, fd, filename, size=None):
         '''保存上传文件
         @fd 文件数据
         @filename 保存文件时的文件名（包含目录路径）
@@ -139,6 +138,7 @@ class UploaderBaseHandler(BaseHandler):
             img.thumbnail((size[0], size[1]), resample=1)
         tmpf.close()
         img.save(filename)
+        print filename, size
 
         return img
 
