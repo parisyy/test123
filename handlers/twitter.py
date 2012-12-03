@@ -268,6 +268,7 @@ class TwitterEditHandler(TwitterBaseHandler):
 
     @tornado.web.authenticated
     def post(self, id):
+        print self.request.arguments
         try:
             # 去掉_xsrf参数
             args = self.request.arguments
@@ -289,7 +290,7 @@ class TwitterEditHandler(TwitterBaseHandler):
             for k, v in dataset.items():
                 setter.append(tmpl % (k, v))
 
-            sql = "update md_twitter_show set " + ",".join(setter) + " where id = %s"
+            sql = "update md_twitter_show set " + ",".join(setter) + " where tid = %s"
             self.db.execute(sql, id)
             self.redirect("/twitters/edit/%s" % id)
         except Exception, e:

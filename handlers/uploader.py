@@ -138,7 +138,6 @@ class UploaderBaseHandler(BaseHandler):
             img.thumbnail((size[0], size[1]), resample=1)
         tmpf.close()
         img.save(filename)
-        print filename, size
 
         return img
 
