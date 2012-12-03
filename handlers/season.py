@@ -199,7 +199,7 @@ class PictureSelectorHandler(SeasonBaseHandler):
             entries = []
 
         if pic_id != 0:
-            entries = self.db.get("select * from md_theme_picture where id = %s", pic_id)
+            entries = self.db.get("select * from md_twitter_picture where id = %s", pic_id)
 
         if entries is None or entries == []:
             self.write(json.dumps({'code': -1}))

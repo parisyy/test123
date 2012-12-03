@@ -268,7 +268,6 @@ class TwitterEditHandler(TwitterBaseHandler):
 
     @tornado.web.authenticated
     def post(self, id):
-        print self.request.arguments
         try:
             # 去掉_xsrf参数
             args = self.request.arguments
