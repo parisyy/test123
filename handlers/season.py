@@ -114,6 +114,7 @@ class SeasonEditHandler(SeasonBaseHandler):
         season = self.fetch_season(id)
         pics = self.fetch_season_pics(id)
         path_prefix = self.path_to_url(self.get_subject_path_prefix())
+        twitter_path_prefix = self.path_to_url(self.get_twitter_path_prefix())
         pic_url = path_prefix + "/" + self.pic_url(season.theme_pic_id)
         spic_url = path_prefix + "/" + self.pic_url(season.theme_spic_id)
 
@@ -124,6 +125,7 @@ class SeasonEditHandler(SeasonBaseHandler):
             spic_url=spic_url,
             pics=pics,
             path_prefix=path_prefix,
+            twitter_path_prefix=twitter_path_prefix,
         )
         self.render("seasons/edit.html", **params)
 
@@ -167,6 +169,7 @@ class SeasonEditHandler(SeasonBaseHandler):
             self.redirect("/seasons")
         except Exception, e:
             path_prefix = self.path_to_url(self.get_subject_path_prefix())
+            twitter_path_prefix = self.path_to_url(self.get_twitter_path_prefix())
             pic_url = path_prefix + "/" + self.pic_url(season.theme_pic_id)
             params = dict(
                 season=season,
@@ -175,6 +178,7 @@ class SeasonEditHandler(SeasonBaseHandler):
                 pic_url=pic_url,
                 pics=self.fetch_season_pics(id),
                 path_prefix=path_prefix,
+                twitter_path_prefix=twitter_path_prefix,
             )
             self.render("seasons/edit.html", **params)
 
