@@ -95,8 +95,8 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#nav-lessons').addClass('active');
-    $('#member_id').val({{ lesson.member_id }});
     $('#actived').val('{{ lesson.actived }}');
+    $('.chzn-select#member_id').val('{{ lesson.member_id }}').trigger('liszt:updated');
   });
 </script>
 {% end %}

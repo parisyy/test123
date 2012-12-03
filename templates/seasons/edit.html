@@ -114,6 +114,7 @@
   function set_default_values() {
     $('#package_id').val('{{ season.package_id }}');
     $('#actived').val('{{ season.actived }}');
+    $('.chzn-select').chosen();
 
     $('#start_time').datepicker({
       dateFormat: 'yy-mm-dd',
@@ -121,7 +122,6 @@
     $('#end_time').datepicker({
       dateFormat: 'yy-mm-dd',
     });
-    $('.chzn-select').chosen();
 
     {% if pic_url is not None %}
     $('#title-preview a').attr('href', '{{ pic_url }}');
