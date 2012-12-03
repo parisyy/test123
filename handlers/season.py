@@ -33,8 +33,8 @@ class SeasonBaseHandler(BaseHandler):
         return self.db.query("select id, username, email from md_member")
 
     def fetch_season_pics(self, period_id):
-        return self.db.query("select * from md_twitter_picture p, md_season_picture s "
-                "where p.id = s.tid and s.period_id = %s", period_id)
+        return self.db.query("select * from md_twitter_picture p, md_twitter_show h, md_season_picture s "
+                "where h.tid = s.tid and p.id = h.pic_id and s.period_id = %s", period_id)
 
 
 class SeasonHandler(SeasonBaseHandler):
