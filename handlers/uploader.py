@@ -84,9 +84,9 @@ class UploaderBaseHandler(BaseHandler):
         self.remove_salon_logo_file(salon_id)
         now = datetime.datetime.now()
         self.db.execute("update md_salon set logo_id = %s, logo_url = %s where id = %s", pic_id, filename, salon_id)
-        self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime) "
-                "values(%s, %s, %s, %s, %s)",
-                salon_id, pic_id, filename, 'Y', time.mktime(datetime.datetime.timetuple(now)))
+        self.db.execute("insert into md_salon_picture(salon_id, salon_pic_id, salon_pic_url, is_logo, createtime, img_type) "
+                "values(%s, %s, %s, %s, %s, %s)",
+                salon_id, pic_id, filename, 'Y', time.mktime(datetime.datetime.timetuple(now)), img_type)
 
         # 计算URL地址
         pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
