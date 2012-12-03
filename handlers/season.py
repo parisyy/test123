@@ -76,7 +76,7 @@ class SeasonNewHandler(SeasonBaseHandler):
             theme_spic_id = self.get_argument("theme_spic_id", 0)
             theme_spic_url = self.get_argument("theme_spic_url", "")
             actived = self.get_argument("actived", "N")
-            pic_ids = self.get_argument("pic_ids", "")
+            twitter_ids = self.get_argument("twitter_ids", "")
 
             if isinstance(start_time, str) or isinstance(start_time, unicode):
                 start_time = self.convert_date_to_timestamp(start_time)
@@ -91,11 +91,11 @@ class SeasonNewHandler(SeasonBaseHandler):
                     period_name, content, package_id, start_time, end_time, createtime,
                     theme_pic_id, theme_pic_url, theme_spic_id, theme_spic_url, actived)
 
-            pic_ids = pic_ids.split(",")
-            for pic_id in pic_ids:
-                if pic_id:
+            twitter_ids = twitter_ids.split(",")
+            for twitter_id in twitter_ids:
+                if twitter_id:
                     self.db.execute("insert into md_season_picture(period_id, tid, actived) "
-                            "values(%s, %s, %s)", id, pic_id, 'Y')
+                            "values(%s, %s, %s)", id, twitter_id, 'Y')
 
             self.redirect("/seasons")
         except Exception, e:
@@ -144,7 +144,7 @@ class SeasonEditHandler(SeasonBaseHandler):
         season["theme_spic_url"] = self.get_argument("theme_spic_url", season.theme_spic_url)
         season["actived"] = self.get_argument("actived", season.actived)
 
-        pic_ids = self.get_argument("pic_ids", "")
+        twitter_ids = self.get_argument("twitter_ids", "")
 
         try:
             if isinstance(season.start_time, str) or isinstance(season.start_time, unicode):
@@ -160,11 +160,11 @@ class SeasonEditHandler(SeasonBaseHandler):
                     season.end_time, season.theme_pic_id, season.theme_pic_url,
                     season.theme_spic_id, season.theme_spic_url, season.actived, season.id)
 
-            pic_ids = pic_ids.split(",")
-            for pic_id in pic_ids:
-                if pic_id:
+            twitter_ids = twitter_ids.split(",")
+            for twitter_id in twitter_ids:
+                if twitter_id:
                     self.db.execute("insert into md_season_picture(period_id, tid, actived) "
-                            "values(%s, %s, %s)", id, pic_id, 'Y')
+                            "values(%s, %s, %s)", id, twitter_id, 'Y')
 
             self.redirect("/seasons")
         except Exception, e:
@@ -196,15 +196,16 @@ class PictureSelectorHandler(SeasonBaseHandler):
 
     @tornado.web.authenticated
     def post(self):
-        pic_id = self.get_argument("pic_id", 0)
+        twitter_id = self.get_argument("twitter_id", 0)
         member_id = self.get_argument("member_id", 0)
         
-        if pic_id == 0 and member_id == 0:
+        if twitter_id == 0 and member_id == 0:
             entries = []
 
-        if pic_id != 0:
-            entries = self.db.get("select * from md_twitter_picture p, md_twitter_show s "
-                    "where p.id = s.pic_id and s.tid = %s", pic_id)
+        if twitter_id != 0:
+            entries = self.db.get("select p.id as pic_id, p.img_path, p.pic_url, p.img_type, s.tid as twitter_id "
+                    "from md_twitter_picture p, md_twitter_show s "
+                    "where p.id = s.pic_id and s.tid = %s", twitter_id)
 
         if entries is None or entries == []:
             self.write(json.dumps({'code': -1}))
