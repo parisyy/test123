@@ -174,6 +174,7 @@ class UserBaseHandler(BaseHandler):
         '''
         query_str, params = self.query_users_where_clause(**args)
         sql = sql + query_str
+        sql = sql + " order by m.id desc "
         sql = Pagination.add_limit_clause(sql, args["page"])
         return self.db.query(sql, *params)
 
