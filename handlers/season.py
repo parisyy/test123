@@ -186,7 +186,7 @@ class PictureSelectorHandler(SeasonBaseHandler):
 
         params = dict(
             members=members,
-            path_prefix=self.path_to_url(self.get_subject_path_prefix()),
+            path_prefix=self.path_to_url(self.get_twitter_path_prefix()),
         )
         self.render("seasons/selector.html", **params)
 
