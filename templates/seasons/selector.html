@@ -67,7 +67,7 @@
           response = JSON.parse(resp);
           if (response['code'] == 0) {
             var url = '{{ path_prefix }}' + '/' + response['pics']['img_path'] + '/' + response['pics']['pic_url']
-              + '.' + response['pics']['img_type'];
+              + '_small.' + response['pics']['img_type'];
             url = url.replace('//', '/');
             $('#thumbnail-snippet a').attr('href', url);
             $('#thumbnail-snippet img').attr('src', url);
