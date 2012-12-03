@@ -291,6 +291,15 @@ class TwitterEditHandler(TwitterBaseHandler):
 
             sql = "update md_twitter_show set " + ",".join(setter) + " where tid = %s"
             self.db.execute(sql, id)
+
+            # 更新md_twitter_show.dist_attr_id
+            attr_id = self.db.get("select id from md_dist_attribute where attr_face = %s "
+                    "and attr_volume = %s", dataset.get("hair_face", 0), dataset.get("hair_volume", 0))
+            if attr_id:
+                self.db.execute("update md_twitter_show set dist_attr_id = %s where tid = %s", attr_id.id, id)
+            else:
+                self.db.execute("update md_twitter_show set dist_attr_id = %s where tid = %s", 0, id)
+
             self.redirect("/twitters/edit/%s" % id)
         except Exception, e:
             print e
