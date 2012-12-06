@@ -1,0 +1,82 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/hairpackages">发型包管理</a></li>
+  <li class="divider">/</li>
+  <li>编辑发型包</li>
+</ul>
+{% end %}
+
+{% block content %}
+<form method="post" class="well form-horizontal">
+  <div class="control-group">
+    <div class="control-label">发型包名称</div>
+    <div class="controls">
+      <input type="text" name="package_name" value="{{ hairpackage.package_name }}" class="input-xxlarge" />
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">发型师名称</div>
+    <div class="controls">
+      <select name="barber_id" id="barber_id" class="chzn-select">
+        <option value=""></option>
+        {% for stylist in stylists %}
+          {% if stylist.id == hairpackage.barber_id %}
+          <option value="{{ stylist.id }}" selected="selected">{{ stylist.username }}</option>
+          {% else %}
+          <option value="{{ stylist.id }}">{{ stylist.username }}</option>
+          {% end %}
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">本包中发型数量</div>
+    <div class="controls">
+      <input type="text" name="hair_num" value="{{ hairpackage.hair_num }}" class="input-xxlarge" />
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">发型包描述</div>
+    <div class="controls">
+      <textarea name="description" rows="8" cols="80" class="input-xxlarge">{{ hairpackage.description }}</textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">状态</div>
+    <div class="controls">
+      <select name="actived" id="actived">
+        <option value=""></option>
+        {% for k, v in config["actived"].items() %}
+          {% if k == hairpackage.actived %}
+          <option value="{{ k }}" selected="selected">{{ v }}</option>
+          {% else %}
+          <option value="{{ k }}">{{ v }}</option>
+          {% end %}
+        {% end %}
+      </select>
+    </div>
+  </div>
+
+  <p>
+    <input type="button" value="更新发型包" class="btn btn-warning span2">
+    <input type="submit" value="更新" class="btn btn-success span2">
+  </p>
+  {{ xsrf_form_html() }}
+
+  <input type="hidden" name="salon_id" id="salon_id" value="66863" class="" />
+</form>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#nav-hairpackage').addClass('active');
+    $('.chzn-select').chosen();
+
+    $('#barber_id').change(function(){
+    });
+  });
+</script>
+{% end %}

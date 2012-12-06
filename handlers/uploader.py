@@ -124,6 +124,9 @@ class UploaderBaseHandler(BaseHandler):
         # 只删除数据库记录，不删除已上传的图片
         self.db.execute("delete from md_salon_picture where is_logo = 'Y' and salon_id = %s", salon_id)
 
+    def create_hairpackage_file(self, fd, package_id):
+        pass
+
     def create_file(self, fd, filename, size=None):
         '''保存上传文件
         @fd 文件数据
@@ -199,6 +202,18 @@ class UploaderBaseHandler(BaseHandler):
         now = datetime.datetime.now()
         filename = hashlib.md5(base64.b64encode(str(id) + str(now.microsecond))).hexdigest()
         dirname = "%s/%s/%s/%s/" % (now.year, now.month, now.day, now.hour)
+        return dirname, filename
+
+    def gen_hairpackage_path(self, id):
+        '''发型包的文件名生成规则：
+        01. 目录名：2012/12/04（年/月/日）
+        02. 文件名：md5(uuid)
+        03. 必须是zip文件
+        '''
+        import uuid
+        now = datetime.date.today()
+        dirname = "%s/%s/%s/" % (now.year, now.month, now.day)
+        filename = hashlib.md5(uuid.uuid1()).digest()
         return dirname, filename
 
     def get_img_type(self, fd):
@@ -299,6 +314,25 @@ class SalonUploaderHandler(UploaderBaseHandler):
                         self.write(json.dumps({
                             'code': 0,
                             'url': pic_url
+                        }))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': unicode(e),
+            }))
+
+
+class HairPackageUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        try:
+            package_id = self.get_argument("package_id")
+            if self.request.files:
+                for f in self.request.files["userfile"]:
+                        download_url = self.create_hairpackage_file(f, package_id)
+                        self.write(json.dumps({
+                            'code': 0,
+                            'url': download_url
                         }))
         except Exception, e:
             self.write(json.dumps({

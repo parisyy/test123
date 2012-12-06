@@ -6,9 +6,9 @@ import re
 import time
 import datetime
 
-import sqlalchemy
 import tornado.web
 import tornado.database
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from ext.parser import parse_mysql_config, TornadoConfigParser
@@ -19,23 +19,6 @@ def none_to_empty_str(obj):
         return ""
     else:
         return obj
-
-
-class Backend(object):
-    def __init__(self):
-        tornado.options.parse_command_line()
-        engine = sqlalchemy.create_engine("mysql://{0}:{1}@{2}/{3}?charset=utf8".format(
-            *parse_mysql_config()), pool_recycle=3600, echo=False, echo_pool=False)
-        self._session = sessionmaker(bind=engine)
-
-    @classmethod
-    def instance(cls):
-        if not hasattr(Backend, "_instance"):
-            cls._instance = Backend()
-        return cls._instance
-
-    def get_session(self):
-        return self._session()
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -132,6 +115,13 @@ class BaseHandler(tornado.web.RequestHandler):
         subject_path = parser.get("uploader", "twitter_path")
         return (root_path + "/" + subject_path).replace("//", "/")
 
+    def get_hairpackage_path_prefix(self):
+        '''发行包的URL地址前缀'''
+        parser = TornadoConfigParser()
+        root_path = parser.get("uploader", "root_path")
+        subject_path = parser.get("uploader", "hairpackage_path")
+        return (root_path + "/" + subject_path).replace("//", "/")
+
     def pic_url(self, pic_id):
         '''获取图片的url地址'''
         pic = self.db.get("select * from md_theme_picture where id = %s", pic_id)
@@ -180,6 +170,22 @@ class BaseApplication(tornado.web.Application):
     def db_conn(self):
         db_user, db_password, db_host, db_database = parse_mysql_config()
         return tornado.database.Connection(host=db_host, database=db_database, user=db_user, password=db_password)
+
+
+class Backend(object):
+    def __init__(self):
+        db_user, db_password, db_host, db_database = parse_mysql_config()
+        engine = create_engine("mysql://%s:%s@%s/%s?charset=utf8" % (db_user, db_password, db_host, db_database))
+        self._session = sessionmaker(bind=engine)
+
+    def get_session(self):
+        return self._session()
+
+    @classmethod
+    def instance(cls):
+        if not hasattr(cls, "_instance"):
+            cls._instance = cls()
+        return cls._instance
 
 
 class Validator(object):

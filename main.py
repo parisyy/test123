@@ -28,6 +28,7 @@ from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHa
 from handlers.salon import SalonHandler, SalonEditHandler, SalonNewHandler
 from handlers.twitter import TwitterHandler, TwitterListHandler, TwitterEditHandler
 from handlers.twitter import TwitterCommentDeleteHandler
+from handlers.hairpackage import HairPackageListHandler, HairPackageHandler, HairPackageNewHandler, HairPackageEditHandler
 
 
 class Application(BaseApplication):
@@ -82,6 +83,12 @@ class Application(BaseApplication):
             (r'/twitters', TwitterListHandler),
             (r'/twitters/edit/([0-9]+)', TwitterEditHandler),
             (r'/twitter_comments/delete/([0-9]+)', TwitterCommentDeleteHandler),
+
+            # 发型包管理
+            (r'/hairpackages/([0-9]+)', HairPackageHandler),
+            (r'/hairpackages', HairPackageListHandler),
+            (r'/hairpackages/new', HairPackageNewHandler),
+            (r'/hairpackages/edit/([0-9]+)', HairPackageEditHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),

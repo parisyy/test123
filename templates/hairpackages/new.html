@@ -1,0 +1,74 @@
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/hairpackages">发型包管理</a></li>
+  <li class="divider">/</li>
+  <li>新建发型包</li>
+</ul>
+{% end %}
+
+{% block content %}
+<form method="post" class="well form-horizontal">
+  <div class="control-group">
+    <div class="control-label">发型包名称</div>
+    <div class="controls">
+      <input type="text" name="package_name" value="" class="input-xxlarge" />
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">发型师名称</div>
+    <div class="controls">
+      <select name="barber_id" id="barber_id" class="chzn-select">
+        <option value=""></option>
+        {% for stylist in stylists %}
+        <option value="{{ stylist.id }}">{{ stylist.username }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">本包中发型数量</div>
+    <div class="controls">
+      <input type="text" name="hair_num" value="" class="input-xxlarge" />
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">发型包描述</div>
+    <div class="controls">
+      <textarea name="description" rows="8" cols="80" class="input-xxlarge"></textarea>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">状态</div>
+    <div class="controls">
+      <select name="actived" id="actived">
+        <option value=""></option>
+        {% for k, v in config["actived"].items() %}
+        <option value="{{ k }}">{{ v }}</option>
+        {% end %}
+      </select>
+    </div>
+  </div>
+
+  <p>
+    <input type="button" value="上传发型包" class="btn btn-warning span2">
+    <input type="submit" value="新建" class="btn btn-success span2">
+  </p>
+  {{ xsrf_form_html() }}
+
+  <input type="hidden" name="salon_id" id="salon_id" value="66863" class="" />
+</form>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#nav-hairpackage').addClass('active');
+    $('.chzn-select').chosen();
+
+    $('#barber_id').change(function(){
+    });
+  });
+</script>
+{% end %}

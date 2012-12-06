@@ -1,0 +1,135 @@
+{% import datetime %}
+
+{% extends "../layouts/base.html" %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  <li><a href="/hairpackages">发型包管理</a></li>
+  <li class="divider">/</li>
+  <li>发型包列表</li>
+  <li class="pull-right"><a href="/hairpackages/new">创建发型包</a></li>
+</ul>
+{% end %}
+
+{% block content %}
+<form method="get" class="well form-inline">
+  发型包名称
+  <input type="text" name="package_name" value="{{ package_name }}" />
+  <input type="submit" value="查询" class="btn btn-success">
+</form>
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>发型包名称</th>
+      <th>发型包数量</th>
+      <th>状态</th>
+      <th>创建时间</th>
+      <th>修改时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for pkg in hairpackages %}
+    <tr>
+      <td>{{ pkg.id }}</td>
+      <td>{{ pkg.package_name }}</td>
+      <td>{{ pkg.hair_num }}</td>
+      <td>{{ config["actived"].get(pkg.actived, "未知状态") }}</td>
+      <td>{{ datetime.datetime.fromtimestamp(pkg.createtime) }}</td>
+      <td>{{ datetime.datetime.fromtimestamp(pkg.modifytime) }}</td>
+      <td>
+        <a href="/hairpackages/edit/{{ pkg.id }}">编辑</a>
+        <a href="javascript:void(0)" onclick="delete_pkg({{ pkg.id }})">删除</a>
+        {% if pkg.actived != 2 %}
+        <a href="javascript:void(0)" onclick="disable_pkg({{ pkg.id }})">禁用</a>
+        {% else %}
+        <a href="javascript:void(0)" onclick="enable_pkg({{ pkg.id }})">启用</a>
+        {% end %}
+      </td>
+    </tr>
+    {% end %}
+  </tbody>
+</table>
+
+{{ modules.PaginationModule(page_count) }}
+
+<div id="disable-alert" style="display:none">
+  你确定要禁用该发行包吗？
+</div>
+<div id="enable-alert" style="display:none">
+  你确定要启用该发行包吗？
+</div>
+<div id="delete-alert" style="display:none">
+  你确定要删除该发行包吗？
+</div>
+{% end %}
+
+{% block javascript %}
+<script type="text/javascript">
+  function disable_pkg(id) {
+    popup_alert('#disable-alert', function() {
+        $.ajax({
+          url: '/hairpackages/' + id,
+          type: 'POST',
+          data: {
+            _xsrf: getCookie('_xsrf'),
+            actived: 2,
+          },
+          success: function(data) {
+            data = JSON.parse(data);
+            if (data['code'] == 0) {
+              window.location.reload();
+            } else {
+              alert(data['error']);
+            }
+          },
+        });
+    });
+  }
+
+  function enable_pkg(id) {
+    popup_alert('#enable-alert', function() {
+        $.ajax({
+          url: '/hairpackages/' + id,
+          type: 'POST',
+          data: {
+            _xsrf: getCookie('_xsrf'),
+            actived: 1,
+          },
+          success: function(data) {
+            data = JSON.parse(data);
+            if (data['code'] == 0) {
+              window.location.reload();
+            } else {
+              alert(data['error']);
+            }
+          },
+        });
+    });
+  }
+
+
+  function delete_pkg(id) {
+    popup_alert('#delete-alert', function() {
+      console.log(id);
+      $.ajax({
+        url: '/hairpackages/' + id + '?_xsrf=' + getCookie('_xsrf'),
+        type: 'DELETE',
+        success: function (data) {
+          data = JSON.parse(data);
+          if (data['code'] == 0) {
+            window.location.reload();
+          } else {
+            alert(data['error']);
+          }
+        }
+      });
+    });
+  }
+
+  $(document).ready(function() {
+    $('#nav-hairpackage').addClass('active');
+  });
+</script>
+{% end %}
