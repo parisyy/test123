@@ -24,6 +24,9 @@
       <th>发型包名称</th>
       <th>发型包数量</th>
       <th>状态</th>
+      <th>发型包目录</th>
+      <th>发型包文件</th>
+      <th>发型包大小（MB）</th>
       <th>创建时间</th>
       <th>修改时间</th>
       <th>操作</th>
@@ -36,6 +39,9 @@
       <td>{{ pkg.package_name }}</td>
       <td>{{ pkg.hair_num }}</td>
       <td>{{ config["actived"].get(pkg.actived, "未知状态") }}</td>
+      <td>{{ pkg.filepath }}</td>
+      <td style="width:10%">{{ pkg.filename }}</td>
+      <td>{{ round(pkg.filesize / 1000000, 2) }}</td>
       <td>{{ datetime.datetime.fromtimestamp(pkg.createtime) }}</td>
       <td>{{ datetime.datetime.fromtimestamp(pkg.modifytime) }}</td>
       <td>

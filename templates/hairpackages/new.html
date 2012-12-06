@@ -52,7 +52,6 @@
   </div>
 
   <p>
-    <input type="button" value="上传发型包" class="btn btn-warning span2">
     <input type="submit" value="新建" class="btn btn-success span2">
   </p>
   {{ xsrf_form_html() }}
@@ -62,13 +61,12 @@
 {% end %}
 
 {% block javascript %}
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#nav-hairpackage').addClass('active');
     $('.chzn-select').chosen();
-
-    $('#barber_id').change(function(){
-    });
   });
 </script>
 {% end %}

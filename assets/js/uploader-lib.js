@@ -72,3 +72,22 @@ function upload_salon(element, id, callback) {
         },
     });
 }
+
+/* 上传发型包zip文件 */
+function upload_hairpackage(element, pkg_id, callback) {
+    new AjaxUpload(element, {
+        action: '/hairpackage_uploader',
+        data: {
+            _xsrf: getCookie('_xsrf'),
+            package_id: pkg_id,
+        },
+        onComplete: function(file, response) {
+            response = JSON.parse(response);
+            if (response["code"] == 0) {
+                callback(file, response);
+            } else {
+                alert(response["error"] + '\n\n上传发型包失败！');
+            }
+        }
+    });
+}

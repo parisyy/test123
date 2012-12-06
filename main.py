@@ -23,6 +23,7 @@ from handlers.ui_module import UserQueryModule, PictureListModule, PaginationMod
 from handlers.user import UserHandler, UserDetailHandler, UserEditHandler, UserEditBasicModule
 from handlers.lesson import LessonHandler, LessonNewHandler, LessonEditHandler
 from handlers.uploader import ImageUploaderHandler, AvatarUploaderHandler, SalonUploaderHandler, SalonLogoUploaderHandler
+from handlers.uploader import HairPackageUploaderHandler
 from handlers.season import SeasonHandler, SeasonNewHandler, SeasonEditHandler, PictureSelectorHandler
 from handlers.star import StarHandler, StarRecommendHandler, StarRecommendEditHandler
 from handlers.salon import SalonHandler, SalonEditHandler, SalonNewHandler
@@ -61,6 +62,7 @@ class Application(BaseApplication):
             (r'/avatar_uploader', AvatarUploaderHandler),
             (r'/salon_uploader', SalonUploaderHandler),
             (r'/salon_logo_uploader', SalonLogoUploaderHandler),
+            (r'/hairpackage_uploader', HairPackageUploaderHandler),
 
             # 图片选择
             (r'/selector', PictureSelectorHandler),

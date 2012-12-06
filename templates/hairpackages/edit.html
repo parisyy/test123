@@ -60,22 +60,31 @@
   </div>
 
   <p>
-    <input type="button" value="更新发型包" class="btn btn-warning span2">
+    <input type="button" value="更新发型包" id="package-uploader" class="btn btn-warning span2">
     <input type="submit" value="更新" class="btn btn-success span2">
   </p>
   {{ xsrf_form_html() }}
 
-  <input type="hidden" name="salon_id" id="salon_id" value="66863" class="" />
+  <input type="hidden" name="salon_id" id="salon_id" value="" class="" />
+  <input type="hidden" name="filepath" id="filepath" value="" class="" />
+  <input type="hidden" name="filename" id="filename" value="" class="" />
+  <input type="hidden" name="filesize" id="filesize" value="" class="" />
 </form>
 {% end %}
 
 {% block javascript %}
+<script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
+<script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('#nav-hairpackage').addClass('active');
     $('.chzn-select').chosen();
 
-    $('#barber_id').change(function(){
+    upload_hairpackage('#package-uploader', {{ hairpackage.id }}, function(file, response) {
+      console.log(response);
+      $('#filepath').val(response['data']['filepath']);
+      $('#filename').val(response['data']['filename']);
+      $('#filesize').val(response['data']['filesize']);
     });
   });
 </script>

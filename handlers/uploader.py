@@ -125,7 +125,19 @@ class UploaderBaseHandler(BaseHandler):
         self.db.execute("delete from md_salon_picture where is_logo = 'Y' and salon_id = %s", salon_id)
 
     def create_hairpackage_file(self, fd, package_id):
-        pass
+        '''保存上传的发行包文件（只允许zip格式）'''
+        dirname, filename = self.gen_hairpackage_path()
+        prefix_path = self.get_hairpackage_path_prefix()
+        real_dirname = prefix_path + "/" + dirname
+        if not os.path.exists(real_dirname):
+            os.makedirs(real_dirname)
+
+        real_filename = real_dirname + "/" + filename + ".zip"
+        fp = open(real_filename, "w")
+        fp.write(fd["body"])
+        fp.close()
+
+        return dirname, filename, os.path.getsize(real_filename)
 
     def create_file(self, fd, filename, size=None):
         '''保存上传文件
@@ -204,7 +216,7 @@ class UploaderBaseHandler(BaseHandler):
         dirname = "%s/%s/%s/%s/" % (now.year, now.month, now.day, now.hour)
         return dirname, filename
 
-    def gen_hairpackage_path(self, id):
+    def gen_hairpackage_path(self):
         '''发型包的文件名生成规则：
         01. 目录名：2012/12/04（年/月/日）
         02. 文件名：md5(uuid)
@@ -213,7 +225,7 @@ class UploaderBaseHandler(BaseHandler):
         import uuid
         now = datetime.date.today()
         dirname = "%s/%s/%s/" % (now.year, now.month, now.day)
-        filename = hashlib.md5(uuid.uuid1()).digest()
+        filename = hashlib.md5(str(uuid.uuid1())).hexdigest()
         return dirname, filename
 
     def get_img_type(self, fd):
@@ -329,54 +341,17 @@ class HairPackageUploaderHandler(UploaderBaseHandler):
             package_id = self.get_argument("package_id")
             if self.request.files:
                 for f in self.request.files["userfile"]:
-                        download_url = self.create_hairpackage_file(f, package_id)
+                        filepath, filename, filesize = self.create_hairpackage_file(f, package_id)
                         self.write(json.dumps({
                             'code': 0,
-                            'url': download_url
+                            'data': {
+                                'filepath': filepath,
+                                'filename': filename,
+                                'filesize': filesize,
+                            },
                         }))
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
                 'error': unicode(e),
             }))
-
-
-class TestUploaderHandler(UploaderBaseHandler):
-    def get(self):
-        self.test_gen_avatar_path()
-        self.test_gen_salon_path()
-        self.test_gen_twitter_path()
-        self.test_gen_subject_path()
-
-    @tornado.web.authenticated
-    def test_gen_avatar_path(self):
-        dataset = []
-        entries = self.db.query("select id from md_member limit 10")
-        for i in [e.id for e in entries]:
-            dirname, filename = self.gen_avatar_path(i)
-            dataset.append(dirname + '/' + filename)
-        self.write(json.dumps(dataset))
-
-    def test_gen_twitter_path(self):
-        entries = self.db.query("select id from md_salon limit 10")
-        dataset = []
-        for i in [e.id for e in entries]:
-            dirname, filename = self.gen_twitter_path(i)
-            dataset.append(dirname + '/' + filename)
-        self.write(json.dumps(dataset))
-
-    def test_gen_salon_path(self):
-        entries = self.db.query("select id from md_salon limit 10")
-        dataset = []
-        for i in [e.id for e in entries]:
-            dirname, filename = self.gen_salon_path(i)
-            dataset.append(dirname + '/' + filename)
-        self.write(json.dumps(dataset))
-
-    def test_gen_subject_path(self):
-        entries = self.db.query("select id from md_theme_picture order by id desc limit 10")
-        dataset = []
-        for i in [e.id for e in entries]:
-            dirname, filename = self.gen_subject_path(i)
-            dataset.append(dirname + '/' + filename)
-        self.write(json.dumps(dataset))
