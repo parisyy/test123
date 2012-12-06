@@ -137,7 +137,7 @@ class UploaderBaseHandler(BaseHandler):
         fp.write(fd["body"])
         fp.close()
 
-        return dirname, filename, os.path.getsize(real_filename)
+        return dirname, filename + ".zip", os.path.getsize(real_filename)
 
     def create_file(self, fd, filename, size=None):
         '''保存上传文件
