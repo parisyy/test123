@@ -61,20 +61,20 @@
   <div class="control-group">
     <div class="control-label">预览图</div>
     <div class="controls">
-      <img id="cover-pic" src="{{ cover_pic_url }}" />
+      <img id="cover-pic" src="{{ preview_pic_url }}" />
     </div>
   </div>
   <div class="control-group">
     <div class="control-label">发型包图</div>
     <div class="controls">
-      <img id="preview-pic" src="{{ preview_pic_url }}" />
+      <img id="preview-pic" src="{{ cover_pic_url }}" />
     </div>
   </div>
 
   <p>
     <input type="button" value="更新发型包" id="package-uploader" class="btn btn-danger span2">
-    <input type="button" value="更新预览图" id="cover-pic-uploader" class="btn btn-warning span2">
-    <input type="button" value="更新发型包图" id="preview-pic-uploader" class="btn btn-warning span2">
+    <input type="button" value="更新预览图" id="preview-pic-uploader" class="btn btn-warning span2">
+    <input type="button" value="更新发型包图" id="cover-pic-uploader" class="btn btn-warning span2">
     <input type="submit" value="更新" class="btn btn-success span2">
   </p>
   {{ xsrf_form_html() }}
