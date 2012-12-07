@@ -58,9 +58,23 @@
       </select>
     </div>
   </div>
+  <div class="control-group">
+    <div class="control-label">封面</div>
+    <div class="controls">
+      <img id="cover-pic" src="{{ cover_pic_url }}" />
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="control-label">封面缩略图</div>
+    <div class="controls">
+      <img id="preview-pic" src="{{ preview_pic_url }}" />
+    </div>
+  </div>
 
   <p>
     <input type="button" value="更新发型包" id="package-uploader" class="btn btn-warning span2">
+    <input type="button" value="更新缩略图（大）" id="cover-pic-uploader" class="btn btn-warning span2">
+    <input type="button" value="更新缩略图（小）" id="preview-pic-uploader" class="btn btn-warning span2">
     <input type="submit" value="更新" class="btn btn-success span2">
   </p>
   {{ xsrf_form_html() }}
@@ -85,6 +99,14 @@
       $('#filepath').val(response['data']['filepath']);
       $('#filename').val(response['data']['filename']);
       $('#filesize').val(response['data']['filesize']);
+    });
+
+    upload_hairpackage_pic('#cover-pic-uploader', {{ hairpackage.id }}, 1, function(file, response) {
+      $('#cover-pic').attr('src', response['url'])
+    });
+
+    upload_hairpackage_pic('#preview-pic-uploader', {{ hairpackage.id }}, 2, function(file, response) {
+      $('#preview-pic').attr('src', response['url'])
     });
   });
 </script>

@@ -25,6 +25,30 @@ class HairPackageBaseHandler(BaseHandler):
             dataset.setdefault(k, v[-1])
         return dataset
 
+    def cover_pic_url(self, hairpackage):
+        filename = hairpackage.filename
+        if not filename:
+            return ""
+        else:
+            filename = filename.split(".")[0]
+
+        path_prefix = self.get_hairpackage_path_prefix()
+        filepath = hairpackage.filepath
+        real_filename = path_prefix + "/" + filepath + "/" + filename + "_cover.jpg"
+        return self.path_to_url(real_filename).replace("//", "/")
+
+    def preview_pic_url(self, hairpackage):
+        filename = hairpackage.filename
+        if not filename:
+            return ""
+        else:
+            filename = filename.split(".")[0]
+
+        path_prefix = self.get_hairpackage_path_prefix()
+        filepath = hairpackage.filepath
+        real_filename = path_prefix + "/" + filepath + "/" + filename + "_preview.jpg"
+        return self.path_to_url(real_filename).replace("//", "/")
+
 
 class HairPackageHandler(HairPackageBaseHandler):
     def delete(self, id):
@@ -116,6 +140,8 @@ class HairPackageEditHandler(HairPackageBaseHandler):
             hairpackage=hairpackage,
             stylists=session.query(Member).filter_by(member_type=2).all(),
             config=self.config,
+            cover_pic_url=self.cover_pic_url(hairpackage),
+            preview_pic_url=self.preview_pic_url(hairpackage),
         )
         self.render("hairpackages/edit.html", **params)
         session.close()

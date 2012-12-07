@@ -11,6 +11,7 @@ import tempfile
 from PIL import Image
 import tornado.web
 from handlers.base import BaseHandler
+from models.models import HairPackage
 
 
 class UploaderBaseHandler(BaseHandler):
@@ -142,6 +143,34 @@ class UploaderBaseHandler(BaseHandler):
         fp.close()
 
         return dirname, filename + ".zip", os.path.getsize(real_filename)
+
+    def create_hairpackage_pic(self, fd, package_id, pic_type):
+        img_type = self.get_img_type(fd)
+        if img_type != "jpg":
+            raise Exception("不支持该文件格式")
+
+        session = self.backend.get_session()
+        entry = session.query(HairPackage).get(package_id)
+        dirname = entry.filepath
+        filename = entry.filename.split(".")[0]
+        session.close()
+
+        if int(pic_type) == 1:
+            filename += "_cover"
+        else:
+            filename += "_preview"
+
+        prefix_path = self.get_hairpackage_path_prefix()
+        real_dirname = prefix_path + "/" + dirname
+        if not os.path.exists(real_dirname):
+            os.makedirs(real_dirname)
+
+        img = self.create_file(fd, real_dirname + "/" + filename + "." + img_type)
+        img_width, img_height = img.size
+
+        pic_url = prefix_path + "/" + dirname + "/" + filename + "." + img_type
+        pic_url = self.path_to_url(pic_url)
+        return pic_url.replace("//", "/")
 
     def create_file(self, fd, filename, size=None):
         '''保存上传文件
@@ -353,6 +382,26 @@ class HairPackageUploaderHandler(UploaderBaseHandler):
                                 'filename': filename,
                                 'filesize': filesize,
                             },
+                        }))
+        except Exception, e:
+            self.write(json.dumps({
+                'code': -1,
+                'error': str(e),
+            }))
+
+
+class HairPackagePicUploaderHandler(UploaderBaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        try:
+            package_id = self.get_argument("package_id")
+            pic_type = self.get_argument("pic_type")
+            if self.request.files:
+                for f in self.request.files["userfile"]:
+                        pic_url = self.create_hairpackage_pic(f, package_id, pic_type)
+                        self.write(json.dumps({
+                            'code': 0,
+                            'url': pic_url
                         }))
         except Exception, e:
             self.write(json.dumps({

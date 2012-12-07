@@ -91,3 +91,23 @@ function upload_hairpackage(element, pkg_id, callback) {
         }
     });
 }
+
+/* 上传发行包图片 */
+function upload_hairpackage_pic(element, pkg_id, pic_type, callback) {
+    new AjaxUpload(element, {
+        action: '/hairpackage_pic_uploader',
+        data: {
+            _xsrf: getCookie('_xsrf'),
+            package_id: pkg_id,
+            pic_type: pic_type,
+        },
+        onComplete: function(file, response) {
+            response = JSON.parse(response);
+            if (response["code"] == 0) {
+                callback(file, response);
+            } else {
+                alert(response["error"] + '\n\n上传发型包失败！');
+            }
+        }
+    });
+}
