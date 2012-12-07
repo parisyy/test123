@@ -126,6 +126,10 @@ class UploaderBaseHandler(BaseHandler):
 
     def create_hairpackage_file(self, fd, package_id):
         '''保存上传的发行包文件（只允许zip格式）'''
+        filetype = self.get_img_type(fd)
+        if filetype != "zip":
+            raise Exception("不支持该文件格式")
+
         dirname, filename = self.gen_hairpackage_path()
         prefix_path = self.get_hairpackage_path_prefix()
         real_dirname = prefix_path + "/" + dirname
@@ -253,7 +257,7 @@ class ImageUploaderHandler(UploaderBaseHandler):
                 except Exception, e:
                     self.write(json.dumps({
                         'code': -1,
-                        'error': unicode(e),
+                        'error': str(e),
                     }))
 
     @tornado.web.authenticated
@@ -273,7 +277,7 @@ class ImageUploaderHandler(UploaderBaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': unicode(e),
+                'error': str(e),
             }))
 
 
@@ -292,7 +296,7 @@ class AvatarUploaderHandler(UploaderBaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': unicode(e),
+                'error': str(e),
             }))
 
 
@@ -311,7 +315,7 @@ class SalonLogoUploaderHandler(UploaderBaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': unicode(e),
+                'error': str(e),
             }))
 
 
@@ -330,7 +334,7 @@ class SalonUploaderHandler(UploaderBaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': unicode(e),
+                'error': str(e),
             }))
 
 
@@ -353,5 +357,5 @@ class HairPackageUploaderHandler(UploaderBaseHandler):
         except Exception, e:
             self.write(json.dumps({
                 'code': -1,
-                'error': unicode(e),
+                'error': str(e),
             }))
