@@ -155,6 +155,9 @@ class UploaderBaseHandler(BaseHandler):
         filename = entry.filename.split(".")[0]
         session.close()
 
+        if not filename or not dirname:
+            raise Exception("上传图片需要先上传发型包")
+
         if int(pic_type) == 1:
             filename += "_cover"
         else:
