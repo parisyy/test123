@@ -49,11 +49,12 @@
     <div class="control-group">
       <label class="control-label">所属发廊</label>
       <div class="controls">
-        {% if user.actived in (4, 5, 6) %}
+        <input type="text" id="salon_id" name="salon_id" value="{{ user.salon_id }}" />
+        {#% if user.actived in (4, 5, 6) %}
         <input type="text" id="salon_id" name="salon_id" value="{{ user.salon_id }}" />
         {% else %}
         <input type="text" value="{{ user.salon_id }}" disabled="disabled" />
-        {% end %}
+        {% end %#}
       </div>
     </div>
     <div class="control-group">
