@@ -94,8 +94,8 @@ class TwitterBaseHandler(BaseHandler):
             params.append(args.get("member_type")[0])
 
         if args.get("username"):
-            query_str.append("username = %s")
-            params.append(args.get("username")[0])
+            query_str.append("username like %s")
+            params.append("%" + args.get("username")[0] + "%")
 
         if args.get("email"):
             query_str.append("email = %s")
