@@ -68,7 +68,7 @@ class LessonNewHandler(LessonBaseHandler):
             member_id = self.get_argument("member_id", 0)
             content = self.get_argument("content", "")
             start_date = self.get_argument("start_date", "2012-01-01")
-            end_date = self.get_argument("end_date", "2012-01-01")
+            end_date = self.get_argument("end_date", "2020-01-01")
             actived = self.get_argument("actived", "N")
             createtime = time.mktime(datetime.datetime.now().timetuple())
 
@@ -128,8 +128,8 @@ class LessonEditHandler(LessonBaseHandler):
         name = self.get_argument("name", None)
         member_id = self.get_argument("member_id", 0)
         content = self.get_argument("content", "")
-        start_date = self.get_argument("start_date", "")
-        end_date = self.get_argument("end_date", "")
+        start_date = self.get_argument("start_date", "2012-01-01")
+        end_date = self.get_argument("end_date", "2020-01-01")
         actived = self.get_argument("actived", "N")
         pics = self.get_arguments("pics")
 
@@ -149,6 +149,7 @@ class LessonEditHandler(LessonBaseHandler):
                         lesson.id, pic_id, pic_url, 0, actived)
             self.redirect("/lessons")
         except Exception, e:
+            print e
             lesson.subject_name = name
             lesson.member_id = member_id
             lesson.content = content
