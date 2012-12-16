@@ -227,6 +227,8 @@ class SalonEditHandler(SalonBaseHandler):
                 area_id=self.get_argument("domain_id", 0),
                 address=self.get_argument("address"),
                 salon_telephone=self.get_argument("salon_telephone", ""),
+                longitude=self.get_argument("longitude", 0),
+                latitude=self.get_argument("latitude", 0),
             )
             self.update_salon(id, **args)
             self.redirect("/salons")

@@ -76,7 +76,12 @@
   <div class="control-group">
     <label class="control-label">地址</label>
     <div class="controls">
-      <input type="text" name="address" value="{{ salon.address }}" class="input-xxlarge" />
+      <input type="text" name="address" id="address" value="{{ salon.address }}" class="input-xxlarge" />
+      <a href="javascript:void(0)" onclick="set_baidu_map()">获取百度坐标地址</a><br />
+    </div>
+    <div class="controls" style="margin-top:5px">
+      <input type="text" name="longitude" id="longitude" value="{{ salon.longitude }}" class="" />
+      <input type="text" name="latitude" id="latitude" value="{{ salon.latitude }}" class="" />
     </div>
   </div><br />
   <div class="control-group">
@@ -125,11 +130,14 @@
     {% end %}
   </tbody>
 </table>
+
+<div id="baidu-map"></div>
 {% end %}
 
 {% block javascript %}
 <script type="text/javascript" src="{{ static_url("js/fileuploader.js") }}"></script>
 <script type="text/javascript" src="{{ static_url("js/uploader-lib.js") }}"></script>
+<script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>
 <script type="text/javascript">
   function set_default_form_values() {
     $('#province_id').val('{{ salon.province_id }}');
@@ -149,6 +157,19 @@
     $('#salon-preview').append($('#thumbnail-snippet').html());
   }
 
+  function set_baidu_map() {
+    console.log('set baidu map...');
+    var map = new BMap.Map('baidu-map');
+    var myGeo = new BMap.Geocoder();
+    myGeo.getPoint($('#address').val(), function(point) {
+      if (point) {
+        console.log(point.lng + "," + point.lat);
+        $('#longitude').val(point.lng * 1000000);
+        $('#latitude').val(point.lat * 1000000);
+      }
+    });
+  }
+
   $(document).ready(function() {
     $('#nav-salons').addClass('active');
     set_default_form_values();
@@ -156,6 +177,9 @@
 
     upload_salon_logo('change_logo', {{ salon.id }}, upload_logo);
     upload_salon('uploader', {{ salon.id }}, upload_pics);
+
+    //set_baidu_map();
   });
+
 </script>
 {% end %}
