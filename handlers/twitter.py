@@ -89,6 +89,10 @@ class TwitterBaseHandler(BaseHandler):
             query_str.append("m.description like %s")
             params.append("%" + args.get("description")[0] + "%")
 
+        if args.get("pic_id"):
+            query_str.append("p.id = %s")
+            params.append(args.get("pic_id")[0])
+
         if args.get("member_type"):
             query_str.append("member_type = %s")
             params.append(args.get("member_type")[0])
