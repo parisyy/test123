@@ -143,8 +143,8 @@
     $('#actived').val({{ args.get("actived", [""])[0] }});
     $('#member_type').val({{ args.get("member_type", [""])[0] }});
 
-    $('#start_date').val('{{ args.get("start_date", [""]) }}');
-    $('#end_date').val('{{ args.get("end_date", [""]) }}');
+    $('#start_date').val("{{ args.get("start_date", "") }}");
+    $('#end_date').val("{{ args.get("end_date", "") }}");
   }
 
   function set_actived_status(id, status, element) {
