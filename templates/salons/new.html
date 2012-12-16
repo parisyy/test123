@@ -69,7 +69,12 @@
   <div class="control-group">
     <label class="control-label">地址</label>
     <div class="controls">
-      <input type="text" name="address" value="" class="input-xxlarge" />
+      <input type="text" name="address" id="address" value="" class="input-xxlarge" />
+      <a href="javascript:void(0)" onclick="set_baidu_map()">获取百度坐标地址</a><br />
+    </div>
+    <div class="controls" style="margin-top:5px">
+      <input type="text" name="longitude" id="longitude" value="" class="" />
+      <input type="text" name="latitude" id="latitude" value="" class="" />
     </div>
   </div><br />
   <p>
@@ -82,7 +87,21 @@
 {% end %}
 
 {% block javascript %}
+<script src="http://api.map.baidu.com/api?v=1.4" type="text/javascript"></script>
 <script type="text/javascript">
+  function set_baidu_map() {
+    var map = new BMap.Map('baidu-map');
+    var myGeo = new BMap.Geocoder();
+    myGeo.getPoint($('#address').val(), function(point) {
+      if (point) {
+        $('#longitude').val(point.lng * 1000000);
+        $('#latitude').val(point.lat * 1000000);
+      } else {
+        alert('未找到该地址的经纬度，请检查地址内容！');
+      }
+    });
+  }
+
   $(document).ready(function() {
     $('#nav-salons').addClass('active');
     set_region_selectors();

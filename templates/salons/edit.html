@@ -158,14 +158,14 @@
   }
 
   function set_baidu_map() {
-    console.log('set baidu map...');
     var map = new BMap.Map('baidu-map');
     var myGeo = new BMap.Geocoder();
     myGeo.getPoint($('#address').val(), function(point) {
       if (point) {
-        console.log(point.lng + "," + point.lat);
         $('#longitude').val(point.lng * 1000000);
         $('#latitude').val(point.lat * 1000000);
+      } else {
+        alert('未找到该地址的经纬度，请检查地址内容！');
       }
     });
   }
@@ -177,8 +177,6 @@
 
     upload_salon_logo('change_logo', {{ salon.id }}, upload_logo);
     upload_salon('uploader', {{ salon.id }}, upload_pics);
-
-    //set_baidu_map();
   });
 
 </script>
