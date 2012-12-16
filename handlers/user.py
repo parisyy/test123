@@ -125,6 +125,10 @@ class UserBaseHandler(BaseHandler):
             query.append("email = %s")
             params.append(args["email"])
 
+        if args["mobile"]:
+            query.append("mobile = %s")
+            params.append(args["mobile"])
+
         if args["regtime_from"] and args["regtime_to"]:
             datetime_start = self.convert_to_timestamp(args["regtime_from"] + " 00:00:00")
             datetime_end = self.convert_to_timestamp(args["regtime_to"] + " 23:59:59")
@@ -188,6 +192,7 @@ class UserHandler(UserBaseHandler):
             city_id=self.get_argument("city_id", None),
             username=self.get_argument("username", ""),
             email=self.get_argument("email", ""),
+            mobile=self.get_argument("mobile", None),
             regtime_from=self.get_argument("regtime_from", ""),
             regtime_to=self.get_argument("regtime_to", str(datetime.date.today())),
             lastlogintime_from=self.get_argument("lastlogintime_from", ""),

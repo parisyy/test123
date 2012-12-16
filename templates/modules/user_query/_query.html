@@ -59,6 +59,13 @@
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label">手机号码</label>
+    <div class="controls">
+      <input type="text" name="mobile" id="mobile" />
+    </div>
+  </div><br />
+
+  <div class="control-group">
     <label class="control-label" for="regtime">注册时间</label>
     <div class="controls">
       <input type="text" name="regtime_from" id="regtime_from" />&nbsp;&nbsp;至&nbsp;
@@ -102,6 +109,7 @@ function set_query_form_values() {
     $('#city_id').val('{{ query_params.get("city_id") }}');
     $('#username').val('{{ query_params.get("username") }}');
     $('#email').val('{{ query_params.get("email") }}');
+    $('#mobile').val('{{ query_params.get("mobile") }}');
     $('#regtime_from').val('{{ query_params.get("regtime_from") }}');
     $('#regtime_to').val('{{ query_params.get("regtime_to") }}');
     $('#lastlogintime_from').val('{{ query_params.get("lastlogintime_from") }}');

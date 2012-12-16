@@ -15,6 +15,7 @@ class UserQueryModule(tornado.web.UIModule):
             city_id=self.handler.get_argument("city_id", None),
             username=self.handler.get_argument("username", ""),
             email=self.handler.get_argument("email", ""),
+            mobile=self.handler.get_argument("mobile", ""),
             regtime_from=self.handler.get_argument("regtime_from", ""),
             regtime_to=self.handler.get_argument("regtime_to", ""),
             lastlogintime_from=self.handler.get_argument("lastlogintime_from", ""),
