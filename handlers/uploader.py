@@ -271,10 +271,6 @@ class UploaderBaseHandler(BaseHandler):
 
 class ImageUploaderHandler(UploaderBaseHandler):
     @tornado.web.authenticated
-    def get(self):
-        self.write("Hello, world!")
-
-    @tornado.web.authenticated
     def post(self):
         if self.request.files:
             for f in self.request.files["userfile"]:

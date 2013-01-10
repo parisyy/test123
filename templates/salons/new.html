@@ -11,7 +11,7 @@
 {% block content %}
 <form method="post" class="well query form-horizontal">
   <div class="control-group">
-    <label class="control-label">沙龙名称</label>
+    <label class="control-label">沙龙名称<span class="red">*</span></label>
     <div class="controls">
       <input type="text" name="salon_name" value="" />
     </div>
@@ -67,7 +67,7 @@
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label">地址</label>
+    <label class="control-label">地址<span class="red">*</span></label>
     <div class="controls">
       <input type="text" name="address" id="address" value="" class="input-xxlarge" />
       <a href="javascript:void(0)" onclick="set_baidu_map()">获取百度坐标地址</a><br />

@@ -84,3 +84,7 @@ body {
     border: 1px solid #ddd;
 }
 /* 动态管理 - 查看明细 */
+
+.red {
+    color: red;
+}
