@@ -14,7 +14,7 @@ function create_thumbnail(src) {
 
 function upload_file(element, callback) {
     new AjaxUpload(element, {
-        action: '/uploader',
+        action: '/subject_uploader',
         data: {
             _xsrf: getCookie('_xsrf'),
         },

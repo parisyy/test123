@@ -58,7 +58,7 @@ class Application(BaseApplication):
             (r'/lessons/edit/([0-9]+)', LessonEditHandler),
 
             # 图片上传
-            (r'/uploader', ImageUploaderHandler),
+            (r'/subject_uploader', ImageUploaderHandler),
             (r'/avatar_uploader', AvatarUploaderHandler),
             (r'/salon_uploader', SalonUploaderHandler),
             (r'/salon_logo_uploader', SalonLogoUploaderHandler),

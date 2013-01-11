@@ -1,7 +1,7 @@
 /* 上传图片 */
 function upload_subject_file(element, callback) {
     new AjaxUpload(element, {
-        action: '/uploader',
+        action: '/subject_uploader',
         data: {
             _xsrf: getCookie('_xsrf'),
         },
