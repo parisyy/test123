@@ -1,5 +1,5 @@
 /* 上传图片 */
-function upload_file(element, callback) {
+function upload_subject_file(element, callback) {
     new AjaxUpload(element, {
         action: '/uploader',
         data: {
